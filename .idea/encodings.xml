@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/AutoValue/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/AutoValue/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qfile4J/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qfile4J/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qhttpserver/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qhttpserver/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qlog/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qlog/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qopencv/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qopencv/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qproperties/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qproperties/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qthread/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qthread/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qtime/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qtime/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qtools/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qtools/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qudp/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qudp/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+  </component>
+</project>
