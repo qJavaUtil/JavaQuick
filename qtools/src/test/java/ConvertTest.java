@@ -1,4 +1,4 @@
-import com.blxt.utils.check.CheckUtils;
+import blxt.qjava.utils.check.CheckUtils;
 import org.junit.Test;
 
 import java.io.File;

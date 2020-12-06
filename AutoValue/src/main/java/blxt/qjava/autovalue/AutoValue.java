@@ -10,7 +10,7 @@
 package blxt.qjava.autovalue;
 
 
-import com.blxt.properties.PropertiesFactory;
+import blxt.qjava.properties.PropertiesFactory;
 
 import blxt.qjava.autovalue.inter.*;
 

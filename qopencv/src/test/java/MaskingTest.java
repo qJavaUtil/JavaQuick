@@ -1,4 +1,4 @@
-import com.blxt.qopencv.OpencvFactory;
+import blxt.qjava.qopencv.OpencvFactory;
 
 import org.junit.Test;
 import org.opencv.core.Mat;

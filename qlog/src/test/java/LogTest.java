@@ -1,4 +1,4 @@
-import com.qjava.qlog.QLog;
+import blxt.qjava.qlog.QLog;
 import org.junit.Test;
 
 import java.io.File;

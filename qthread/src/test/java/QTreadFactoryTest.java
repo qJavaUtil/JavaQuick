@@ -1,4 +1,4 @@
-import com.qjava.qthread.QTreadFactory;
+import blxt.qjava.qthread.QTreadFactory;
 import org.junit.jupiter.api.Test;
 
 /**
