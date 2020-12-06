@@ -1,6 +1,5 @@
 package test.util;
 
-import blxt.qjava.autovalue.inter.Autowired;
 import blxt.qjava.autovalue.inter.Component;
 
 /**

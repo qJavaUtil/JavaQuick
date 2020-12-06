@@ -19,7 +19,7 @@ public class AutoObject {
 
     /**
      * 包扫描, 对有Component注释的类, 自动实现 autoWired注解
-     * @param packageName
+     * @param packageName  要扫描的包名
      */
     public static void autoWiredScan(String packageName) throws ClassNotFoundException {
         List<String> classNames = getClassName(packageName, true);

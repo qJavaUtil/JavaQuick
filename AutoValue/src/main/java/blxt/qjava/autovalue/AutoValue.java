@@ -73,6 +73,8 @@ public class AutoValue {
 
     /**
      * 包扫描,扫描Configuration注解
+     * @param packageName     要扫描的包路径
+     * @throws Exception
      */
     public static void scan(String packageName) throws Exception {
         List<String> classNames = getClassName(packageName, true);
@@ -209,7 +211,7 @@ public class AutoValue {
     public static String getPath() {
         String path = rootClass.getProtectionDomain().getCodeSource().getLocation().getPath();
         if (System.getProperty("os.name").contains("dows")) {
-            path = path.substring(1, path.length());
+            path = path.substring(1);
         }
         if (path.contains("jar")) {
             path = path.substring(0, path.lastIndexOf("."));

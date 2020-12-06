@@ -7,6 +7,7 @@ import blxt.qjava.autovalue.inter.*;
  * @author 张家磊
  */
 //@Configuration("../src/test.test/resources/application.properties")
+@Component()
 @Configuration
 public class AppConfiguration   {
 
