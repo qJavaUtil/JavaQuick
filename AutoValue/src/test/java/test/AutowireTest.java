@@ -1,7 +1,6 @@
 package test;
 
-import blxt.qjava.autovalue.AutoValue;
-import blxt.qjava.autovalue.ObjectPool;
+import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.autovalue.QJavaApplication;
 import blxt.qjava.autovalue.inter.ComponentScan;
 import blxt.qjava.autovalue.inter.ConfigurationScan;

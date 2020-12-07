@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 类注释
+ * 扫描配置类标记
  * @Author: Zhang.Jialei
  * @Date: 2020/9/25 17:33
  */

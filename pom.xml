@@ -20,6 +20,7 @@
         <module>qlog</module>
         <module>qopencv</module>
         <module>AutoValue</module>
+        <module>qFrame</module>
     </modules>
 
     <properties>

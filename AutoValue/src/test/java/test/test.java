@@ -19,13 +19,13 @@ public class test {
 
     public static void main(String[] args) throws Exception {
 
-        AutoValue.init(test.class);
+      //  AutoValue.init(test.class);
 
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
 
         AppConfiguration appConfiguration = new AppConfiguration();
 
-        AutoValue.autoVariable(appConfiguration);
+       // AutoValue.autoVariable(appConfiguration);
 
         System.out.println("自动注入结果:" + appConfiguration.toString());
     }

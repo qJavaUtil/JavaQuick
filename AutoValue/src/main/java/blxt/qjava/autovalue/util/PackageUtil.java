@@ -1,4 +1,4 @@
-package blxt.qjava.autovalue;
+package blxt.qjava.autovalue.util;
 
 import java.io.File;
 import java.net.URL;
@@ -163,4 +163,24 @@ public class PackageUtil {
         }
         return myClassName;
     }
+
+    /**
+     * 获取jar运行路径
+     *
+     * @return
+     */
+    public static String getPath(Class<?> objClass) {
+        String path = objClass.getProtectionDomain().getCodeSource().getLocation().getPath();
+        if (System.getProperty("os.name").contains("dows")) {
+            path = path.substring(1);
+        }
+        if (path.contains("jar")) {
+            path = path.substring(0, path.lastIndexOf("."));
+            return path.substring(0, path.lastIndexOf("/"));
+        }
+        return path.replace("/classes/", "")
+                .replace("/test-classes/", "")
+                .replace("/target", "/src/test");
+    }
+
 }

@@ -1,14 +1,11 @@
 package blxt.qjava.autovalue;
 
 import blxt.qjava.autovalue.inter.ComponentScan;
-import blxt.qjava.autovalue.inter.Configuration;
 import blxt.qjava.autovalue.inter.ConfigurationScan;
 
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.util.List;
+import java.util.ArrayList;
 
-import static blxt.qjava.autovalue.PackageUtil.getClassName;
+import static blxt.qjava.autovalue.util.PackageUtil.getClassName;
 
 /**
  * qjava框架注释自动加载启动类
@@ -31,10 +28,13 @@ public class QJavaApplication {
         }
 
         // Configuration扫描, 实现@Value
-        ConfigurationScan(object);
+      //  ConfigurationScan(object);
+        AutoValue autoValue = new AutoValue();
+        autoValue.packageScan(autoValue, object);
         // Component扫描,实现 @Autowired
-        autoWiredScan(object);
-
+        //autoWiredScan(object);
+        AutoObject autoObject = new AutoObject();
+        autoObject.packageScan(autoObject, object);
     }
 
     /**
@@ -44,21 +44,19 @@ public class QJavaApplication {
      * @throws Exception
      */
     private static void ConfigurationScan(Class<?> object) throws Exception {
-        AutoValue.init(object);
+        AutoValue autoValue = new AutoValue();
+        autoValue.init(object);
         String path = getConfigurationScanPackageName(object);
         if (path != null) {
             /* 指定包扫描 */
-            String[] paths = path.split(",");
-            for (String p : paths) {
-                if (p == null || p.trim().isEmpty()) {
-                    continue;
-                }
-                AutoValue.scan(path);
+            ArrayList<String> arrayList = getValuesSplit(path, ",");
+            for (String p : arrayList) {
+                autoValue.scan(p);
             }
             return;
         }
         /* 默认包扫描 */
-        AutoValue.scan(object.getPackage().getName());
+        autoValue.scan(object.getPackage().getName());
     }
 
     /**
@@ -69,20 +67,21 @@ public class QJavaApplication {
      */
     private static void autoWiredScan(Class<?> object) throws Exception {
         String path = getComponentScanPackageName(object);
+        AutoObject autoObject = new AutoObject();
+        autoObject.init(object);
         if (path != null) {
             /* 指定包扫描 */
-            String[] paths = path.split(",");
-            for (String p : paths) {
-                if (p == null || p.trim().isEmpty()) {
-                    continue;
-                }
-                AutoObject.autoWiredScan(p);
+            ArrayList<String> arrayList = getValuesSplit(path, ",");
+            for (String p : arrayList) {
+                autoObject.scan(p);
             }
             return;
         }
         /* 默认包扫描 */
-        AutoObject.autoWiredScan(object.getPackage().getName());
+        autoObject.scan(object.getPackage().getName());
     }
+
+
 
     /**
      * 获取启动类的ConfigurationScan注解路径
@@ -112,5 +111,22 @@ public class QJavaApplication {
         return annotation.value();
     }
 
+    /**
+     * 获取注解中的参数列表
+     * @param str
+     * @param var1
+     * @return
+     */
+    private static ArrayList<String> getValuesSplit(String str, String var1){
+        String[] paths = str.split(",");
+        ArrayList<String> arrayList = new ArrayList();
+        for (String p : paths) {
+            if (p == null || p.trim().isEmpty()) {
+                continue;
+            }
+            arrayList.add(p);
+        }
+        return arrayList;
+    }
 
 }

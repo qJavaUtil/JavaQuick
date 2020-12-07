@@ -5,6 +5,17 @@
 > 由于本人还是一个android爱好者，所以对android做了简单适配。本项目可以用户android。
 > 1年java小白，欢迎指正和批评。
 
+## 功能 
+* 支持 @Component()
+* 支持 @Configuration()
+* 支持 @ConfigurationProperties() 
+* 支持 @PropertySource()
+* 支持 @Value()
+* 支持 @Autowired() 
+
+基本用法和spring-boot里一样,具体使用见下文的使用步骤,
+更详细的,可以看test源码。
+
 ## 使用步骤 
 
 1. 启动类 

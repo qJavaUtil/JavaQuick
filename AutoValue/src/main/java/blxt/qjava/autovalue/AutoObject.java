@@ -2,26 +2,35 @@ package blxt.qjava.autovalue;
 
 import blxt.qjava.autovalue.inter.Autowired;
 import blxt.qjava.autovalue.inter.Component;
+import blxt.qjava.autovalue.inter.ComponentScan;
+import blxt.qjava.autovalue.interfaces.AutoLoadBase;
+import blxt.qjava.autovalue.util.ObjectPool;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import static blxt.qjava.autovalue.PackageUtil.getClassName;
+import static blxt.qjava.autovalue.util.PackageUtil.getClassName;
 
 /**
  * 自动装载对象
  * @Author: Zhang.Jialei
  * @Date: 2020/12/4 12:34
  */
-public class AutoObject {
+public class AutoObject extends AutoLoadBase {
 
+
+    @Override
+    public void init(Class<?> rootClass) throws Exception {
+
+    }
 
     /**
      * 包扫描, 对有Component注释的类, 自动实现 autoWired注解
      * @param packageName  要扫描的包名
      */
-    public static void autoWiredScan(String packageName) throws ClassNotFoundException {
+    @Override
+    public void scan(String packageName) throws ClassNotFoundException {
         List<String> classNames = getClassName(packageName, true);
         if (classNames != null) {
             for (String className : classNames) {
@@ -41,23 +50,12 @@ public class AutoObject {
     }
 
     /**
-     * 将对象注入统一的Object管理池.
-     *
-     * @param object   class class的构造函数必须是public的
-     * @return 初始化后的实例对象
-     */
-    public static Object register(Class<?>  object){
-        return  ObjectPool.putObject(object);
-    }
-
-
-    /**
      * Autowired 注解注册
      *
      * @param object  class class的构造函数必须是public的
      * @return 初始化后的实例对象
      */
-    public static Object autoWiredRegister(Class<?> object){
+    public Object autoWiredRegister(Class<?> object){
 
         Object bean = ObjectPool.getObject(object);
 
@@ -99,6 +97,33 @@ public class AutoObject {
         }
 
         return bean;
+    }
+
+
+    /**
+     * 将对象注入统一的Object管理池.
+     *
+     * @param object   class class的构造函数必须是public的
+     * @return 初始化后的实例对象
+     */
+    public static Object register(Class<?>  object){
+        return  ObjectPool.putObject(object);
+    }
+
+
+    /**
+     * 获取启动类的ComponentScan注解路径
+     *
+     * @param objClass 要扫描的包路径
+     * @throws Exception
+     */
+    @Override
+    public String getScanPackageName(Class<?> objClass) {
+        ComponentScan annotation = objClass.getAnnotation(ComponentScan.class);
+        if (annotation == null) {
+            return null;
+        }
+        return annotation.value();
     }
 
 }

@@ -6,13 +6,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="qudp" />
         <module name="qthread" />
-        <module name="qproperties" />
+        <module name="qFrame" />
         <module name="qfile4J" />
         <module name="qopencv" />
         <module name="qtime" />
+        <module name="qudp" />
         <module name="qhttpserver" />
+        <module name="qproperties" />
         <module name="qlog" />
         <module name="qtools" />
         <module name="AutoValue" />

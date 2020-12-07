@@ -1,8 +1,6 @@
 package blxt.qjava.properties;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -11,11 +9,23 @@ import java.util.Properties;
  */
 public class PropertiesFactory extends Properties {
 
-    public PropertiesFactory(File file) throws IOException {
-        checkNotNull(file, "包含属性的文件不能为空");
+    File propertiesFile;
 
-        FileReader in = new FileReader(file);
-        load(in);
+    public PropertiesFactory(File file) throws IOException {
+        this(file, "utf-8");
+    }
+
+    public PropertiesFactory(File file, String codeing) throws IOException {
+        checkNotNull(file, "包含属性的文件不能为空");
+        propertiesFile = file;
+
+        InputStream stream = new FileInputStream(file);
+        InputStreamReader reader = new InputStreamReader(stream, codeing);
+        load(reader);
+    }
+
+    public File getPropertiesFile() {
+        return propertiesFile;
     }
 
     public String getStr(final String key) {
@@ -66,6 +76,19 @@ public class PropertiesFactory extends Properties {
         var3 = var3 == null && this.defaults != null ? this.defaults.getProperty(var1) : var3;
         checkNotNull(var3, "元素的值不能是null:" + var1);
         return var3;
+    }
+
+    /**
+     * 判断某个键值是否存在
+     * @param key
+     * @return
+     */
+    public boolean isEmpty(String key){
+        Object var = super.get(key);
+        if(var == null){
+            return true;
+        }
+        return false;
     }
 
     /**

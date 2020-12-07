@@ -6,28 +6,26 @@ import blxt.qjava.autovalue.inter.*;
  * 插件通用配置
  * @author 张家磊
  */
-//@Configuration("../src/test.test/resources/application.properties")
 @Component()
 @Configuration()
-public class AppConfiguration   {
+@ConfigurationProperties(prefix = "test", ignoreUnknownFields=true) // 预指定路径,忽略没有配置的属性
+@PropertySource(encoding = "utf-8", value="./resources/application2.properties") // 指定properties文件路径和编码
+public class AppConfiguration2 {
 
-    @Value("test.string_t")
     private String string_t = "Default";
 
-    @Value("test.int_t" )
     private int int_t;
 
-    @Value("test.float_t" )
     private float float_t ;
-    @Value("test.double_t" )
     private double double_t ;
-    @Value("test.boolean_t" )
     private boolean boolean_t ;
-    @Value("test.long_t" )
+    @Value("long_t")
     private long long_t ;
 
     @Autowired
     private Bean1 bean1;
+
+    private long long_t2 ;
 
     @Override
     public String toString() {

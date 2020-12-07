@@ -30,11 +30,13 @@ public class QTreadFactory extends PropertiesReader {
     final static String DISCARDOLD = "DISCARDOLD";
 
     /** 默认配置文件 */
-    private static String filePath[] = new String[]{"resources/thread-dfault.properties",
-                                                    "thread-dfault.properties",
-                                                    "../thread-dfault.properties",
-                                                    "../../thread-dfault.properties",
-                                                    "../../../thread-dfault.properties"};
+    private static String filePath[] = new String[]{
+            "resources/config/thread-dfault.properties",
+            "resources/thread-dfault.properties",
+            "thread-dfault.properties",
+            "../thread-dfault.properties",
+            "../../thread-dfault.properties",
+            "../../../thread-dfault.properties"};
 
 
     /**

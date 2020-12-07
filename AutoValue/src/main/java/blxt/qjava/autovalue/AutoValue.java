@@ -10,6 +10,9 @@
 package blxt.qjava.autovalue;
 
 
+import blxt.qjava.autovalue.interfaces.AutoLoadBase;
+import blxt.qjava.autovalue.util.ObjectPool;
+import blxt.qjava.autovalue.util.PackageUtil;
 import blxt.qjava.properties.PropertiesFactory;
 
 import blxt.qjava.autovalue.inter.*;
@@ -20,7 +23,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import static blxt.qjava.autovalue.PackageUtil.getClassName;
+import static blxt.qjava.autovalue.util.PackageUtil.getClassName;
 
 /**
  * 自动装载属性
@@ -28,7 +31,7 @@ import static blxt.qjava.autovalue.PackageUtil.getClassName;
  * @Author: Zhang.Jialei
  * @Date: 2020/9/28 17:26
  */
-public class AutoValue {
+public class AutoValue extends AutoLoadBase {
     /**
      * 项目起始类
      */
@@ -41,7 +44,9 @@ public class AutoValue {
     /**
      * 默认配置文件
      */
-    private static String filePath[] = new String[]{"resources/application.properties",
+    private static String filePath[] = new String[]{
+            "resources/config/application.properties",
+            "resources/application.properties",
             "application.properties",
             "../application.properties",
             "../../application.properties",
@@ -52,12 +57,13 @@ public class AutoValue {
      * @param rootClass      项目起始类
      * @throws IOException
      */
-    public static void init(Class<?> rootClass) throws Exception {
+    @Override
+    public void init(Class<?> rootClass) throws Exception {
         if (AutoValue.rootClass != null) {
             return;
         }
         AutoValue.rootClass = rootClass;
-        String appPath = getPath();
+        String appPath = PackageUtil.getPath(rootClass);
         for (String path : filePath) {
             File file = new File(appPath + File.separator + path);
             if (file.exists()) {
@@ -67,7 +73,7 @@ public class AutoValue {
             }
         }
         if (propertiesFactory == null) {
-            System.out.println("AutoValue 没有找到配置文件:" + getPath());
+            System.out.println("AutoValue 没有找到配置文件:" + PackageUtil.getPath(rootClass));
         }
     }
 
@@ -76,7 +82,8 @@ public class AutoValue {
      * @param packageName     要扫描的包路径
      * @throws Exception
      */
-    public static void scan(String packageName) throws Exception {
+    @Override
+    public void scan(String packageName) throws Exception {
         List<String> classNames = getClassName(packageName, true);
         if (classNames != null) {
             for (String className : classNames) {
@@ -108,10 +115,9 @@ public class AutoValue {
      * @throws IllegalAccessException
      * @throws IOException
      */
-    public static void autoVariable(Object bean, PropertiesFactory properties) throws IllegalAccessException {
+    public void autoVariable(Object bean, PropertiesFactory properties) throws Exception {
         // 获取f对象对应类中的所有属性域
         Field[] fields = bean.getClass().getDeclaredFields();
-
 
         // 遍历属性
         for (Field field : fields) {
@@ -119,13 +125,12 @@ public class AutoValue {
             if ((field.getModifiers() & 16) != 0) {
                 continue;
             }
-            Value valuename = field.getAnnotation(Value.class);
-            if (valuename == null) {
+
+            // 获取Properties的key
+            String valuenameKey = getKey(bean, field);
+            if(valuenameKey == null){
                 continue;
             }
-
-            // 参数类型
-            String fieldType = field.getGenericType().toString();
 
             // 获取原来的访问控制权限
             boolean accessFlag = field.isAccessible();
@@ -133,23 +138,8 @@ public class AutoValue {
             field.setAccessible(true);
 
             // 属性值
-            Object value = null;
+            Object value = getPropertiesValue(valuenameKey, properties, bean, field);
 
-            if (fieldType.endsWith("String")) {
-                value = properties.getStr(valuename.value());
-            } else if (fieldType.endsWith("Integer") || fieldType.endsWith("int")) {
-                value = properties.getInt(valuename.value());
-            } else if (fieldType.endsWith("Short") || fieldType.endsWith("short")) {
-                value = properties.getShort(valuename.value());
-            } else if (fieldType.endsWith("Boolean") || fieldType.endsWith("boolean")) {
-                value = properties.getBoolean(valuename.value());
-            } else if (fieldType.endsWith("Double") || fieldType.endsWith("double")) {
-                value = properties.getDouble(valuename.value());
-            } else if (fieldType.endsWith("Float") || fieldType.endsWith("float")) {
-                value = properties.getFloat(valuename.value());
-            } else if (fieldType.endsWith("Long") || fieldType.endsWith("long")) {
-                value = properties.getLong(valuename.value());
-            }
             if (value != null) {
                 field.set(bean, value);
             }
@@ -161,23 +151,117 @@ public class AutoValue {
 
 
     /**
+     * 获取Properties的key
+     * @param bean    bean类
+     * @param field   元素值
+     * @return
+     */
+    private String getKey(Object bean, Field field){
+        Value valuename = field.getAnnotation(Value.class);
+        ConfigurationProperties prefix = bean.getClass().getAnnotation(ConfigurationProperties.class);
+
+        String keyBase = "";
+        String keyName = "";
+        if(prefix != null && !prefix.prefix().isEmpty()){
+            keyBase = prefix.prefix() + ".";
+        }
+
+        if(valuename != null){
+            keyName = valuename.value().trim();
+        }
+        else if(!keyBase.isEmpty()){
+            keyName = field.getName();
+        }
+
+        String key = keyBase + keyName;
+        if(key.isEmpty()){
+            return null;
+        }
+        else{
+            return key;
+        }
+
+    }
+
+    /**
+     * 是否忽略忽略未知的 配置元素key
+     * @param bean
+     * @return
+     */
+    private boolean isignoreUnknownFields(Object bean){
+        ConfigurationProperties prefix = bean.getClass().getAnnotation(ConfigurationProperties.class);
+
+        if (prefix == null){
+            return false;
+        }
+        return prefix.ignoreUnknownFields();
+    }
+
+
+    /**
+     * 获取属性值
+     * @param key
+     * @param properties
+     * @param bean
+     * @param field
+     * @return
+     * @throws Exception
+     */
+    private Object getPropertiesValue(String key, PropertiesFactory properties,
+                                      Object bean, Field field) throws Exception{
+        // 属性值
+        Object value = null;
+        String fieldType = field.getGenericType().toString();
+
+        if(properties.isEmpty(key)){
+            // 忽略没填写的key的元素
+            if(isignoreUnknownFields(bean)){
+                return null;
+            }
+            throw new Exception("元素的值不能是null:" + key + "\r\n路径:" + properties.getPropertiesFile().getPath());
+        }
+
+        if (fieldType.endsWith("String")) {
+            value = properties.getStr(key);
+        } else if (fieldType.endsWith("Integer") || fieldType.endsWith("int")) {
+            value = properties.getInt(key);
+        } else if (fieldType.endsWith("Short") || fieldType.endsWith("short")) {
+            value = properties.getShort(key);
+        } else if (fieldType.endsWith("Boolean") || fieldType.endsWith("boolean")) {
+            value = properties.getBoolean(key);
+        } else if (fieldType.endsWith("Double") || fieldType.endsWith("double")) {
+            value = properties.getDouble(key);
+        } else if (fieldType.endsWith("Float") || fieldType.endsWith("float")) {
+            value = properties.getFloat(key);
+        } else if (fieldType.endsWith("Long") || fieldType.endsWith("long")) {
+            value = properties.getLong(key);
+        }
+
+        return value;
+    }
+
+
+    /**
      * 自动 获取变量名
      *
      * @param bean
      */
-    public static void autoVariable(Object bean) throws IllegalAccessException, IOException {
+    public void autoVariable(Object bean) throws Exception {
         PropertiesFactory properties = propertiesFactory;
+        String classPath = PackageUtil.getPath(rootClass);
 
         // 从类注解Configuration中获取值,判断是否是自定义的配置文件路径
-        Configuration anno = bean.getClass().getAnnotation(Configuration.class);
+        PropertySource anno = bean.getClass().getAnnotation(PropertySource.class);
         if (anno != null) {
             String propertiePath = anno.value();
+            String propertieCode = anno.encoding();
             if (!propertiePath.trim().isEmpty()) {
                 // 如果文件路径是以 . 开头的,那么认为这是相对路径
                 if (propertiePath.startsWith(".")) {
-                    properties = new PropertiesFactory(new File(getPath() + File.separator + propertiePath));
+                    properties = new PropertiesFactory(new File(classPath + File.separator + propertiePath),
+                            propertieCode);
                 } else {
-                    properties = new PropertiesFactory(new File(propertiePath));
+                    properties = new PropertiesFactory(new File(propertiePath), propertieCode);
                 }
             }
         }
@@ -195,7 +279,7 @@ public class AutoValue {
      * @throws IllegalAccessException
      * @throws IOException
      */
-    public static void autoVariable(Object bean, String directory, String fileName) throws IllegalAccessException, IOException {
+    public void autoVariable(Object bean, String directory, String fileName) throws Exception {
         // 如果文件路径是以 . 开头的,那么认为这是相对路径
         PropertiesFactory properties =
                 new PropertiesFactory(new File(directory + File.separator + fileName));
@@ -203,23 +287,20 @@ public class AutoValue {
         autoVariable(bean, properties);
     }
 
+
     /**
-     * 获取jar运行路径
+     * 获取启动类的ComponentScan注解路径
      *
-     * @return
+     * @param objClass 要扫描的包路径
+     * @throws Exception
      */
-    public static String getPath() {
-        String path = rootClass.getProtectionDomain().getCodeSource().getLocation().getPath();
-        if (System.getProperty("os.name").contains("dows")) {
-            path = path.substring(1);
+    @Override
+    public String getScanPackageName(Class<?> objClass) {
+        ComponentScan annotation = objClass.getAnnotation(ComponentScan.class);
+        if (annotation == null) {
+            return null;
         }
-        if (path.contains("jar")) {
-            path = path.substring(0, path.lastIndexOf("."));
-            return path.substring(0, path.lastIndexOf("/"));
-        }
-        return path.replace("/classes/", "")
-                .replace("/test-classes/", "")
-                .replace("/target", "/src/test");
+        return annotation.value();
     }
 
 

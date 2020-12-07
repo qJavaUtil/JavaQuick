@@ -1,4 +1,4 @@
-package blxt.qjava.autovalue;
+package blxt.qjava.autovalue.util;
 
 import java.util.HashMap;
 
