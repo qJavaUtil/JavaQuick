@@ -18,4 +18,11 @@ public interface AutoLoad {
      * @throws Exception
      */
     void scan(String packageName) throws Exception;
+
+    /**
+     * 注入实现
+     * @param object
+     * @throws Exception
+     */
+    Object inject(Class<?> object) throws Exception;
 }

@@ -29,6 +29,17 @@ public class AppConfiguration   {
     @Autowired
     private Bean1 bean1;
 
+    @Run("value1str=hellow, value2=123")
+    public void init(@AliasFor(value="value1str")String value1, @AliasFor(value="value2") int value2, Bean1 bean1){
+        System.out.println("@Run 自动运行1");
+    }
+
+    @Run()
+    public void init(){
+        System.out.println("@Run 自动运行2");
+    }
+
+
     @Override
     public String toString() {
         return "test.test.util.AppConfiguration{" +

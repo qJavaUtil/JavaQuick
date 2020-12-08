@@ -11,6 +11,7 @@ package blxt.qjava.autovalue;
 
 
 import blxt.qjava.autovalue.interfaces.AutoLoadBase;
+import blxt.qjava.autovalue.util.ConvertTool;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.autovalue.util.PackageUtil;
 import blxt.qjava.properties.PropertiesFactory;
@@ -97,15 +98,65 @@ public class AutoValue extends AutoLoadBase {
                 if (classAnnotation == null) {
                     continue;
                 }
-
-                Object obj = ObjectPool.putObject(objClass);
-                if (obj == null) {
-                    continue;
-                }
-                autoVariable(obj);
+                inject(objClass);
             }
         }
     }
+
+
+    @Override
+    public Object inject(Class<?> objClass) throws Exception {
+        Object bean = ObjectPool.putObject(objClass);
+        autoVariable(bean);
+        return bean;
+    }
+
+    /**
+     * 自动 获取变量名
+     *
+     * @param bean
+     */
+    public void autoVariable(Object bean) throws Exception {
+        PropertiesFactory properties = propertiesFactory;
+        String classPath = PackageUtil.getPath(rootClass);
+
+        // 从类注解Configuration中获取值,判断是否是自定义的配置文件路径
+        PropertySource anno = bean.getClass().getAnnotation(PropertySource.class);
+        if (anno != null) {
+            String propertiePath = anno.value();
+            String propertieCode = anno.encoding();
+            if (!propertiePath.trim().isEmpty()) {
+                // 如果文件路径是以 . 开头的,那么认为这是相对路径
+                if (propertiePath.startsWith(".")) {
+                    properties = new PropertiesFactory(new File(classPath + File.separator + propertiePath),
+                            propertieCode);
+                } else {
+                    properties = new PropertiesFactory(new File(propertiePath), propertieCode);
+                }
+            }
+        }
+
+        // TODO 实现Configuration注解中的proxyBeanMethods,自定义的properties解析类
+        autoVariable(bean, properties);
+    }
+
+    /**
+     * 自动 获取变量名
+     *
+     * @param bean
+     * @param directory 目录
+     * @param fileName  文件名
+     * @throws IllegalAccessException
+     * @throws IOException
+     */
+    public void autoVariable(Object bean, String directory, String fileName) throws Exception {
+        // 如果文件路径是以 . 开头的,那么认为这是相对路径
+        PropertiesFactory properties =
+                new PropertiesFactory(new File(directory + File.separator + fileName));
+
+        autoVariable(bean, properties);
+    }
+
 
     /**
      * 从指定 Properties 中获取配置
@@ -218,73 +269,12 @@ public class AutoValue extends AutoLoadBase {
             if(isignoreUnknownFields(bean)){
                 return null;
             }
-            throw new Exception("元素的值不能是null:" + key + "\r\n路径:" + properties.getPropertiesFile().getPath());
+            throw new Exception("元素的key不存在:" + key + "\r\n路径:" + properties.getPropertiesFile().getPath());
         }
 
-        if (fieldType.endsWith("String")) {
-            value = properties.getStr(key);
-        } else if (fieldType.endsWith("Integer") || fieldType.endsWith("int")) {
-            value = properties.getInt(key);
-        } else if (fieldType.endsWith("Short") || fieldType.endsWith("short")) {
-            value = properties.getShort(key);
-        } else if (fieldType.endsWith("Boolean") || fieldType.endsWith("boolean")) {
-            value = properties.getBoolean(key);
-        } else if (fieldType.endsWith("Double") || fieldType.endsWith("double")) {
-            value = properties.getDouble(key);
-        } else if (fieldType.endsWith("Float") || fieldType.endsWith("float")) {
-            value = properties.getFloat(key);
-        } else if (fieldType.endsWith("Long") || fieldType.endsWith("long")) {
-            value = properties.getLong(key);
-        }
+        value = ConvertTool.convert(properties.getStr(key), field.getType());
 
         return value;
-    }
-
-
-    /**
-     * 自动 获取变量名
-     *
-     * @param bean
-     */
-    public void autoVariable(Object bean) throws Exception {
-        PropertiesFactory properties = propertiesFactory;
-        String classPath = PackageUtil.getPath(rootClass);
-
-        // 从类注解Configuration中获取值,判断是否是自定义的配置文件路径
-        PropertySource anno = bean.getClass().getAnnotation(PropertySource.class);
-        if (anno != null) {
-            String propertiePath = anno.value();
-            String propertieCode = anno.encoding();
-            if (!propertiePath.trim().isEmpty()) {
-                // 如果文件路径是以 . 开头的,那么认为这是相对路径
-                if (propertiePath.startsWith(".")) {
-                    properties = new PropertiesFactory(new File(classPath + File.separator + propertiePath),
-                            propertieCode);
-                } else {
-                    properties = new PropertiesFactory(new File(propertiePath), propertieCode);
-                }
-            }
-        }
-
-        // TODO 实现Configuration注解中的proxyBeanMethods,自定义的properties解析类
-        autoVariable(bean, properties);
-    }
-
-    /**
-     * 自动 获取变量名
-     *
-     * @param bean
-     * @param directory 目录
-     * @param fileName  文件名
-     * @throws IllegalAccessException
-     * @throws IOException
-     */
-    public void autoVariable(Object bean, String directory, String fileName) throws Exception {
-        // 如果文件路径是以 . 开头的,那么认为这是相对路径
-        PropertiesFactory properties =
-                new PropertiesFactory(new File(directory + File.separator + fileName));
-
-        autoVariable(bean, properties);
     }
 
 

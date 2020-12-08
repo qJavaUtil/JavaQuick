@@ -28,13 +28,14 @@ public class QJavaApplication {
         }
 
         // Configuration扫描, 实现@Value
-      //  ConfigurationScan(object);
         AutoValue autoValue = new AutoValue();
-        autoValue.packageScan(autoValue, object);
+        autoValue.packageScan(object);
         // Component扫描,实现 @Autowired
-        //autoWiredScan(object);
         AutoObject autoObject = new AutoObject();
-        autoObject.packageScan(autoObject, object);
+        autoObject.packageScan(object);
+        // Component扫描,实现 @Run
+        AutoMethod autoMethod = new AutoMethod();
+        autoMethod.packageScan(object);
     }
 
     /**

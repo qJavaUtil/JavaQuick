@@ -26,37 +26,13 @@ public class AutoObject extends AutoLoadBase {
     }
 
     /**
-     * 包扫描, 对有Component注释的类, 自动实现 autoWired注解
-     * @param packageName  要扫描的包名
-     */
-    @Override
-    public void scan(String packageName) throws ClassNotFoundException {
-        List<String> classNames = getClassName(packageName, true);
-        if (classNames != null) {
-            for (String className : classNames) {
-                // 过滤测试类
-                if(className.indexOf("test-classes") > 0){
-                    className = className.substring(className.indexOf("test-classes") + 13);
-                }
-
-                Class<?>  objClass = Class.forName(className);
-                Annotation classAnnotation = objClass.getAnnotation(Component.class);
-                if(classAnnotation == null){
-                    continue;
-                }
-                autoWiredRegister(objClass);
-            }
-        }
-    }
-
-    /**
      * Autowired 注解注册
      *
      * @param object  class class的构造函数必须是public的
      * @return 初始化后的实例对象
      */
-    public Object autoWiredRegister(Class<?> object){
-
+    @Override
+    public Object inject(Class<?> object){
         Object bean = ObjectPool.getObject(object);
 
         // 获取f对象对应类中的所有属性域
@@ -95,8 +71,18 @@ public class AutoObject extends AutoLoadBase {
             // 恢复访问控制权限
             field.setAccessible(accessFlag);
         }
-
         return bean;
+    }
+
+    /**
+     * Autowired 注解注册
+     *
+     * @param object  class class的构造函数必须是public的
+     * @return 初始化后的实例对象
+     */
+    public Object autoWiredRegister(Class<?> object){
+
+        return inject(object);
     }
 
 

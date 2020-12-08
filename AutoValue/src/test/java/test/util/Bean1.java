@@ -14,6 +14,10 @@ public class Bean1 {
     @Autowired
     private Bean2 bean2;
 
+    public Bean1(){
+
+    }
+
     @Override
     public String toString() {
         return "Bean1{" +
