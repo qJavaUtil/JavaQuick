@@ -12,9 +12,16 @@
 * 支持 @PropertySource()
 * 支持 @Value()
 * 支持 @Autowired() 
+* 支持 @Run() 自动运行方法 
 
 基本用法和spring-boot里一样,具体使用见下文的使用步骤,
 更详细的,可以看test源码。
+
+## 运行步骤 
+
+1. 先扫描@Configuration, 装载配置, @Value()
+2. 再扫描@Component(), 实现@Autowired(), 装载实体类 
+3. 再重复扫描@Component(), 实现@Run(), 运行初始方法 
 
 ## 使用步骤 
 
@@ -79,6 +86,12 @@ public class AppConfiguration   {
 
     @Autowired
     private Bean1 bean1;
+
+    @Run("value1str=hellow, value2=123")
+    public void init(@AliasFor(value="value1str")String value1, @AliasFor(value="value2") int value2, Bean1 bean1){
+        System.out.println("@Run 自动运行");
+    }
+
 
     @Override
     public String toString() {

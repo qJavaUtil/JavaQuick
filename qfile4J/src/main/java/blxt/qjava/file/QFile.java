@@ -65,10 +65,9 @@ public class QFile {
         if (closeable != null) {
             try {
                 closeable.close();
-            } catch (IOException var2) {
+            } catch (IOException e) {
             }
         }
-
     }
 
     public static class MFolder {
@@ -656,5 +655,8 @@ public class QFile {
             return var5;
         }
     }
+
+
+
 
 }

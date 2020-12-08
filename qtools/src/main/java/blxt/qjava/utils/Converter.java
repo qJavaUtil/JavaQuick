@@ -291,5 +291,38 @@ public class Converter {
         }
         return obj;
     }
+
+    /**
+     * 常见类型值转换
+     * @param str          字符串
+     * @param objectclass   要转换的类型,如 String.class Int.class boolean.class
+     * @return
+     */
+    private Object convertToObject(String str, Class<?> objectclass){
+        Object value = null;
+        if(objectclass == String.class){
+            value = str;
+        }
+        else if(objectclass == Integer.class || objectclass == int.class ){
+            value = Integer.parseInt(str);
+        }
+        else if(objectclass == Float.class || objectclass == float.class){
+            value = Float.parseFloat(str);
+        }
+        else if(objectclass == Boolean.class || objectclass == boolean.class){
+            value = Boolean.parseBoolean(str);
+        }
+        else if(objectclass == Long.class || objectclass == long.class){
+            value = Long.parseLong(str);
+        }
+        else if(objectclass == Short.class || objectclass == short.class){
+            value = Short.parseShort(str);
+        }
+        else if(objectclass == Double.class || objectclass == double.class){
+            value = Double.parseDouble(str);
+        }
+        return value;
+    }
+
 }
  

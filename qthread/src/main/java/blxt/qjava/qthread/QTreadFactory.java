@@ -1,6 +1,5 @@
 package blxt.qjava.qthread;
 
-
 import blxt.qjava.properties.PropertiesReader;
 
 import java.io.File;
@@ -14,6 +13,10 @@ import java.util.concurrent.ThreadPoolExecutor;
  */
 public class QTreadFactory extends PropertiesReader {
 
+    /**
+     * 默认的配置读取工具
+     */
+   // static PropertiesFactory propertiesFactory;
 
     /** 核心线程池数量 */
     private static final String THREAD_COREPOOLSIZE = "thread.corePoolSize";
@@ -45,8 +48,7 @@ public class QTreadFactory extends PropertiesReader {
     public static void creatDefaultPool(){
         String webRootPath = null;
         // 从根开始计算相对路径
-        webRootPath = QTreadFactory.class.getClassLoader().getResource("").getPath();
-        webRootPath = new File(webRootPath).getParent();
+        webRootPath = getPath(QTreadFactory.class);
         // 依次找到默认配置文件
         QTreadFactory qTreadFactory = null;
         for(String path : filePath){
@@ -58,11 +60,11 @@ public class QTreadFactory extends PropertiesReader {
         }
 
         if(qTreadFactory == null){
-            System.out.println("默认线城池配置文件不存在");
+            System.out.println("默认线城池配置文件不存在:" + webRootPath);
            return;
         }
         if(!qTreadFactory.check()){
-            System.out.println("默认线城池配置文件错误");
+            System.out.println("默认线城池配置文件错误:" + webRootPath);
             return;
         }
         //System.out.println("默认线城池配置文件成功");
@@ -193,5 +195,25 @@ public class QTreadFactory extends PropertiesReader {
         }
         return handler;
     }
+
+    /**
+     * 获取jar运行路径
+     *
+     * @return
+     */
+    public static String getPath(Class<?> objClass) {
+        String path = objClass.getClassLoader().getResource("").getPath();
+        if (System.getProperty("os.name").contains("dows")) {
+            path = path.substring(1);
+        }
+        if (path.contains("jar")) {
+            path = path.substring(0, path.lastIndexOf("."));
+            return path.substring(0, path.lastIndexOf("/"));
+        }
+        return path.replace("/classes/", "")
+                .replace("/test-classes/", "")
+                .replace("/target", "/src/test");
+    }
+
 
 }
