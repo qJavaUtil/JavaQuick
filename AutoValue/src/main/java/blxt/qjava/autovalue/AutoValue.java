@@ -46,9 +46,10 @@ public class AutoValue extends AutoLoadBase {
      * 默认配置文件
      */
     private static String filePath[] = new String[]{
-            "resources/config/application.properties",
-            "resources/application.properties",
-            "application.properties",
+            "./resources/config/application.properties",
+            "./config/application.properties",
+            "./resources/application.properties",
+            "./application.properties",
             "../application.properties",
             "../../application.properties",
             "../../../application.properties"};

@@ -13,10 +13,10 @@
         <module name="qtime" />
         <module name="qudp" />
         <module name="qhttpserver" />
-        <module name="qproperties" />
+        <module name="AutoValue" />
         <module name="qlog" />
         <module name="qtools" />
-        <module name="AutoValue" />
+        <module name="qproperties" />
       </profile>
     </annotationProcessing>
   </component>
