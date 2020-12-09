@@ -16,7 +16,7 @@ public class QTreadFactory extends PropertiesReader {
     /**
      * 默认的配置读取工具
      */
-   // static PropertiesFactory propertiesFactory;
+
 
     /** 核心线程池数量 */
     private static final String THREAD_COREPOOLSIZE = "thread.corePoolSize";
@@ -32,14 +32,28 @@ public class QTreadFactory extends PropertiesReader {
     final static String DISCARD = "DISCARD";
     final static String DISCARDOLD = "DISCARDOLD";
 
-    /** 默认配置文件 */
+    String filename;
+
+    /** 默认配置文件, 优先使用thread-dfault.properties文件,也会使用application.properties文件  */
     private static String filePath[] = new String[]{
-            "resources/config/thread-dfault.properties",
-            "resources/thread-dfault.properties",
-            "thread-dfault.properties",
+            "./resources/config/thread-dfault.properties",
+            "./config/thread-dfault.properties",
+            "./resources/thread-dfault.properties",
+            "./config/thread-dfault.properties",
+            "./thread-dfault.properties",
             "../thread-dfault.properties",
             "../../thread-dfault.properties",
-            "../../../thread-dfault.properties"};
+            "../../../thread-dfault.properties",
+
+            "./resources/config/application.properties",
+            "./config/application.properties",
+            "./resources/application.properties",
+            "./config/application.properties",
+            "./application.properties",
+            "../application.properties",
+            "../../application.properties",
+            "../../../application.properties"
+    };
 
 
     /**
@@ -48,13 +62,14 @@ public class QTreadFactory extends PropertiesReader {
     public static void creatDefaultPool(){
         String webRootPath = null;
         // 从根开始计算相对路径
-        webRootPath = getPath(QTreadFactory.class);
+        webRootPath = new File(".").getAbsolutePath();
         // 依次找到默认配置文件
         QTreadFactory qTreadFactory = null;
         for(String path : filePath){
             File file = new File(webRootPath + File.separator + path);
             if (file.exists()){
                 qTreadFactory = new QTreadFactory(file.getParentFile());
+                qTreadFactory.setFileNm(file.getName());
                 break;
             }
         }
@@ -67,7 +82,7 @@ public class QTreadFactory extends PropertiesReader {
             System.out.println("默认线城池配置文件错误:" + webRootPath);
             return;
         }
-        //System.out.println("默认线城池配置文件成功");
+        System.out.println("默认线城池配置:" + webRootPath);
         QThreadpool.newInstance(qTreadFactory.getCorePoolSize(),
                 qTreadFactory.getMaximumPoolSize(),
                 qTreadFactory.getKeepAliveTime(),
@@ -98,11 +113,15 @@ public class QTreadFactory extends PropertiesReader {
     }
 
 
+
     @Override
     public String getFilename() {
-        return "thread-dfault.properties";
+        return filename;
     }
 
+    public void setFileNm(String filename){
+        this.filename = filename;
+    }
 
     /**
      * 检查配置缺失
@@ -202,7 +221,7 @@ public class QTreadFactory extends PropertiesReader {
      * @return
      */
     public static String getPath(Class<?> objClass) {
-        String path = objClass.getClassLoader().getResource("").getPath();
+        String path = System.getProperty("user.dir");
         if (System.getProperty("os.name").contains("dows")) {
             path = path.substring(1);
         }
@@ -210,6 +229,7 @@ public class QTreadFactory extends PropertiesReader {
             path = path.substring(0, path.lastIndexOf("."));
             return path.substring(0, path.lastIndexOf("/"));
         }
+
         return path.replace("/classes/", "")
                 .replace("/test-classes/", "")
                 .replace("/target", "/src/test");
