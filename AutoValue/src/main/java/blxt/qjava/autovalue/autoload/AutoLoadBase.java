@@ -1,27 +1,21 @@
-package blxt.qjava.autovalue.interfaces;
+package blxt.qjava.autovalue.autoload;
 
 
 import blxt.qjava.autovalue.inter.Component;
+import blxt.qjava.autovalue.inter.ComponentScan;
+import blxt.qjava.autovalue.interfaces.AutoLoad;
+import blxt.qjava.autovalue.util.PackageUtil;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
-import static blxt.qjava.autovalue.util.PackageUtil.getClassName;
 
 /**
  * @Author: Zhang.Jialei
  * @Date: 2020/12/7 13:53
  */
-public abstract class AutoLoadBase implements AutoLoad{
-
-    /**
-     * 获取启动类的ConfigurationScan注解路径
-     *
-     * @param objClass 要扫描的包路径
-     * @throws Exception
-     */
-    public abstract String getScanPackageName(Class<?> objClass);
+public abstract class AutoLoadBase implements AutoLoad {
 
 
     /**
@@ -32,6 +26,13 @@ public abstract class AutoLoadBase implements AutoLoad{
     public void packageScan(Class<?> object) throws Exception {
         String path = getScanPackageName(object);
         init(object);
+        if(path == null){
+            path = object.getPackage().getName();
+        }
+        packageScan(path);
+    }
+
+    public void packageScan(String path) throws Exception {
         if (path != null) {
             /* 指定包扫描 */
             ArrayList<String> arrayList = getValuesSplit(path, ",");
@@ -41,7 +42,7 @@ public abstract class AutoLoadBase implements AutoLoad{
             return;
         }
         /* 默认包扫描 */
-        scan(object.getPackage().getName());
+        scan(path);
     }
 
     /**
@@ -50,7 +51,7 @@ public abstract class AutoLoadBase implements AutoLoad{
      */
     @Override
     public void scan(String packageName) throws Exception {
-        List<String> classNames = getClassName(packageName, true);
+        List<String> classNames = PackageUtil.getClassName(packageName, true);
         if (classNames != null) {
             for (String className : classNames) {
                 // 过滤测试类
@@ -85,4 +86,19 @@ public abstract class AutoLoadBase implements AutoLoad{
         }
         return arrayList;
     }
+
+    /**
+     * 获取启动类的ComponentScan注解路径
+     * @param objClass 要扫描的包路径
+     * @throws Exception
+     */
+    public String getScanPackageName(Class<?> objClass) {
+        ComponentScan annotation = objClass.getAnnotation(ComponentScan.class);
+        if (annotation == null) {
+            return null;
+        }
+        return annotation.value();
+    }
+
+
 }

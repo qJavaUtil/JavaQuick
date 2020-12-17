@@ -11,8 +11,8 @@ import test.util.AutowireEntry;
  * @Author: Zhang.Jialei
  * @Date: 2020/12/5 22:41
  */
-@ConfigurationScan("test")
-@ComponentScan("test")
+@ConfigurationScan("test.util")
+@ComponentScan("test.util")
 public class AutowireTest {
 
     public static void main(String[] args) throws Exception {

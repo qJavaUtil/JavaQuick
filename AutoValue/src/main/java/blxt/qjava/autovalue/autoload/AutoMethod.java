@@ -1,14 +1,21 @@
-package blxt.qjava.autovalue;
+package blxt.qjava.autovalue.autoload;
 
-import blxt.qjava.autovalue.inter.*;
-import blxt.qjava.autovalue.interfaces.AutoLoadBase;
+import blxt.qjava.autovalue.inter.AliasFor;
+import blxt.qjava.autovalue.inter.Component;
+import blxt.qjava.autovalue.inter.ComponentScan;
+import blxt.qjava.autovalue.inter.Run;
 import blxt.qjava.autovalue.util.ConvertTool;
 import blxt.qjava.autovalue.util.ObjectPool;
+import blxt.qjava.autovalue.util.QThreadpool;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.*;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static blxt.qjava.autovalue.util.PackageUtil.getClassName;
 
@@ -98,23 +105,50 @@ public class AutoMethod extends AutoLoadBase {
                 // 如果不是常见类型,则从@links{ObjectPool}中获取
                 if(value == null){
                     if(ObjectPool.isEmpty(parametertype)){
-                        throw new Exception("拥有@Run注解的方法,方法入参不能为空.非基础类型,需要添加@Component,才可以自动注入. " +
-                                "方法:" + method.toString() + "别名:" + aliasFor.value());
+                        throw new Exception("拥有@Run注解的方法,方法入参不为空的.非基础类型,需要添加@AliasFor,才可以自动绑定参数. " +
+                                "方法:" + method.toString());
                     }
-                    value = ObjectPool.putObject(parametertype);
+                    value = ObjectPool.getObject(parametertype);
                 }
                 args[argsIndex++] = value;
             }
 
-            // 执行方法
+            // 放在线程中运行
+            if(valuename.sleepTime() > 0){
+                QThreadpool.getInstance().schedule(new Runnable(){
+                    @Override
+                    public void run() {
+                        runMethod(bean, method, params, args);
+                    }
+                }
+                , valuename.sleepTime(), TimeUnit.MILLISECONDS);
+            }
+            else{
+                runMethod(bean, method, params, args);
+            }
+
+        }
+
+        return bean;
+    }
+
+    /**
+     * 运行方法
+     * @param bean     类
+     * @param method  方法
+     * @param params  参数类型
+     * @param args    参数值
+     */
+    private void runMethod( Object bean, Method method, Parameter[] params, Object args[]){
+        try {
             if(params.length == 0){
                 method.invoke(bean);
             }else{
                 method.invoke(bean, args);
             }
-        }
+        }catch (Exception e){
 
-        return bean;
+        }
     }
 
     /**
@@ -146,34 +180,6 @@ public class AutoMethod extends AutoLoadBase {
         }
         return annotation.value();
     }
-//
-//    public static void eachCfg(Class Initclass,String taskType){
-//
-//        Field[] fields = Initclass.getDeclaredFields();   //获取属性
-//        try {
-//            for (Field field : fields) {
-//                field.setAccessible(true);
-//                if(field.getType().toString().endsWith("java.lang.String") && Modifier.isStatic(field.getModifiers())){}
-//             if(field.get(TicketGetKeyPojo.class) == null){
-//              String attrname = field.getName();
-//              attrname = attrname.toLowerCase();
-//              Object [] paras =  {attrname,taskType};
-//          //调用getDeclaredMethod方法时
-//          //参数1：调用改类的方法名称
-//          //参数2：参数列表1中的参数类型
-//          //参数3：参数列表中2的参数类型
-//          //getSimpleName 方法获得不带路径的类名称
-//              Method method = Initclass.getDeclaredMethod("check"+Initclass.getSimpleName(),String.class,String.class);
-//             //invoke方法
-//          //参数1：类的实例方法
-//          //参数2：调用上面的方法的参数值（注意顺序）
-//          method.invoke(Initclass.newInstance(),paras);
-//          }
-//      }
-//        }
-//    } catch (Exception e) {
-//        e.printStackTrace( );
-//    }
-//}
+
 
 }

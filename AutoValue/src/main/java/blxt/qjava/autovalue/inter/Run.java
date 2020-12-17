@@ -17,4 +17,6 @@ import java.lang.annotation.*;
 public @interface Run {
     /** 字符串入参 */
     String value() default "";
+    /** 睡眠运行,毫秒 */
+    int sleepTime() default 0;
 }

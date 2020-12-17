@@ -1,3 +1,4 @@
+import blxt.qjava.utils.Converter;
 import blxt.qjava.utils.check.CheckUtils;
 import org.junit.Test;
 
@@ -13,6 +14,7 @@ public class ConvertTest {
     @Test
     public void test() throws IOException {
         byte[] src = {0x10, 0x76, (byte) 0xFF};
+        byte[] d = Converter.toBytesByFormat("FF", " ");
 
 //        System.out.println(IPTools.getLocalHostIpsIPv4());
 //

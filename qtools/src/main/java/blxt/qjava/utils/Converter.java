@@ -123,12 +123,12 @@ public class Converter {
 
         int index = 0;
         for (String bean : beans) {
-            if (bean != null) {
-
-                bean = bean.trim();
-                if (bean.length() > 0) {
-                    byteNum[index++] = Byte.parseByte(bean, 0x10);
-                }
+            if (bean == null || bean.isEmpty()) {
+                continue;
+            }
+            bean = bean.trim();
+            if (bean.length() > 0) {
+                byteNum[index++] = Byte.parseByte(bean, 0x10);
             }
         }
         return byteNum;
@@ -298,7 +298,7 @@ public class Converter {
      * @param objectclass   要转换的类型,如 String.class Int.class boolean.class
      * @return
      */
-    private Object convertToObject(String str, Class<?> objectclass){
+    private Object toObject(String str, Class<?> objectclass){
         Object value = null;
         if(objectclass == String.class){
             value = str;

@@ -7,16 +7,14 @@
  *   变量注释获取
  *   通过反射设置变量值
  **********************************************************************************************************************/
-package blxt.qjava.autovalue;
+package blxt.qjava.autovalue.autoload;
 
 
-import blxt.qjava.autovalue.interfaces.AutoLoadBase;
+import blxt.qjava.autovalue.inter.*;
 import blxt.qjava.autovalue.util.ConvertTool;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.autovalue.util.PackageUtil;
 import blxt.qjava.properties.PropertiesFactory;
-
-import blxt.qjava.autovalue.inter.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -204,6 +202,7 @@ public class AutoValue extends AutoLoadBase {
 
     /**
      * 获取Properties的key
+     * 由@Value注解和Field名字组成, 自动替换 _ 成 .
      * @param bean    bean类
      * @param field   元素值
      * @return
@@ -226,11 +225,13 @@ public class AutoValue extends AutoLoadBase {
         }
 
         String key = keyBase + keyName;
+
         if(key.isEmpty()){
             return null;
         }
-        else{
-            return key;
+        else{ // 将_替换成.
+           // return key.replaceAll("_", ".");
+            return key.trim();
         }
 
     }
@@ -270,7 +271,7 @@ public class AutoValue extends AutoLoadBase {
             if(isignoreUnknownFields(bean)){
                 return null;
             }
-            throw new Exception("元素的key不存在:" + key + "\r\n路径:" + properties.getPropertiesFile().getPath());
+            throw new Exception("元素的key不存在:" + key + "\r\n路径:" + properties.getPropertiesFile().getAbsolutePath());
         }
 
         value = ConvertTool.convert(properties.getStr(key), field.getType());

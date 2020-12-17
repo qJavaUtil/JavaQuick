@@ -9,16 +9,20 @@ import java.net.*;
  */
 public class QUdpServer implements Runnable{
     /** 数据包最大长度 */
-    private int MAX_LENGTH = 1024;
+    protected int MAX_LENGTH = 1024;
     /** 连接scoket */
-    DatagramSocket socket = null;
+    protected DatagramSocket socket = null;
     /** 监听回调 */
-    QUdpListener listener = null;
+    protected QUdpListener listener = null;
     /** 监听端口 */
-    int port;
+    protected int port;
     /** 暂停标志 */
-    boolean interrupt = false;
+    protected boolean interrupt = false;
 
+
+    public QUdpServer(){
+
+    }
 
     /**
      *
@@ -35,6 +39,15 @@ public class QUdpServer implements Runnable{
      * @return
      */
     public boolean creat(){
+        return creat(port);
+    }
+
+    /**
+     * 创建
+     * @return
+     */
+    public boolean creat(int port){
+        this.port = port;
         if(socket != null){
             return false;
         }
@@ -103,7 +116,7 @@ public class QUdpServer implements Runnable{
                     return;
                 }
                 if(listener != null){
-                    listener.OnUdpReceive(packet.getAddress().getHostAddress(), buffer, packet);
+                    listener.OnUdpReceive(packet);
                 }else{
                     String receStr = new String(packet.getData(), 0 , packet.getLength());
                     System.out.println("接收数据包" + receStr);
@@ -151,6 +164,10 @@ public class QUdpServer implements Runnable{
         this.MAX_LENGTH = MAX_LENGTH;
     }
 
+    public void setPort(int port){
+        this.port = port;
+    }
+
     /**
      * 设置监听回调
      * @param listener
@@ -165,9 +182,8 @@ public class QUdpServer implements Runnable{
     public interface QUdpListener {
         /**
          * 数据接收监听回调
-         * @param ip       客户端ip
-         * @param buffer   客户端数据
+         * @param packet      DatagramPacket包
          */
-        void OnUdpReceive(String ip, byte buffer[], DatagramPacket packet);
+        void OnUdpReceive(DatagramPacket packet);
     }
 }

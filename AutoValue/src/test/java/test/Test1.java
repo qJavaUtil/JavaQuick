@@ -1,12 +1,9 @@
 package test;
 
-import blxt.qjava.autovalue.AutoValue;
-
-
-import blxt.qjava.autovalue.inter.*;
+import blxt.qjava.autovalue.inter.Configuration;
+import blxt.qjava.autovalue.inter.Value;
 import test.util.AppConfiguration;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +12,7 @@ import java.util.List;
  * @Author: Zhang.Jialei
  * @Date: 2020/9/25 16:27
  */
-public class test {
+public class Test1 {
 
     public static void main(String[] args) throws Exception {
 

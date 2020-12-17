@@ -8,10 +8,15 @@ import java.net.*;
  * @Date: 2020/10/20 1:04
  */
 public class QUdpClient {
-    String ip;
-    int port;
+    protected String ip;
+    protected int port;
 
-    private DatagramSocket socket = null;
+    protected DatagramSocket socket = null;
+    InetAddress address = null;
+
+    public QUdpClient(){
+
+    }
 
     /**
      * 设置连接参数
@@ -27,6 +32,27 @@ public class QUdpClient {
      * 连接,获取Socket
      */
     public boolean connect(){
+        try {
+            socket = new DatagramSocket();
+            return true;
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 连接,获取Socket
+     */
+    public boolean connect(String ip, int port){
+
+        try {
+            address = InetAddress.getByName(ip);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return false;
+        }
+        this.port = port;
         try {
             socket = new DatagramSocket();
             return true;
@@ -77,10 +103,14 @@ public class QUdpClient {
     /**
      * 发送byte
      * @param data
-     * @param leng
+     * @param length
      * @return
      */
-    public boolean send(byte data[], int leng){
+    public boolean send(byte[] data, int length){
+        return send( address, port, data, length);
+    }
+
+    public boolean send(String ip, int port, byte[] data, int length){
         InetAddress address = null;
         try {
             address = InetAddress.getByName(ip);
@@ -88,7 +118,11 @@ public class QUdpClient {
             e.printStackTrace();
             return false;
         }
-        DatagramPacket datagramPacket = new DatagramPacket(data, leng, address, port);
+        return send(address, port, data, length);
+    }
+
+    public boolean send(InetAddress address, int port, byte[] data, int length){
+        DatagramPacket datagramPacket = new DatagramPacket(data, length, address, port);
         try {
             socket.send(datagramPacket);
         } catch (IOException e) {
@@ -96,6 +130,5 @@ public class QUdpClient {
         }
         return true;
     }
-
 
 }

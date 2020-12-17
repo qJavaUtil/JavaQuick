@@ -16,6 +16,23 @@ import java.util.jar.JarFile;
  */
 public class PackageUtil {
 
+    /**
+     * 判断摸个类是否集成了指定接口
+     * @param object      需要判断的类
+     * @param interfaces  需要判断的接口
+     * @return
+     */
+    public static boolean isInterfaces(Class<?> object, Class<?> interfaces){
+        //获取这个类的所以接口类数组
+        Class<?>[] interfacesArray = object.getInterfaces();
+        for (Class<?> item : interfacesArray) {
+            //判断是否有继承的接口
+            if (item == interfaces) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * 获取某包下（包括该包的所有子包）所有类
@@ -180,7 +197,7 @@ public class PackageUtil {
         }
         return path.replace("/classes/", "")
                 .replace("/test-classes/", "")
-                .replace("/target", "/src/test");
+                .replace("/target", "/src/main");
     }
 
 }

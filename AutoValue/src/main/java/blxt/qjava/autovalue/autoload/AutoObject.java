@@ -1,16 +1,10 @@
-package blxt.qjava.autovalue;
+package blxt.qjava.autovalue.autoload;
 
 import blxt.qjava.autovalue.inter.Autowired;
-import blxt.qjava.autovalue.inter.Component;
 import blxt.qjava.autovalue.inter.ComponentScan;
-import blxt.qjava.autovalue.interfaces.AutoLoadBase;
 import blxt.qjava.autovalue.util.ObjectPool;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.List;
-
-import static blxt.qjava.autovalue.util.PackageUtil.getClassName;
 
 /**
  * 自动装载对象

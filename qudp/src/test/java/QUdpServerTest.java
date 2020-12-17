@@ -12,8 +12,8 @@ public class QUdpServerTest{
 
         QUdpServer Q = new QUdpServer( 8088, new QUdpServer.QUdpListener(){
             @Override
-            public void OnUdpReceive(String ip, byte[] buffer, DatagramPacket packet) {
-                System.out.println("收到消息,来自" + ip);
+            public void OnUdpReceive(DatagramPacket packet) {
+                System.out.println("收到消息,来自" + packet.getAddress().getHostAddress());
                 // TODO 这对 buffer 进行解析
             }
         });

@@ -58,13 +58,13 @@ public class AutowireTest{
 
 package test.util;
 
-import blxt.qjava.autovalue.inter.*;
+import blxt.qjava.blxt.qjava.autovalue.inter.*;
 
 /***
  * 插件通用配置
  * @author 张家磊
  */
-//@Configuration("../src/test.test/resources/application.properties")
+//@Configuration("../src/test.Test1/resources/application.properties")
 @Configuration
 @Component()
 public class AppConfiguration   {
@@ -95,7 +95,7 @@ public class AppConfiguration   {
 
     @Override
     public String toString() {
-        return "test.test.util.AppConfiguration{" +
+        return "test.Test1.util.AppConfiguration{" +
                 "string_t='" + string_t + '\'' +
                 ", int_t=" + int_t +
                 ", float_t=" + float_t +
@@ -112,8 +112,8 @@ public class AppConfiguration   {
 ```java
 package test.util;
 
-import blxt.qjava.autovalue.inter.Autowired;
-import blxt.qjava.autovalue.inter.Component;
+import blxt.qjava.blxt.qjava.autovalue.inter.Autowired;
+import blxt.qjava.blxt.qjava.autovalue.inter.Component;
 
 /**
  * @Author: Zhang.Jialei
@@ -140,7 +140,7 @@ public class Bean1 {
 ```java
 package test.util;
  
-import blxt.qjava.autovalue.inter.Component;
+import blxt.qjava.blxt.qjava.autovalue.inter.Component;
 
 /**
  * @Author: Zhang.Jialei
@@ -165,8 +165,8 @@ public class Bean2 {
 ```java
 package test.util;
 
-import blxt.qjava.autovalue.inter.Autowired;
-import blxt.qjava.autovalue.inter.Component;
+import blxt.qjava.blxt.qjava.autovalue.inter.Autowired;
+import blxt.qjava.blxt.qjava.autovalue.inter.Component;
 
 /**
  * @Author: Zhang.Jialei
