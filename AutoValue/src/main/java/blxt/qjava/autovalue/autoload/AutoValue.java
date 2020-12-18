@@ -12,7 +12,6 @@ package blxt.qjava.autovalue.autoload;
 
 import blxt.qjava.autovalue.inter.*;
 import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
-import blxt.qjava.autovalue.inter.network.UdpListener;
 import blxt.qjava.autovalue.util.ConvertTool;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.autovalue.util.PackageUtil;
@@ -21,11 +20,7 @@ import blxt.qjava.properties.PropertiesFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.List;
-
-import static blxt.qjava.autovalue.util.PackageUtil.getClassName;
 
 /**
  * 自动装载属性
@@ -33,7 +28,7 @@ import static blxt.qjava.autovalue.util.PackageUtil.getClassName;
  * @Author: Zhang.Jialei
  * @Date: 2020/9/28 17:26
  */
-@AutoLoadFactory(annotation = Component.class, priority = 1)
+@AutoLoadFactory(annotation = Configuration.class, priority = 1)
 public class AutoValue extends AutoLoadBase {
     /**
      * 项目起始类
@@ -78,7 +73,7 @@ public class AutoValue extends AutoLoadBase {
      * @throws IOException
      */
     @Override
-    public void init(Class<?> rootClass) throws Exception {
+    public void init(Class<?> rootClass) {
         if (AutoValue.rootClass != null) {
             return;
         }
@@ -90,7 +85,11 @@ public class AutoValue extends AutoLoadBase {
             for (String path : propertiesFileScanPath) {
                 File file = new File(appPath + File.separator + path);
                 if (file.exists()) {
-                    propertiesFactory = new PropertiesFactory(file);
+                    try {
+                        propertiesFactory = new PropertiesFactory(file);
+                    } catch (IOException e) {
+                        continue;
+                    }
                     System.out.println("AutoValue 默认配置文件:" + file.getPath());
                     break;
                 }
@@ -98,34 +97,6 @@ public class AutoValue extends AutoLoadBase {
         }
         if (propertiesFactory == null) {
             System.out.println("AutoValue 没有找到配置文件:" + PackageUtil.getPath(rootClass));
-        }
-    }
-
-    /**
-     * 包扫描,扫描Configuration注解
-     * @param packageName     要扫描的包路径
-     * @throws Exception
-     */
-    @Override
-    public void scan(String packageName) throws Exception {
-        List<String> classNames = getClassName(packageName, true);
-        if (classNames != null) {
-            for (String className : classNames) {
-                // 过滤测试类
-                if (className.indexOf("test-classes") > 0) {
-                    className = className.substring(className.indexOf("test-classes") + 13);
-                }
-
-                Class<?> objClass = Class.forName(className);
-                Annotation classAnnotation = objClass.getAnnotation(Configuration.class);
-                if (classAnnotation == null) {
-                    continue;
-                }
-                inject(objClass);
-            }
-        }
-        if (isDebug) {
-            System.out.println("AutoValue 执行完成");
         }
     }
 

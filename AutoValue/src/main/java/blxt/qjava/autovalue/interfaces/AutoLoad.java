@@ -8,11 +8,6 @@ package blxt.qjava.autovalue.interfaces;
 public interface AutoLoad {
 
     /**
-     * 注解初始化
-     * */
-    void init(Class<?> rootClass) throws Exception;
-
-    /**
      * 注解包扫描
      * @param packageName  扫描包路径
      * @throws Exception

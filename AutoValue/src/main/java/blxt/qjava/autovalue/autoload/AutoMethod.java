@@ -9,14 +9,11 @@ import blxt.qjava.autovalue.util.ConvertTool;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.autovalue.util.QThreadpool;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static blxt.qjava.autovalue.util.PackageUtil.getClassName;
 
 /**
  * @Author: Zhang.Jialei
@@ -25,37 +22,6 @@ import static blxt.qjava.autovalue.util.PackageUtil.getClassName;
 @AutoLoadFactory(annotation = Component.class, priority = 5)
 public class AutoMethod extends AutoLoadBase {
 
-    @Override
-    public void init(Class<?> rootClass) throws Exception {
-
-    }
-
-    /**
-     * 包扫描, 对有Component注释的类, 自动实现 autoWired注解
-     * @param packageName  要扫描的包名
-     */
-    @Override
-    public void scan(String packageName) throws Exception {
-        List<String> classNames = getClassName(packageName, true);
-        if (classNames != null) {
-            for (String className : classNames) {
-                // 过滤测试类
-                if(className.indexOf("test-classes") > 0){
-                    className = className.substring(className.indexOf("test-classes") + 13);
-                }
-
-                Class<?>  objClass = Class.forName(className);
-                Annotation classAnnotation = objClass.getAnnotation(Component.class);
-                if(classAnnotation == null){
-                    continue;
-                }
-                inject(objClass);
-            }
-        }
-        if (isDebug) {
-            System.out.println("AutoMethod 执行完成");
-        }
-    }
 
     /**
      * 注入

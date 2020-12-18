@@ -21,35 +21,6 @@ import static blxt.qjava.autovalue.util.PackageUtil.getClassName;
 public class AutoUdpServer extends AutoLoadBase{
 
 
-    @Override
-    public void init(Class<?> object) throws Exception {
-
-    }
-
-    /**
-     * 包扫描,扫描Configuration注解
-     * @param packageName     要扫描的包路径
-     * @throws Exception
-     */
-    @Override
-    public void scan(String packageName) throws Exception {
-        List<String> classNames = getClassName(packageName, true);
-        if (classNames != null) {
-            for (String className : classNames) {
-                // 过滤测试类
-                if (className.indexOf("test-classes") > 0) {
-                    className = className.substring(className.indexOf("test-classes") + 13);
-                }
-
-                Class<?> objClass = Class.forName(className);
-                Annotation classAnnotation = objClass.getAnnotation(UdpListener.class);
-                if (classAnnotation == null) {
-                    continue;
-                }
-                inject(objClass);
-            }
-        }
-    }
 
     @Override
     public Object inject(Class<?> object) throws Exception {

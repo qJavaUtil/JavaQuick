@@ -84,10 +84,13 @@ public class QJavaApplication {
                     if (annotation == null) {
                         continue;
                     }
-                    Class<? extends Annotation > a = annotation.annotation();
 
                     AutoLoadBase bean = (AutoLoadBase) objClass.newInstance();
+                    // 设置优先级
                     bean.setPriority(annotation.priority());
+                    // 设置类注解扫描
+                    bean.setAnnotation(annotation.annotation());
+
                     autoLoads.add(bean);
                 } catch (ClassNotFoundException
                         | InstantiationException

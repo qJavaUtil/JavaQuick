@@ -1,7 +1,6 @@
 package blxt.qjava.autovalue.autoload;
 
 
-import blxt.qjava.autovalue.inter.Component;
 import blxt.qjava.autovalue.inter.ComponentScan;
 import blxt.qjava.autovalue.interfaces.AutoLoad;
 import blxt.qjava.autovalue.util.PackageUtil;
@@ -23,6 +22,15 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
     int priority = 10;
     /** 扫描类注解 */
     Class<? extends Annotation > annotation;
+
+
+    /**
+     * 注解初始化
+     * */
+    public void init(Class<?> rootClass){
+
+    }
+
 
     /**
      * Component扫描,实现 @Autowired
@@ -66,7 +74,7 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
                 }
 
                 Class<?>  objClass = Class.forName(className);
-                Annotation classAnnotation = objClass.getAnnotation(Component.class);
+                Annotation classAnnotation = objClass.getAnnotation(annotation);
                 if(classAnnotation == null){
                     continue;
                 }

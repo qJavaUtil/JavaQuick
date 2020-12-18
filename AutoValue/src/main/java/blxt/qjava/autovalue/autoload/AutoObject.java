@@ -16,12 +16,6 @@ import java.lang.reflect.Field;
 @AutoLoadFactory(annotation = Component.class, priority = 2)
 public class AutoObject extends AutoLoadBase {
 
-
-    @Override
-    public void init(Class<?> rootClass) throws Exception {
-
-    }
-
     /**
      * Autowired 注解注册
      *
