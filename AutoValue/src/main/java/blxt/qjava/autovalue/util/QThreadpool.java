@@ -2,6 +2,8 @@ package blxt.qjava.autovalue.util;
 
 import blxt.qjava.autovalue.inter.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -34,6 +36,10 @@ public class QThreadpool {
     @Value("thread.rejected")
     public String rejected;
 
+    /** 线程池工厂 */
+    @Value("thread.threadfactory")
+    public String threadFactory;
+
     /**
      * 并发型线程池
      */
@@ -43,46 +49,96 @@ public class QThreadpool {
      */
     ScheduledExecutorService timePool = null;
 
-    /** 默认线程工厂 */
-    public static ThreadFactory defaultThreadFactory = new DefaultThreadFactory();;
+    /** 拒绝策略 */
+    static Map<String, RejectedExecutionHandler> rejectedList = new HashMap<>();
+
+    static {
+        rejectedList.put("abortpolicy", new ThreadPoolExecutor.AbortPolicy());
+        rejectedList.put("abort", new ThreadPoolExecutor.AbortPolicy());
+        rejectedList.put("callerruns", new ThreadPoolExecutor.CallerRunsPolicy());
+        rejectedList.put("CallerRunsPolicy", new ThreadPoolExecutor.CallerRunsPolicy());
+        rejectedList.put("discard", new ThreadPoolExecutor.DiscardPolicy());
+        rejectedList.put("discardpolicy", new ThreadPoolExecutor.DiscardPolicy());
+        rejectedList.put("discardoldest", new ThreadPoolExecutor.DiscardOldestPolicy());
+        rejectedList.put("discardoldestpolicy", new ThreadPoolExecutor.DiscardOldestPolicy());
+    }
 
 
     public static QThreadpool getInstance(){
-        return (QThreadpool)ObjectPool.getObject(QThreadpool.class);
+        if(ObjectPool.isEmpty(QThreadpool.class)){
+            ObjectPool.putObject(QThreadpool.class);
+            instance = (QThreadpool)ObjectPool.getObject(QThreadpool.class);
+            instance.init();
+        }
+        else {
+            instance = (QThreadpool) ObjectPool.getObject(QThreadpool.class);
+        }
+        return instance;
     }
 
 
     public QThreadpool(){
-
+      //  init();
     }
 
     @Run
     public void init(){
-        RejectedExecutionHandler handler = null;
-        if(rejected == null){
-            handler = new ThreadPoolExecutor.AbortPolicy();
-        }
-        rejected = rejected.toUpperCase();
-        if(rejected.equals("ABORTPOLICY")){
-            handler = new ThreadPoolExecutor.AbortPolicy();
-        } else if(rejected.equals("DISCARDOLDESTPOLICY")){
-            handler = new ThreadPoolExecutor.DiscardOldestPolicy();
-        } else if(rejected.equals("DiscardPolicy")){
-            handler = new ThreadPoolExecutor.DiscardPolicy();
-        } else if(rejected.equals("CALLERRUNSPOLICY")){
-            handler = new ThreadPoolExecutor.CallerRunsPolicy();
-        }
-        else{
-            handler = new ThreadPoolExecutor.AbortPolicy();
-        }
+        RejectedExecutionHandler handler = getRejectedExecutionHandler(rejected);
+        ThreadFactory defaultThreadFactory = getThreadFactory(threadFactory);
 
         pool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(),
                 defaultThreadFactory, handler);
 
         timePool = Executors.newScheduledThreadPool(corePoolSize, defaultThreadFactory);
+
+        System.out.println(toString());
     }
 
+    /**
+     * 获取线程工厂
+     * @param threadFactory
+     * @return
+     */
+    private ThreadFactory getThreadFactory(String threadFactory){
+        ThreadFactory defaultThreadFactory = new DefaultThreadFactory();
+
+        if(threadFactory != null && !threadFactory.isEmpty()){
+            try {
+                Class threadFactoryClass = Class.forName(threadFactory);
+                threadFactoryClass.newInstance();
+            } catch (Exception e) {
+                System.err.println("线程工厂加载失败,请设置入参为空的的公开构造方法." + threadFactory);
+            }
+        }
+
+        return defaultThreadFactory;
+    }
+
+    /**
+     * 获取拒绝策略
+     * @param rejected
+     * @return
+     */
+    private RejectedExecutionHandler getRejectedExecutionHandler(String rejected){
+        RejectedExecutionHandler handler = new ThreadPoolExecutor.AbortPolicy();
+        if(rejected == null){
+            return handler;
+        }
+        rejected = rejected.toLowerCase();
+
+        for(Map.Entry<String, RejectedExecutionHandler> entry : rejectedList.entrySet()){
+            String mapKey = entry.getKey();
+            if(rejected.equals(mapKey)){
+                handler = entry.getValue();
+                return handler;
+            }
+        }
+
+        return handler;
+    }
+
+    /** 执行线程 */
     public void execute(Runnable runnable){
         pool.execute(runnable);
     }
@@ -146,11 +202,21 @@ public class QThreadpool {
     }
 
 
+    @Override
+    public String toString() {
+        return "QThreadpool{" +
+                "corePoolSize=" + corePoolSize +
+                ", maximumPoolSize=" + maximumPoolSize +
+                ", keepAliveTime=" + keepAliveTime +
+                ", rejected='" + rejected + '\'' +
+                ", threadFactory='" + threadFactory + '\'' +
+                '}';
+    }
 
     /**
      * 默认的线程工厂
      */
-    private static class DefaultThreadFactory implements ThreadFactory {
+    public static class DefaultThreadFactory implements ThreadFactory {
         private static final AtomicInteger poolNumber = new AtomicInteger(1);
         private final ThreadGroup group;
         private final AtomicInteger threadNumber = new AtomicInteger(1);

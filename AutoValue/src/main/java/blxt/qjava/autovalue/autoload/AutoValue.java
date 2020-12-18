@@ -11,6 +11,8 @@ package blxt.qjava.autovalue.autoload;
 
 
 import blxt.qjava.autovalue.inter.*;
+import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
+import blxt.qjava.autovalue.inter.network.UdpListener;
 import blxt.qjava.autovalue.util.ConvertTool;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.autovalue.util.PackageUtil;
@@ -18,6 +20,7 @@ import blxt.qjava.properties.PropertiesFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -30,6 +33,7 @@ import static blxt.qjava.autovalue.util.PackageUtil.getClassName;
  * @Author: Zhang.Jialei
  * @Date: 2020/9/28 17:26
  */
+@AutoLoadFactory(annotation = Component.class, priority = 1)
 public class AutoValue extends AutoLoadBase {
     /**
      * 项目起始类
@@ -43,7 +47,7 @@ public class AutoValue extends AutoLoadBase {
     /**
      * 默认配置文件
      */
-    private static String filePath[] = new String[]{
+    private final static String propertiesFileScanPath[] = new String[]{
             "./resources/config/application.properties",
             "./config/application.properties",
             "./resources/application.properties",
@@ -51,6 +55,22 @@ public class AutoValue extends AutoLoadBase {
             "../application.properties",
             "../../application.properties",
             "../../../application.properties"};
+
+
+    /**
+     * 设置默认配置文件.这里直接指定InputStream,方便android等不同文件系统的向使用
+     * @param inputStream  文件流
+     * @param codeing      文件编码
+     * @return
+     */
+    public static boolean setPropertiesFile(InputStream inputStream,  String codeing){
+        try {
+            propertiesFactory = new PropertiesFactory(inputStream, codeing);
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
 
     /***
      * 自动属性初始化
@@ -63,13 +83,17 @@ public class AutoValue extends AutoLoadBase {
             return;
         }
         AutoValue.rootClass = rootClass;
-        String appPath = PackageUtil.getPath(rootClass);
-        for (String path : filePath) {
-            File file = new File(appPath + File.separator + path);
-            if (file.exists()) {
-                propertiesFactory = new PropertiesFactory(file);
-                System.out.println("AutoValue 默认配置文件:" + file.getPath());
-                break;
+
+        // 扫描默认的配置文件
+        if(propertiesFactory == null){
+            String appPath = PackageUtil.getPath(rootClass);
+            for (String path : propertiesFileScanPath) {
+                File file = new File(appPath + File.separator + path);
+                if (file.exists()) {
+                    propertiesFactory = new PropertiesFactory(file);
+                    System.out.println("AutoValue 默认配置文件:" + file.getPath());
+                    break;
+                }
             }
         }
         if (propertiesFactory == null) {
@@ -99,6 +123,9 @@ public class AutoValue extends AutoLoadBase {
                 }
                 inject(objClass);
             }
+        }
+        if (isDebug) {
+            System.out.println("AutoValue 执行完成");
         }
     }
 

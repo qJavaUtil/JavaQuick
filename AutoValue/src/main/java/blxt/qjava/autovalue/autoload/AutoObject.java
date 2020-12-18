@@ -1,7 +1,9 @@
 package blxt.qjava.autovalue.autoload;
 
 import blxt.qjava.autovalue.inter.Autowired;
+import blxt.qjava.autovalue.inter.Component;
 import blxt.qjava.autovalue.inter.ComponentScan;
+import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
 import blxt.qjava.autovalue.util.ObjectPool;
 
 import java.lang.reflect.Field;
@@ -11,6 +13,7 @@ import java.lang.reflect.Field;
  * @Author: Zhang.Jialei
  * @Date: 2020/12/4 12:34
  */
+@AutoLoadFactory(annotation = Component.class, priority = 2)
 public class AutoObject extends AutoLoadBase {
 
 

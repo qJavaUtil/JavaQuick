@@ -15,8 +15,14 @@ import java.util.List;
  * @Author: Zhang.Jialei
  * @Date: 2020/12/7 13:53
  */
-public abstract class AutoLoadBase implements AutoLoad {
+public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>{
 
+    public static boolean isDebug = false;
+
+    /** 优先级 */
+    int priority = 10;
+    /** 扫描类注解 */
+    Class<? extends Annotation > annotation;
 
     /**
      * Component扫描,实现 @Autowired
@@ -100,5 +106,26 @@ public abstract class AutoLoadBase implements AutoLoad {
         return annotation.value();
     }
 
+
+    public void setPriority(int priority){
+        this.priority = priority;
+    }
+    public int getPriority(){
+        return priority;
+    }
+
+    public Class<? extends Annotation> getAnnotation() {
+        return annotation;
+    }
+
+    public void setAnnotation(Class<? extends Annotation> annotation) {
+        this.annotation = annotation;
+    }
+
+    @Override
+    public int compareTo(AutoLoadBase bean) {
+        // 根据优先级升序, 自动加载是,从第优先级开始加载
+        return this.priority - bean.getPriority();
+    }
 
 }

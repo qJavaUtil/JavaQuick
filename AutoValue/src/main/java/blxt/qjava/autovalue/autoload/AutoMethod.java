@@ -4,6 +4,7 @@ import blxt.qjava.autovalue.inter.AliasFor;
 import blxt.qjava.autovalue.inter.Component;
 import blxt.qjava.autovalue.inter.ComponentScan;
 import blxt.qjava.autovalue.inter.Run;
+import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
 import blxt.qjava.autovalue.util.ConvertTool;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.autovalue.util.QThreadpool;
@@ -13,8 +14,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static blxt.qjava.autovalue.util.PackageUtil.getClassName;
@@ -23,6 +22,7 @@ import static blxt.qjava.autovalue.util.PackageUtil.getClassName;
  * @Author: Zhang.Jialei
  * @Date: 2020/12/8 13:37
  */
+@AutoLoadFactory(annotation = Component.class, priority = 5)
 public class AutoMethod extends AutoLoadBase {
 
     @Override
@@ -51,6 +51,9 @@ public class AutoMethod extends AutoLoadBase {
                 }
                 inject(objClass);
             }
+        }
+        if (isDebug) {
+            System.out.println("AutoMethod 执行完成");
         }
     }
 

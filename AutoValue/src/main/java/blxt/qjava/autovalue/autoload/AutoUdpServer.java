@@ -1,7 +1,7 @@
 package blxt.qjava.autovalue.autoload;
 
-import blxt.qjava.autovalue.inter.Configuration;
-import blxt.qjava.autovalue.inter.PropertySource;
+import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
+import blxt.qjava.autovalue.inter.network.UdpClient;
 import blxt.qjava.autovalue.inter.network.UdpListener;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.autovalue.util.PackageUtil;
@@ -17,6 +17,7 @@ import static blxt.qjava.autovalue.util.PackageUtil.getClassName;
  * @Author: Zhang.Jialei
  * @Date: 2020/12/17 21:18
  */
+@AutoLoadFactory(annotation = UdpListener.class, priority = 20)
 public class AutoUdpServer extends AutoLoadBase{
 
 

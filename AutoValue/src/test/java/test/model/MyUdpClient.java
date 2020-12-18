@@ -14,10 +14,10 @@ import blxt.qjava.qudp.QUdpClient;
 @UdpClient(hostIp = "169.254.18.153", port = 8081)
 public class MyUdpClient extends QUdpClient{
 
-    @Run(value = "msg=你好", sleepTime = 1000)
+    @Run(value = "msg=你好", sleepTime = 100)
     public void init(@AliasFor("msg") String msg){
 
-        System.out.println("发送:" + msg);
+        System.out.println("自动发送:" + msg);
         send(msg);
     }
 }

@@ -12,16 +12,22 @@ public class PropertiesFactory extends Properties {
     File propertiesFile;
 
     public PropertiesFactory(File file) throws IOException {
-        this(file, "utf-8");
+        this(new FileInputStream(file), "utf-8");
     }
 
     public PropertiesFactory(File file, String codeing) throws IOException {
-        checkNotNull(file, "包含属性的文件不能为空");
+        this(new FileInputStream(file), codeing);
         propertiesFile = file;
+    }
 
-        InputStream stream = new FileInputStream(file);
-        InputStreamReader reader = new InputStreamReader(stream, codeing);
+    public PropertiesFactory(InputStream inputStream, String codeing) throws IOException {
+        checkNotNull(inputStream, "包含属性的文件不能为空");
+        InputStreamReader reader = new InputStreamReader(inputStream, codeing);
         load(reader);
+
+        if(propertiesFile == null){
+            propertiesFile = new File("InputStream输入,路径未知");
+        }
     }
 
     public File getPropertiesFile() {
