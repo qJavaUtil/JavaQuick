@@ -9,6 +9,7 @@ import blxt.qjava.autovalue.util.ConvertTool;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.autovalue.util.QThreadpool;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
@@ -52,33 +53,10 @@ public class AutoMethod extends AutoLoadBase {
             int argsIndex = 0;
             // 遍历解析参数,进行注入
             for (Parameter parameter : params) {
+                // 参数类型
                 Class<?> parametertype = parameter.getType();
-                Object value = null;
-
-                // 参数别名,从参数池中,获取参数
-                AliasFor aliasFor = parameter.getAnnotation(AliasFor.class);
-                if(aliasFor != null){
-                    String alias = aliasFor.value().trim();
-                    String paramValueStr = null;
-                    if(!alias.isEmpty()){
-                        paramValueStr = argsMap.get(aliasFor.value());
-                    }
-                    // 这里处理常见类型,由字符串转换int,float等类型
-                    if(paramValueStr == null){
-                       throw new Exception("拥有@Run注解的方法,方法入参不能为空.可以通过@AliasFor注解添加,或者添加@Component,自动注入. " +
-                                           "方法:" + method.toString() + "别名:" + aliasFor.value());
-                    }
-                    value = ConvertTool.convert(paramValueStr, parametertype);
-                }
-
-                // 如果不是常见类型,则从@links{ObjectPool}中获取
-                if(value == null){
-                    if(ObjectPool.isEmpty(parametertype)){
-                        throw new Exception("拥有@Run注解的方法,方法入参不为空的.非基础类型,需要添加@AliasFor,才可以自动绑定参数. " +
-                                "方法:" + method.toString());
-                    }
-                    value = ObjectPool.getObject(parametertype);
-                }
+                // 获取参数值
+                Object value = getParameterValue(bean, method, parameter, argsMap, parametertype);
                 args[argsIndex++] = value;
             }
 
@@ -100,6 +78,75 @@ public class AutoMethod extends AutoLoadBase {
 
         return bean;
     }
+
+    /**
+     * 获取入参变量值
+     * 支持常见类型,自定义类和内部变量
+     * @param bean
+     * @param method
+     * @param parameter
+     * @param argsMap
+     * @param parametertype
+     * @return
+     * @throws Exception
+     */
+    public Object getParameterValue(Object bean, Method method,Parameter parameter,
+                                    HashMap<String, String> argsMap, Class<?> parametertype ) throws Exception {
+        Object value = null;
+        // 参数别名,从参数池中,获取参数
+        AliasFor aliasFor = parameter.getAnnotation(AliasFor.class);
+        if(aliasFor != null){
+            String alias = aliasFor.value().trim();
+            String paramValueStr = null;
+            if(!alias.isEmpty()){
+                // 以$开头的,则从类的属性里面获取.属性可以加@value,实现配置动态加载
+                if(alias.startsWith("$"))
+                {
+                    alias = alias.substring(1);
+                    Field[] fields = bean.getClass().getDeclaredFields();
+                    for(Field field : fields){
+                        if(field.getType() != parametertype){
+                            throw new Exception(String.format("@AliasFor注解的变量:($%s)和内部参数类型不一致,请检查. 方法:%s, 变量别名:%s",
+                                    alias, method.toString(), aliasFor.value()));
+                        }
+                        if(alias.equals(field.getName())){
+                            //打开私有访问
+                            boolean accessFlag = field.isAccessible();
+                            field.setAccessible(true);
+                            //获取属性值
+                            value = field.get(bean);
+                            field.setAccessible(accessFlag);
+                            break;
+                        }
+                    }
+                }
+                // 从变量集合里面获取
+                else{
+                    paramValueStr = argsMap.get(aliasFor.value());
+                }
+            }
+            if(value == null){
+                // 这里处理常见类型,由字符串转换int,float等类型
+                if(paramValueStr == null){
+                    throw new Exception("拥有@Run注解的方法,方法入参不能为空.可以通过@AliasFor注解添加,或者添加@Component,自动注入. " +
+                            "方法:" + method.toString() + "别名:" + aliasFor.value());
+                }
+                value = ConvertTool.convert(paramValueStr, parametertype);
+            }
+        }
+
+        // 如果不是常见类型,则从@links{ObjectPool}中获取
+        if(value == null){
+            if(ObjectPool.isEmpty(parametertype)){
+                throw new Exception("拥有@Run注解的方法,方法入参不为空的.非基础类型,需要添加@AliasFor,才可以自动绑定参数. " +
+                        "方法:" + method.toString());
+            }
+            value = ObjectPool.getObject(parametertype);
+        }
+
+        return value;
+    }
+
 
     /**
      * 运行方法

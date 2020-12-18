@@ -21,6 +21,7 @@
         <module>qopencv</module>
         <module>AutoValue</module>
         <module>qFrame</module>
+        <module>qjavaTx</module>
     </modules>
 
     <properties>

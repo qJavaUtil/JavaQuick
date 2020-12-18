@@ -31,7 +31,7 @@ public class AppConfiguration   {
 
     @Run("value1str=hellow, value2=123")
     public void init(@AliasFor(value="value1str")String value1, @AliasFor(value="value2") int value2, Bean1 bean1){
-        System.out.println("@Run 自动运行1");
+        System.out.println("@Run 自动运行1" + value1 + "--" +  bean1);
     }
 
     @Run()
