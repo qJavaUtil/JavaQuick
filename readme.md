@@ -14,11 +14,13 @@
 * 支持 @Autowired() 
 * 支持 @Run() 自动运行方法 
 
+ 
 基本用法和spring-boot里一样,具体使用见下文的使用步骤,
 更详细的,可以看test源码。
 
 ## 运行步骤 
 
+0. 如果是在android平台运行,行先指定配置文件路径:AutoValue.setPropertiesFile(inputStream), "utf-8");
 1. 先扫描@Configuration, 装载配置, @Value()
 2. 再扫描@Component(), 实现@Autowired(), 装载实体类 
 3. 再重复扫描@Component(), 实现@Run(), 运行初始方法 
@@ -33,7 +35,12 @@
 public class AutowireTest{
 
     public static void main(String[] args) throws Exception {
-
+       
+        // 在android中,可以使用指定的配置文件 ,使用文件流, 便于适配不同文件系统
+        //FileInputStream inputStream = new FileInputStream(new File("E:\\Documents\\workspace\\java\\Stpringcloud\\" +
+        //              "JavaQuick\\AutoValue\\src\\main\\resources/application2.properties"));
+        //AutoValue.setPropertiesFile(inputStream), "utf-8");
+ 
         // 方式1 由框架自动加载
         QJavaApplication.run(AutowireTest.class);
 
