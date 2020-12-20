@@ -44,6 +44,14 @@
             </plugin>
         </plugins>
     </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.blxt</groupId>
+            <artifactId>auto-value</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
     <distributionManagement>
         <repository>

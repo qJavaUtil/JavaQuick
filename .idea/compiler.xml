@@ -14,10 +14,14 @@
         <module name="qudp" />
         <module name="qhttpserver" />
         <module name="AutoValue" />
-        <module name="qlog" />
-        <module name="qtools" />
         <module name="qproperties" />
+        <module name="qtools" />
+        <module name="qjavaTx" />
+        <module name="qlog" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Demo" target="8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

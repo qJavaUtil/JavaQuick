@@ -2,7 +2,6 @@ package blxt.qjava.autovalue.autoload;
 
 import blxt.qjava.autovalue.inter.Autowired;
 import blxt.qjava.autovalue.inter.Component;
-import blxt.qjava.autovalue.inter.ComponentScan;
 import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
 import blxt.qjava.autovalue.util.ObjectPool;
 
@@ -13,7 +12,7 @@ import java.lang.reflect.Field;
  * @Author: Zhang.Jialei
  * @Date: 2020/12/4 12:34
  */
-@AutoLoadFactory(annotation = Component.class, priority = 2)
+@AutoLoadFactory(name="AutoObject", annotation = Component.class, priority = 2)
 public class AutoObject extends AutoLoadBase {
 
     /**
@@ -87,20 +86,5 @@ public class AutoObject extends AutoLoadBase {
         return  ObjectPool.putObject(object);
     }
 
-
-    /**
-     * 获取启动类的ComponentScan注解路径
-     *
-     * @param objClass 要扫描的包路径
-     * @throws Exception
-     */
-    @Override
-    public String getScanPackageName(Class<?> objClass) {
-        ComponentScan annotation = objClass.getAnnotation(ComponentScan.class);
-        if (annotation == null) {
-            return null;
-        }
-        return annotation.value();
-    }
 
 }

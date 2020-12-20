@@ -28,7 +28,7 @@ import java.lang.reflect.Field;
  * @Author: Zhang.Jialei
  * @Date: 2020/9/28 17:26
  */
-@AutoLoadFactory(annotation = Configuration.class, priority = 1)
+//@AutoLoadFactory(name="AutoValue", annotation = Configuration.class, priority = 1)
 public class AutoValue extends AutoLoadBase {
     /**
      * 项目起始类
@@ -82,24 +82,34 @@ public class AutoValue extends AutoLoadBase {
         // 扫描默认的配置文件
         if(propertiesFactory == null){
             String appPath = PackageUtil.getPath(rootClass);
-            for (String path : propertiesFileScanPath) {
-                File file = new File(appPath + File.separator + path);
-                if (file.exists()) {
-                    try {
-                        propertiesFactory = new PropertiesFactory(file);
-                    } catch (IOException e) {
-                        continue;
-                    }
-                    System.out.println("AutoValue 默认配置文件:" + file.getPath());
-                    break;
-                }
-            }
+            propertiesFactory = scanPropertiesFile(appPath);
         }
         if (propertiesFactory == null) {
             System.out.println("AutoValue 没有找到配置文件:" + PackageUtil.getPath(rootClass));
         }
+        else{
+            System.out.println("AutoValue 默认配置文件:" + propertiesFactory.getPropertiesFile().getAbsolutePath());
+        }
     }
 
+    /**
+     * 扫描配置文件
+     * @param rootPath 项目根路径
+     * @return
+     */
+    public static PropertiesFactory scanPropertiesFile(String rootPath){
+        for (String path : propertiesFileScanPath) {
+            File file = new File(rootPath + File.separator + path);
+            if (file.exists()) {
+                try {
+                    return new PropertiesFactory(file);
+                } catch (IOException e) {
+                    continue;
+                }
+            }
+        }
+        return null;
+    }
 
     @Override
     public Object inject(Class<?> objClass) throws Exception {
@@ -113,7 +123,7 @@ public class AutoValue extends AutoLoadBase {
      *
      * @param bean
      */
-    public void autoVariable(Object bean) throws Exception {
+    public void autoVariable(Object bean) {
         PropertiesFactory properties = propertiesFactory;
         String classPath = PackageUtil.getPath(rootClass);
 
@@ -124,11 +134,16 @@ public class AutoValue extends AutoLoadBase {
             String propertieCode = anno.encoding();
             if (!propertiePath.trim().isEmpty()) {
                 // 如果文件路径是以 . 开头的,那么认为这是相对路径
+                File file = null;
                 if (propertiePath.startsWith(".")) {
-                    properties = new PropertiesFactory(new File(classPath + File.separator + propertiePath),
-                            propertieCode);
+                    file = new File(classPath + File.separator + propertiePath);
                 } else {
-                    properties = new PropertiesFactory(new File(propertiePath), propertieCode);
+                    file = new File(propertiePath);
+                }
+                try {
+                    properties = new PropertiesFactory(file, propertieCode);
+                }catch (Exception e){
+                    System.err.println("配置文件找不到:" + file.getAbsolutePath());
                 }
             }
         }
@@ -138,7 +153,7 @@ public class AutoValue extends AutoLoadBase {
     }
 
     /**
-     * 自动 获取变量名
+     * 自动 获取变量名f
      *
      * @param bean
      * @param directory 目录
@@ -163,7 +178,7 @@ public class AutoValue extends AutoLoadBase {
      * @throws IllegalAccessException
      * @throws IOException
      */
-    public void autoVariable(Object bean, PropertiesFactory properties) throws Exception {
+    public void autoVariable(Object bean, PropertiesFactory properties) {
         // 获取f对象对应类中的所有属性域
         Field[] fields = bean.getClass().getDeclaredFields();
 
@@ -189,7 +204,11 @@ public class AutoValue extends AutoLoadBase {
             Object value = getPropertiesValue(valuenameKey, properties, bean, field);
 
             if (value != null) {
-                field.set(bean, value);
+                try {
+                    field.set(bean, value);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
 
             // 恢复访问控制权限
@@ -259,7 +278,7 @@ public class AutoValue extends AutoLoadBase {
      * @throws Exception
      */
     private Object getPropertiesValue(String key, PropertiesFactory properties,
-                                      Object bean, Field field) throws Exception{
+                                      Object bean, Field field){
         // 属性值
         Object value = null;
         String fieldType = field.getGenericType().toString();
@@ -269,28 +288,12 @@ public class AutoValue extends AutoLoadBase {
             if(isignoreUnknownFields(bean)){
                 return null;
             }
-            throw new Exception("元素的key不存在:" + key + "\r\n路径:" + properties.getPropertiesFile().getAbsolutePath());
+            System.err.println("元素的key不存在:" + key + "\r\n路径:" + properties.getPropertiesFile().getAbsolutePath());
         }
 
         value = ConvertTool.convert(properties.getStr(key), field.getType());
 
         return value;
-    }
-
-
-    /**
-     * 获取启动类的ComponentScan注解路径
-     *
-     * @param objClass 要扫描的包路径
-     * @throws Exception
-     */
-    @Override
-    public String getScanPackageName(Class<?> objClass) {
-        ComponentScan annotation = objClass.getAnnotation(ComponentScan.class);
-        if (annotation == null) {
-            return null;
-        }
-        return annotation.value();
     }
 
 

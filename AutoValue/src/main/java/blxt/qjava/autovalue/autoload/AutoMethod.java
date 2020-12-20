@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * @Author: Zhang.Jialei
  * @Date: 2020/12/8 13:37
  */
-@AutoLoadFactory(annotation = Component.class, priority = 5)
+@AutoLoadFactory(name="AutoMethod", annotation = Component.class, priority = 5)
 public class AutoMethod extends AutoLoadBase {
 
 
@@ -186,15 +186,6 @@ public class AutoMethod extends AutoLoadBase {
             }
         }
         return map;
-    }
-
-    @Override
-    public String getScanPackageName(Class<?> objClass) {
-        ComponentScan annotation = objClass.getAnnotation(ComponentScan.class);
-        if (annotation == null) {
-            return null;
-        }
-        return annotation.value();
     }
 
 

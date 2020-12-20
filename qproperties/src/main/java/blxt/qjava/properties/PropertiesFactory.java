@@ -12,7 +12,7 @@ public class PropertiesFactory extends Properties {
     File propertiesFile;
 
     public PropertiesFactory(File file) throws IOException {
-        this(new FileInputStream(file), "utf-8");
+        this(file, "utf-8");
     }
 
     public PropertiesFactory(File file, String codeing) throws IOException {

@@ -1,22 +1,21 @@
 package blxt.qjava.autovalue.autoload;
 
-import blxt.qjava.autovalue.inter.Component;
+import blxt.qjava.autovalue.QJavaApplication;
+import blxt.qjava.autovalue.inter.UdpClient;
 import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
-import blxt.qjava.autovalue.inter.network.UdpClient;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.qudp.QUdpClient;
-
-import java.lang.annotation.Annotation;
-import java.util.List;
-
-import static blxt.qjava.autovalue.util.PackageUtil.getClassName;
 
 /**
  * @Author: Zhang.Jialei
  * @Date: 2020/12/17 21:18
  */
-@AutoLoadFactory(annotation = UdpClient.class, priority = 20)
+@AutoLoadFactory(name="AutoUdpClient", annotation = UdpClient.class, priority = 20)
 public class AutoUdpClient extends AutoLoadBase{
+
+    public static void load(){
+        QJavaApplication.addAutoLoadBases(AutoUdpClient.class);
+    }
 
     @Override
     public Object inject(Class<?> object) throws Exception {

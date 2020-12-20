@@ -22,6 +22,8 @@
         <module>AutoValue</module>
         <module>qFrame</module>
         <module>qjavaTx</module>
+        <module>Demo</module>
+        <module>qtcp</module>
     </modules>
 
     <properties>

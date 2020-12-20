@@ -18,6 +18,7 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
 
     public static boolean isDebug = false;
 
+    String name = "";
     /** 优先级 */
     int priority = 10;
     /** 扫描类注解 */
@@ -66,6 +67,7 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
     @Override
     public void scan(String packageName) throws Exception {
         List<String> classNames = PackageUtil.getClassName(packageName, true);
+
         if (classNames != null) {
             for (String className : classNames) {
                 // 过滤测试类
@@ -78,6 +80,7 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
                 if(classAnnotation == null){
                     continue;
                 }
+
                 inject(objClass);
             }
         }
@@ -111,9 +114,19 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
         if (annotation == null) {
             return null;
         }
+        if(annotation.value().isEmpty()){
+            return null;
+        }
         return annotation.value();
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public void setPriority(int priority){
         this.priority = priority;

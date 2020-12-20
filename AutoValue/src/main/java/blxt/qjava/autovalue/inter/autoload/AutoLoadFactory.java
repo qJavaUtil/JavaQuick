@@ -10,6 +10,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AutoLoadFactory {
+    String name() default "";
     /** 扫描接口名  **/
     Class<? extends Annotation> annotation();
     int priority() default 10;

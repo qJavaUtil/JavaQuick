@@ -1,7 +1,9 @@
 package test;
 
+import blxt.qjava.autovalue.autoload.AutoLoadBase;
 import blxt.qjava.autovalue.inter.Configuration;
 import blxt.qjava.autovalue.inter.Value;
+import blxt.qjava.autovalue.util.PackageUtil;
 import test.util.AppConfiguration;
 
 import java.lang.reflect.Method;
@@ -16,16 +18,29 @@ public class Test1 {
 
     public static void main(String[] args) throws Exception {
 
-      //  AutoValue.init(test.class);
-
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++");
-
-        AppConfiguration appConfiguration = new AppConfiguration();
-
-       // AutoValue.autoVariable(appConfiguration);
-
-        System.out.println("自动注入结果:" + appConfiguration.toString());
+        scanAutoLoad("");
     }
+
+    /***
+     * 扫描AutoLoad
+     * @param packageName  包名
+     * @return
+     */
+    public static List<AutoLoadBase> scanAutoLoad(String packageName){
+        List<AutoLoadBase> autoLoads = null;
+
+        List<String> classNames = PackageUtil.getClassName(packageName, true);
+        if (classNames != null) {
+            autoLoads = new ArrayList<>();
+            for (String className : classNames) {
+                // 过滤测试类
+                System.out.println(className);
+            }
+        }
+
+        return autoLoads;
+    }
+
 
     /**
      * 获取方法的注释
