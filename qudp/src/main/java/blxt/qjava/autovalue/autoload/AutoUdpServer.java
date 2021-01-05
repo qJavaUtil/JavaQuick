@@ -4,7 +4,7 @@ import blxt.qjava.autovalue.QJavaApplication;
 import blxt.qjava.autovalue.inter.UdpListener;
 import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
 import blxt.qjava.autovalue.util.ObjectPool;
-import blxt.qjava.autovalue.util.PackageUtil;
+import blxt.qjava.autovalue.reflect.PackageUtil;
 import blxt.qjava.autovalue.util.QThreadpool;
 import blxt.qjava.qudp.QUdpServer;
 

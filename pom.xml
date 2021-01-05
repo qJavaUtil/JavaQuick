@@ -19,10 +19,8 @@
         <module>qhttpserver</module>
         <module>qlog</module>
         <module>qopencv</module>
-        <module>AutoValue</module>
+        <module>auto-value</module>
         <module>qFrame</module>
-        <module>qjavaTx</module>
-        <module>Demo</module>
         <module>qtcp</module>
     </modules>
 

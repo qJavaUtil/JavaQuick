@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="qSQL:jar">
+    <output-path>$PROJECT_DIR$/out</output-path>
+    <root id="archive" name="qSQL.jar">
+      <element id="module-output" name="qSQL" />
+    </root>
+  </artifact>
+</component>

@@ -32,6 +32,9 @@ public class QueueFactory<E> implements Runnable{
                 isRun = onQueueListener.onQueueIn(obj);
             }
 
+            if(queue.size() == 0 && onQueueListener != null ){
+                isRun = onQueueListener.onQueueOver();
+            }
         }
     }
 
@@ -50,6 +53,8 @@ public class QueueFactory<E> implements Runnable{
     public interface OnQueueListener<E>{
         /** 如果这里为false, 则停止监听回调 */
         boolean onQueueIn(E bean);
+        /** 队列清空时回调 */
+        boolean onQueueOver();
         /** 如果这里为false, 则停止监听回调 */
         boolean onQueueOutError(LinkedBlockingQueue obj);
     }

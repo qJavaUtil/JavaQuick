@@ -6,22 +6,27 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="qthread" />
-        <module name="qFrame" />
+        <module name="qtools" />
+        <module name="qproperties" />
+        <module name="qudp" />
+        <module name="qtcp" />
+        <module name="qlog" />
+        <module name="qsql" />
         <module name="qfile4J" />
         <module name="qopencv" />
         <module name="qtime" />
-        <module name="qudp" />
-        <module name="qhttpserver" />
         <module name="AutoValue" />
-        <module name="qproperties" />
-        <module name="qtools" />
+        <module name="qhttpserver" />
+        <module name="qjava-tx" />
         <module name="qjavaTx" />
-        <module name="qlog" />
+        <module name="qthread" />
+        <module name="auto-value" />
+        <module name="qFrame" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="Demo" target="8" />
+      <module name="qjava-tx" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

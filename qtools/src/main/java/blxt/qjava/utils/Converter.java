@@ -111,6 +111,18 @@ public class Converter {
     }
 
     /**
+     * ByteBuffer 转 byte[]
+     * @param bytes
+     * @return
+     */
+    public static byte[] toBytes(ByteBuffer bytes) {
+        int len = bytes.limit() - bytes.position();
+        byte[] bytes1 = new byte[len];
+        bytes.get(bytes1);
+        return bytes1;
+    }
+
+    /**
      * 16进制字符串转 byte
      * 如 A1 B3 FE 转成 byte[]
      * @param content  数据
@@ -209,6 +221,31 @@ public class Converter {
         }
         return value;
     }
+
+    /**
+     * byte[2]转int
+     * 两个十六进制转为十进制,高位在后，返回十进制数
+     * @param b1
+     * @param b2
+     * @return
+     */
+    public static int toInt(byte b1, byte b2){
+        int deci = (b1|(b2<<8));
+        return deci;
+    }
+
+    /**
+     * byte[2]转toFloat
+     * 两个十六进制转为十进制,高位在后，返回十进制数缩小十倍保留一位小数值
+     * @param b1
+     * @param b2
+     * @return
+     */
+    public static float toFloat(byte b1, byte b2){
+        int deci = (b1|(b2<<8));
+        return (float)(deci*0.1);
+    }
+
 
     /**
      * 获取当前格式化时间
