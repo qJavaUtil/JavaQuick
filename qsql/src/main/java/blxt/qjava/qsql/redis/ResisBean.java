@@ -1,4 +1,4 @@
-package com.qjava.qsql.redis;
+package blxt.qjava.qsql.redis;
 
 
 import blxt.qjava.autovalue.inter.Component;

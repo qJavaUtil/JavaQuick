@@ -38,7 +38,12 @@ public class QThreadpool {
 
     /** 线程池工厂 */
     @Value("thread.threadfactory")
-    public String threadFactory;
+    public String threadFactoryName;
+
+    TimeUnit unit = TimeUnit.SECONDS;
+    BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
+    ThreadFactory threadFactory = new DefaultThreadFactory();
+    RejectedExecutionHandler handler = new ThreadPoolExecutor.AbortPolicy();
 
     /**
      * 并发型线程池
@@ -63,6 +68,50 @@ public class QThreadpool {
         rejectedList.put("discardoldestpolicy", new ThreadPoolExecutor.DiscardOldestPolicy());
     }
 
+    /**
+     * 并发型线程池
+     * IO密集型任务  = 一般为2*CPU核心数（常出现于线程中：数据库数据交互、文件上传下载、网络数据传输等等）
+     * CPU密集型任务 = 一般为CPU核心数+1（常出现于线程中：复杂算法）
+     * 混合型任务  = 视机器配置和复杂度自测而定
+     *
+     * @param corePoolSize    用于指定核心线程数量
+     * @param maximumPoolSize 指定最大线程数
+     */
+    public static QThreadpool newInstance(int corePoolSize,
+                                          int maximumPoolSize,
+                                          int keepAliveTime) {
+
+        return newInstance(corePoolSize, maximumPoolSize, keepAliveTime,  new ThreadPoolExecutor.AbortPolicy(),false);
+    }
+
+    public static QThreadpool newInstance(int corePoolSize,
+                                          int maximumPoolSize,
+                                          int keepAliveTime,
+                                          RejectedExecutionHandler handler) {
+
+        return newInstance(corePoolSize, maximumPoolSize, keepAliveTime, handler,false);
+    }
+
+    /**
+     *
+     * @param corePoolSize
+     * @param maximumPoolSize
+     * @param create          是否强制新建
+     */
+    protected static QThreadpool newInstance(int corePoolSize, int maximumPoolSize, int keepAliveTime,
+                                             RejectedExecutionHandler handler,
+                                             boolean create) {
+
+        if (instance != null  && !create) {
+            return instance;
+        }
+
+        instance = new QThreadpool(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS,
+                new LinkedBlockingQueue<Runnable>(), new DefaultThreadFactory(), handler);
+
+        return instance;
+    }
+
 
     public static QThreadpool getInstance(){
         if(ObjectPool.isEmpty(QThreadpool.class)){
@@ -78,19 +127,37 @@ public class QThreadpool {
 
 
     public QThreadpool(){
-      //  init();
+    }
+
+    /**
+     * @param corePoolSize       用于指定核心线程数量
+     * @param maximumPoolSize    指定最大线程数
+     * @param keepAliveTime      指定线程空闲后的最大存活时间
+     * @param unit               指定线程空闲后的最大存活时间单位, 默认秒
+     * @param workQueue          是线程池的缓冲队列,还未执行的线程会在队列中等待,默认的实现是一个无界的 LinkedBlockingQueue
+     *
+     */
+    public QThreadpool(int corePoolSize, int maximumPoolSize, int keepAliveTime,
+                       TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory,
+                       RejectedExecutionHandler handler){
+        this.corePoolSize = corePoolSize;
+        this.maximumPoolSize = maximumPoolSize;
+        this.keepAliveTime = keepAliveTime;
+        this.unit = unit;
+        this.workQueue = workQueue;
+        this.threadFactory = threadFactory;
+        this.handler = handler;
     }
 
     @Run
     public void init(){
-        RejectedExecutionHandler handler = getRejectedExecutionHandler(rejected);
-        ThreadFactory defaultThreadFactory = getThreadFactory(threadFactory);
+        handler = getRejectedExecutionHandler(rejected);
+        threadFactory = getThreadFactory(threadFactoryName);
 
-        pool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<Runnable>(),
-                defaultThreadFactory, handler);
+        pool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, unit,
+                workQueue,  threadFactory, handler);
 
-        timePool = Executors.newScheduledThreadPool(corePoolSize, defaultThreadFactory);
+        timePool = Executors.newScheduledThreadPool(corePoolSize, threadFactory);
 
     }
 
@@ -208,7 +275,7 @@ public class QThreadpool {
                 ", maximumPoolSize=" + maximumPoolSize +
                 ", keepAliveTime=" + keepAliveTime +
                 ", rejected='" + rejected + '\'' +
-                ", threadFactory='" + threadFactory + '\'' +
+                ", threadFactory='" + threadFactoryName + '\'' +
                 '}';
     }
 

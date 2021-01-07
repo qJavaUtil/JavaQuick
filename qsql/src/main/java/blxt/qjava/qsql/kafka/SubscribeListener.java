@@ -1,4 +1,4 @@
-package com.qjava.qsql.kafka;
+package blxt.qjava.qsql.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 

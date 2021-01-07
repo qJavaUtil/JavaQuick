@@ -1,7 +1,7 @@
 package kafka;
 
-import com.qjava.qsql.kafka.KafkaConnection;
-import com.qjava.qsql.kafka.SubscribeListener;
+import blxt.qjava.qsql.kafka.KafkaConnection;
+import blxt.qjava.qsql.kafka.SubscribeListener;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.jetbrains.annotations.NotNull;

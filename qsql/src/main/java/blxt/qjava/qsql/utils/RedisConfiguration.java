@@ -1,4 +1,4 @@
-package com.qjava.qsql.utils;
+package blxt.qjava.qsql.utils;
 
 import blxt.qjava.properties.PropertiesReader;
 import org.slf4j.Logger;

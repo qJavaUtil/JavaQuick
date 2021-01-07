@@ -1,8 +1,8 @@
 package kafka;
 
-import com.qjava.qsql.influxdb.InfluxConnection;
-import com.qjava.qsql.influxdb.InfluxConnectionManager;
-import com.qjava.qsql.influxdb.InfluxDbQuerySQL;
+import blxt.qjava.qsql.influxdb.InfluxConnection;
+import blxt.qjava.qsql.influxdb.InfluxConnectionManager;
+import blxt.qjava.qsql.influxdb.InfluxDbQuerySQL;
 
 /**
  * @Author: Zhang.Jialei

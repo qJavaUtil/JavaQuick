@@ -1,8 +1,6 @@
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.qjava.qsql.postgresql.DBPoolConnection;
-import com.qjava.qsql.tdengine.TDPoolConnection;
+import blxt.qjava.qsql.tdengine.TDPoolConnection;
 import org.junit.jupiter.api.Test;
-import com.taosdata.jdbc.TSDBDriver;
 
 import java.io.File;
 import java.sql.*;

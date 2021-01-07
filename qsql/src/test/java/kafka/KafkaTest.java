@@ -1,6 +1,6 @@
 package kafka;
 
-import com.qjava.qsql.kafka.KafkaConnection;
+import blxt.qjava.qsql.kafka.KafkaConnection;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;

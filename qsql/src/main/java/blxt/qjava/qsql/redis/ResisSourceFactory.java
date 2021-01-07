@@ -1,6 +1,6 @@
-package com.qjava.qsql.redis;
+package blxt.qjava.qsql.redis;
 
-import com.qjava.qsql.utils.RedisConfiguration;
+import blxt.qjava.qsql.utils.RedisConfiguration;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisShardInfo;

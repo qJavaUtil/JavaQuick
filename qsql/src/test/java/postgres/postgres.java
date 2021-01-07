@@ -1,7 +1,7 @@
 package postgres;
 
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.qjava.qsql.postgresql.DBPoolConnection;
+import blxt.qjava.qsql.postgresql.DBPoolConnection;
 import org.junit.jupiter.api.Test;
 
 import java.sql.PreparedStatement;

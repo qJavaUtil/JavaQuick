@@ -1,4 +1,4 @@
-package com.qjava.qsql.utils;
+package blxt.qjava.qsql.utils;
 
 import java.io.File;
 import java.io.FileInputStream;

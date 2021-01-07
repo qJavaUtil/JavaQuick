@@ -2,7 +2,7 @@ package redis;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
-import com.qjava.qsql.redis.RedisPoolUtil;
+import blxt.qjava.qsql.redis.RedisPoolUtil;
 import org.junit.jupiter.api.Test;
 import utils.HashTool;
 

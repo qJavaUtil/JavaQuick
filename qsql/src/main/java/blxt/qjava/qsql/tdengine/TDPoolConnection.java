@@ -1,9 +1,9 @@
-package com.qjava.qsql.tdengine;
+package blxt.qjava.qsql.tdengine;
 
+import blxt.qjava.qsql.utils.Toos;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.pool.DruidPooledConnection;
-import com.qjava.qsql.utils.Toos;
 
 import java.io.File;
 import java.sql.SQLException;
