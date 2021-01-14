@@ -4,8 +4,6 @@ import blxt.qjava.httpserver.inter.Controller;
 import blxt.qjava.httpserver.inter.RestController;
 import blxt.qjava.httpserver.util.JarUtil;
 import blxt.qjava.httpserver.util.PackageUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -15,7 +13,6 @@ import java.util.List;
  * @Date: 2020/9/29 15:20
  */
 public class ControllerScan {
-    public static Logger logger =  LoggerFactory.getLogger(ControllerScan.class);
 
     /**
      * 要扫描的包
@@ -24,7 +21,6 @@ public class ControllerScan {
     public static void autoRegistry(Class<?> rootClass, String packageName){
         /* jar包的真实路径 */
         String jarpath = JarUtil.getPathReal(rootClass);
-        logger.debug("jar真实路径{}", jarpath);
         jarpath = jarpath.replace("/", ".");
 
         List<String> classNames = PackageUtil.getClassName(packageName, true);

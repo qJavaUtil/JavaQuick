@@ -3,8 +3,6 @@ package blxt.qjava.httpserver;
 import blxt.qjava.httpserver.inter.*;
 import blxt.qjava.httpserver.util.ControllerMap;
 import blxt.qjava.utils.check.CheckUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -16,7 +14,6 @@ import java.util.Map;
  * @Date: 2020/9/29 9:11
  */
 public class AutoControllerRegistry {
-    public static Logger logger =  LoggerFactory.getLogger(AutoControllerRegistry.class);
 
     /** 单例方法名称 */
     public final static String INSTANCE_METHOD_NAME = "getInstance";
@@ -95,7 +92,7 @@ public class AutoControllerRegistry {
             // 注册路由
             urlMap.put( modelPath + path , controllerMap);
             // 根据对象获取注解值
-            logger.debug("Controller, URL:{}{}, class;{}",  modelPath , path , controllerMap.toString());
+            //logger.debug("Controller, URL:{}{}, class;{}",  modelPath , path , controllerMap.toString());
 
         }
     }

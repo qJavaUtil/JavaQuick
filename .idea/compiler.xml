@@ -24,9 +24,5 @@
         <module name="qFrame" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Demo" target="8" />
-      <module name="qjava-tx" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
