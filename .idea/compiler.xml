@@ -14,7 +14,6 @@
         <module name="qsql" />
         <module name="qfile4J" />
         <module name="qopencv" />
-        <module name="qtime" />
         <module name="AutoValue" />
         <module name="qhttpserver" />
         <module name="qjava-tx" />

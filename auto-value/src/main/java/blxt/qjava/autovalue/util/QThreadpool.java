@@ -58,13 +58,13 @@ public class QThreadpool {
     static Map<String, RejectedExecutionHandler> rejectedList = new HashMap<>();
 
     static {
-        rejectedList.put("abortpolicy", new ThreadPoolExecutor.AbortPolicy());
+        rejectedList.put("abortpolicy", new ThreadPoolExecutor.AbortPolicy()); // 丢弃任务并抛出RejectedExecutionException异常
         rejectedList.put("abort", new ThreadPoolExecutor.AbortPolicy());
         rejectedList.put("callerruns", new ThreadPoolExecutor.CallerRunsPolicy());
-        rejectedList.put("CallerRunsPolicy", new ThreadPoolExecutor.CallerRunsPolicy());
+        rejectedList.put("callerrunspolicy", new ThreadPoolExecutor.CallerRunsPolicy()); // 由调用线程处理该任务
         rejectedList.put("discard", new ThreadPoolExecutor.DiscardPolicy());
-        rejectedList.put("discardpolicy", new ThreadPoolExecutor.DiscardPolicy());
-        rejectedList.put("discardoldest", new ThreadPoolExecutor.DiscardOldestPolicy());
+        rejectedList.put("discardpolicy", new ThreadPoolExecutor.DiscardPolicy());  // 也是丢弃任务，但是不抛出异常
+        rejectedList.put("discardoldest", new ThreadPoolExecutor.DiscardOldestPolicy()); // 丢弃队列最前面的任务，然后重新尝试执行任务（重复此过程）
         rejectedList.put("discardoldestpolicy", new ThreadPoolExecutor.DiscardOldestPolicy());
     }
 

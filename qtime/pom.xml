@@ -11,6 +11,10 @@
 
     <artifactId>qtime</artifactId>
 
+    <properties>
+        <c3p0.version>0.9.5.4</c3p0.version>
+        <hikaricp.version>3.2.0</hikaricp.version>
+    </properties>
 
     <build>
         <plugins>
@@ -45,6 +49,54 @@
             </plugin>
         </plugins>
     </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.blxt</groupId>
+            <artifactId>auto-value</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!--Compile scope. If you add something to compile scope, you have to do the same thing in packaging/pom.xml -->
+        <dependency>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>${c3p0.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>${hikaricp.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- provided scope -->
+        <dependency>
+            <groupId>org.apache.openejb</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>5.0-2</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.30</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.30</version>
+        </dependency>
+
+        <!--        <dependency>-->
+<!--            <groupId>org.org.quartz-scheduler</groupId>-->
+<!--            <artifactId>org.quartz</artifactId>-->
+<!--            <version>2.3.2</version>-->
+<!--        </dependency>-->
+    </dependencies>
 
     <distributionManagement>
         <repository>
