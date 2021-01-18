@@ -1,4 +1,5 @@
 import blxt.qjava.utils.Converter;
+import blxt.qjava.utils.PropertiesTools;
 import blxt.qjava.utils.check.CheckUtils;
 import org.junit.Test;
 
@@ -13,9 +14,10 @@ public class ConvertTest {
 
     @Test
     public void test() throws IOException {
-        byte[] src = {0x10, 0x76, (byte) 0xFF};
-        byte[] d = Converter.toBytesByFormat("FF", " ");
+ //       byte[] src = {0x10, 0x76, (byte) 0xFF};
+//        byte[] d = Converter.toBytesByFormat("FF", " ");
 
+        System.out.println(PropertiesTools.getKey1("${123.123}"));
 //        System.out.println(IPTools.getLocalHostIpsIPv4());
 //
 //        PingNetEntity pingNetEntity = PingNet.ping("47.242.60.114");
@@ -31,7 +33,7 @@ public class ConvertTest {
 //        System.out.println("端口" + fal);
 //
 //        System.out.println("ping : " + InetAddress.getByName("127.0.0.1").isReachable(3000));
-         CheckUtils.objectCheckNull(new File("E:/Documents/workspace/IotCloub/Mqtt/HiveMq-community/HiveMq4Heneng_Package/protocol2"), "协议根路径不得为空," , "1001", null);
+   //      CheckUtils.objectCheckNull(new File("E:/Documents/workspace/IotCloub/Mqtt/HiveMq-community/HiveMq4Heneng_Package/protocol2"), "协议根路径不得为空," , "1001", null);
 
         //  System.out.println(f[0] + "=" + f[1]); http://47.242.60.114/
     }

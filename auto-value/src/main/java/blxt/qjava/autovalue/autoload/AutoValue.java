@@ -216,6 +216,7 @@ public class AutoValue extends AutoLoadBase {
     }
 
 
+
     /**
      * 获取Properties的key
      * 由@Value注解和Field名字组成, 自动替换 _ 成 .
@@ -299,5 +300,29 @@ public class AutoValue extends AutoLoadBase {
         return value;
     }
 
+    /**
+     * 获取默认参数
+     * @param key
+     * @param valueType
+     * @return
+     */
+    public static Object getPropertiesValue(String key, Class<?> valueType){
+        // 属性值
+        Object value = null;
+        if(valueType.isArray()){
+            value = ConvertTool.convertArry(propertiesFactory.getStr(key), valueType);
+        }else{
+            value = ConvertTool.convert(propertiesFactory.getStr(key), valueType);
+        }
+        return value;
+    }
 
+    /**
+     * 检查某个值是否存在
+     * @param key
+     * @return
+     */
+    public static boolean isNull(String key){
+        return propertiesFactory.isEmpty(key);
+    }
 }

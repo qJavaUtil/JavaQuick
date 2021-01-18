@@ -202,7 +202,13 @@ public class CheckUtils {
             if (((Object[]) o).length == 0) {
                 return true;
             }
-        } else if (o instanceof int[]) {
+        }
+        if (o instanceof String[]) {
+            if (((String[]) o).length <= 0) {
+                return true;
+            }
+        }
+        else if (o instanceof int[]) {
             if (((int[]) o).length == 0) {
                 return true;
             }

@@ -2,6 +2,8 @@ package blxt.qjava.autovalue.util;
 
 import blxt.qjava.autovalue.reflect.PackageUtil;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 
@@ -45,11 +47,33 @@ public class ObjectPool {
      * @return
      */
     public static Object putObject(Class<?>  object){
+        return putObjectWithParams(object, null);
+    }
+
+    /**
+     * 通过反射,构建带参的构造
+     * @param object
+     * @param params
+     * @return
+     */
+    public static Object putObjectWithParams(Class<?>  object, Object[] params){
         try {
-            Object obj = object.newInstance();
+            Object obj = null;
+            if (params != null) {
+                Class[] argsClass = new Class[params.length];
+                for (int i = 0, j = params.length; i < j; i++) {
+                    argsClass[i] = params[i].getClass();
+                }
+                Constructor cons = object.getConstructor(argsClass);
+                obj = cons.newInstance(params);
+            }
+            else{
+                obj = object.newInstance();
+            }
             putObject(object, obj);
             return obj;
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException |
+                NoSuchMethodException |InvocationTargetException e) {
             e.printStackTrace();
         }
         return null;

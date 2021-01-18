@@ -20,6 +20,7 @@
         <module name="qjavaTx" />
         <module name="qthread" />
         <module name="auto-value" />
+        <module name="qmqtt" />
         <module name="qFrame" />
       </profile>
     </annotationProcessing>
