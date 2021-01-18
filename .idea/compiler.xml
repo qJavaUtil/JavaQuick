@@ -10,6 +10,7 @@
         <module name="qproperties" />
         <module name="qudp" />
         <module name="qtcp" />
+        <module name="qftp" />
         <module name="qlog" />
         <module name="qsql" />
         <module name="qfile4J" />

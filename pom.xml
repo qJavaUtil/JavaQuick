@@ -23,6 +23,7 @@
         <module>qFrame</module>
         <module>qtcp</module>
         <module>qmqtt</module>
+        <module>qftp</module>
     </modules>
 
     <properties>
