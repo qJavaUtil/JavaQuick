@@ -1,12 +1,12 @@
 package blxt.qjava.autovalue.autoload;
 
 
-import blxt.qjava.autovalue.inter.EnFtpServer;
 import blxt.qjava.autovalue.inter.OnFtpServerListener;
 import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
 import blxt.qjava.autovalue.reflect.PackageUtil;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.qftp.MFtpServerFactory;
+import blxt.qjava.utils.check.CheckUtils;
 import org.apache.ftpserver.listener.Listener;
 
 /**
@@ -23,9 +23,10 @@ public class AutoFtpServerListener extends AutoLoadBase{
             throw new Exception("OnFtpServerListener需要实现org.apache.ftpserver.listener.Listener接口。");
         }
 
-        Listener listener = (Listener)ObjectPool.getObject(object);
-
         MFtpServerFactory ftpServerFactory = MFtpServerFactory.getInstance();
+        CheckUtils.objectCheckNull(ftpServerFactory, "需要启动ftp服务，添加@EnFtpServer注解","0001", null);
+
+        Listener listener = (Listener)ObjectPool.getObject(object);
         ftpServerFactory.addListener(object.getName(), listener);
 
         return null;
