@@ -76,10 +76,17 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
                 }
 
                 Class<?>  objClass = Class.forName(className);
+                if (objClass.isEnum() || objClass.isAnnotation()
+                        || objClass.isInterface()){
+                    continue;
+                }
+
+
                 Annotation classAnnotation = objClass.getAnnotation(annotation);
                 if(classAnnotation == null){
                     continue;
                 }
+
 
                 inject(objClass);
             }
