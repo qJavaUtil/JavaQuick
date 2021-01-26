@@ -335,7 +335,7 @@ public class Converter {
      * @param objectclass   要转换的类型,如 String.class Int.class boolean.class
      * @return
      */
-    private Object toObject(String str, Class<?> objectclass){
+    public static Object toObject(String str, Class<?> objectclass){
         Object value = null;
         if(objectclass == String.class){
             value = str;
