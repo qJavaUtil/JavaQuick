@@ -1,5 +1,8 @@
 package blxt.qjava.httpserver.util;
 
+import blxt.qjava.autovalue.inter.RequestMethod;
+
+import java.lang.reflect.Parameter;
 import java.util.Arrays;
 
 /**
@@ -11,17 +14,29 @@ public class ControllerMap {
     Class<?> controller;
     /** 方法 */
     String methodName;
-    /** 参数 */
+    /** 参数类型 */
+    Class<?> parameterTypes[];
+    /** 参数名 */
     String[] params;
+    /** 默认值 */
+    String[] defaultValue;
+    /** http接口类型 */
+    RequestMethod method;
 
-    /** 实例化方法名,如果null,就使用默认构造方法 */
-    String creator;
-
-    public ControllerMap(Class<?> controller, String methodName, String[] params, String instance) {
+    public ControllerMap(Class<?> controller, String methodName, Parameter[] parameters, String[] paramsNames,String[] defaultValue, RequestMethod method) {
         this.controller = controller;
         this.methodName = methodName;
-        this.params = params;
-        this.creator = instance;
+        this.method = method;
+        this.params = paramsNames;
+        this.defaultValue = defaultValue;
+
+        parameterTypes = new Class<?>[parameters.length];
+        int i = 0;
+        /* 参数变量名称 */
+        for (Parameter  parameter : parameters){
+            parameterTypes[i++] = parameter.getType();
+        }
+
     }
 
     public Class<?> getController() {
@@ -32,12 +47,16 @@ public class ControllerMap {
         return methodName;
     }
 
+    public Class<?>[] getParameterTypes() {
+        return parameterTypes;
+    }
+
     public String[] getParams() {
         return params;
     }
 
-    public String getCreator() {
-        return creator;
+    public String[] getDefaultValue() {
+        return defaultValue;
     }
 
     @Override
@@ -45,7 +64,6 @@ public class ControllerMap {
         return "ControllerMap{" +
                 "methodName='" + methodName + '\'' +
                 ", params=" + Arrays.toString(params) +
-                ", creator='" + creator + '\'' +
                 '}';
     }
 }

@@ -32,6 +32,11 @@
       <option name="url" value="https://maven.aliyun.com/repository/public/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="spring-milestones" />
+      <option name="name" value="Spring Milestones" />
+      <option name="url" value="https://maven.aliyun.com/repository/public/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="zjlnexus-snapshots" />
       <option name="name" value="柏拉小图私服" />
       <option name="url" value="http://maven.zhangjialei.cn:8083/repository/maven-snapshots/" />

@@ -34,6 +34,7 @@
         <option value="$PROJECT_DIR$/qsql/pom.xml" />
         <option value="$PROJECT_DIR$/../qtime/pom.xml" />
         <option value="$PROJECT_DIR$/../JavaQuickDemo/pom.xml" />
+        <option value="$PROJECT_DIR$/../Statistics/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
