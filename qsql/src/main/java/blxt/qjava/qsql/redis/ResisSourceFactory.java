@@ -87,8 +87,9 @@ public class ResisSourceFactory {
     }
 
     public static RedisPool createDataSource(JedisPoolConfig config, List<JedisShardInfo> list){
-        return new RedisPool(config,
+        redisPool = new RedisPool(config,
                 resisBean.redisIp, resisBean.redisPort, resisBean.redisTimeout, resisBean.pwd, resisBean.block);
+        return redisPool;
     }
 
 
