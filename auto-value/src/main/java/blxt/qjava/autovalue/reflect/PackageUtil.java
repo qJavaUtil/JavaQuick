@@ -1,9 +1,18 @@
 package blxt.qjava.autovalue.reflect;
 
 import com.google.common.reflect.ClassPath;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.NotFoundException;
+import javassist.bytecode.CodeAttribute;
+import javassist.bytecode.LocalVariableAttribute;
+import javassist.bytecode.MethodInfo;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -18,7 +27,7 @@ import java.util.jar.JarFile;
  *
  */
 public class PackageUtil {
-
+    private final static ClassPool CLASS_POOL = ClassPool.getDefault();
     /**
      * 判断摸个类是否集成了指定接口
      * @param object      需要判断的类
@@ -35,6 +44,45 @@ public class PackageUtil {
             }
         }
         return false;
+    }
+
+    /**
+     * 根据方法获取真实参数名称
+     *
+     * @param method 方法反射对象
+     * @return String[]
+     */
+    public static String[] getRealParamNames(Method method) {
+        if (method == null) {
+            return new String[0];
+        }
+        try {
+            //类的反射信息
+            CtClass cc = CLASS_POOL.get(method.getDeclaringClass().getName());
+
+            Class<?>[] parameterTypes = method.getParameterTypes();
+            CtClass[] ctClParamTypes = new CtClass[parameterTypes.length];
+            for (int i = 0, length = parameterTypes.length; i < length; i++) {
+                ctClParamTypes[i] = CLASS_POOL.get(parameterTypes[i].getName());
+            }
+            CtMethod ctMethod = cc.getDeclaredMethod(method.getName(), ctClParamTypes);
+
+            // 使用javaAssist的反射方法获取方法的参数名
+            MethodInfo methodInfo = ctMethod.getMethodInfo();
+            CodeAttribute codeAttribute = methodInfo.getCodeAttribute();
+            LocalVariableAttribute attr = (LocalVariableAttribute) codeAttribute.getAttribute(LocalVariableAttribute.tag);
+            if (attr == null) {
+                return new String[0];
+            }
+            String[] realParamNames = new String[ctMethod.getParameterTypes().length];
+            int pos = Modifier.isStatic(ctMethod.getModifiers()) ? 0 : 1;
+            for (int i = 0; i < realParamNames.length; i++) {
+                realParamNames[i] = attr.variableName(i + pos);
+            }
+            return realParamNames;
+        } catch (NotFoundException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     /**

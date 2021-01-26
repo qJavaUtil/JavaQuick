@@ -7,6 +7,7 @@ import blxt.qjava.autovalue.inter.Run;
 import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
 import blxt.qjava.autovalue.util.ConvertTool;
 import blxt.qjava.autovalue.util.ObjectPool;
+import blxt.qjava.autovalue.util.ObjectValue;
 import blxt.qjava.autovalue.util.QThreadpool;
 
 import java.lang.reflect.Field;
@@ -103,22 +104,23 @@ public class AutoMethod extends AutoLoadBase {
                 if(alias.startsWith("$"))
                 {
                     alias = alias.substring(1);
-                    Field[] fields = bean.getClass().getDeclaredFields();
-                    for(Field field : fields){
-                        if(field.getType() != parametertype){
-                            throw new Exception(String.format("@AliasFor注解的变量:($%s)和内部参数类型不一致,请检查. 方法:%s, 变量别名:%s",
-                                    alias, method.toString(), aliasFor.value()));
-                        }
-                        if(alias.equals(field.getName())){
-                            //打开私有访问
-                            boolean accessFlag = field.isAccessible();
-                            field.setAccessible(true);
-                            //获取属性值
-                            value = field.get(bean);
-                            field.setAccessible(accessFlag);
-                            break;
-                        }
-                    }
+                    value = ObjectValue.getObjectValue(bean, alias, parametertype);
+//                    Field[] fields = bean.getClass().getDeclaredFields();
+//                    for(Field field : fields){
+//                        if(field.getType() != parametertype){
+//                            throw new Exception(String.format("@AliasFor注解的变量:($%s)和内部参数类型不一致,请检查. 方法:%s, 变量别名:%s",
+//                                    alias, method.toString(), aliasFor.value()));
+//                        }
+//                        if(alias.equals(field.getName())){
+//                            //打开私有访问
+//                            boolean accessFlag = field.isAccessible();
+//                            field.setAccessible(true);
+//                            //获取属性值
+//                            value = field.get(bean);
+//                            field.setAccessible(accessFlag);
+//                            break;
+//                        }
+//                    }
                 }
                 // 从变量集合里面获取
                 else{
