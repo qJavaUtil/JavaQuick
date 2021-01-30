@@ -24,6 +24,7 @@
         <module>qtcp</module>
         <module>qmqtt</module>
         <module>qftp</module>
+        <module>qliveness</module>
     </modules>
 
     <properties>
