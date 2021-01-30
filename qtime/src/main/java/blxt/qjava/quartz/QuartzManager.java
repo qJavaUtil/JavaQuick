@@ -3,7 +3,12 @@ package blxt.qjava.quartz;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class QuartzManager {
+
+    static Map<String, String> jobMaps = new HashMap<>();
 
     private static SchedulerFactory schedulerFactory = new StdSchedulerFactory();
 
@@ -22,7 +27,6 @@ public class QuartzManager {
 
         // 任务名，任务组，任务执行类
         JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobName, jobGroupName).build();
-
         // 触发器
         TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger();
         // 触发器名,触发器组
@@ -33,6 +37,7 @@ public class QuartzManager {
         // 创建Trigger对象
         CronTrigger trigger = (CronTrigger) triggerBuilder.build();
         try {
+            jobMaps.put(jobName, "on");
             // 启动调度器
             addJob(jobDetail, trigger);
         } catch (Exception e) {
@@ -67,6 +72,7 @@ public class QuartzManager {
         CronTrigger trigger = (CronTrigger) triggerBuilder.build();
 
         try {
+            jobMaps.put(jobName, "on");
             // 启动调度器
             addJob(jobDetail, trigger);
         } catch (Exception e) {
@@ -84,6 +90,7 @@ public class QuartzManager {
             Scheduler sched = schedulerFactory.getScheduler();
             // 调度容器设置JobDetail和Trigger
             sched.scheduleJob(jobDetail, trigger);
+
             // 启动
             if (!sched.isShutdown()) {
                 sched.start();
@@ -150,16 +157,24 @@ public class QuartzManager {
     public static void removeJob(String jobName, String jobGroupName,
                                  String triggerName, String triggerGroupName) {
         try {
+            jobMaps.put(jobName, "off");
             Scheduler sched = schedulerFactory.getScheduler();
-
             TriggerKey triggerKey = TriggerKey.triggerKey(triggerName, triggerGroupName);
-
             sched.pauseTrigger(triggerKey);// 停止触发器
             sched.unscheduleJob(triggerKey);// 移除触发器
             sched.deleteJob(JobKey.jobKey(jobName, jobGroupName));// 删除任务
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 判断任务是否存在
+     * @param jobName
+     * @return
+     */
+    public static boolean isExist(String jobName){
+        return jobMaps.get(jobName) == null ? false : true;
     }
 
     /**
