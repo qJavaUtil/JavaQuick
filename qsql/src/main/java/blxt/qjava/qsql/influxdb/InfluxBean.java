@@ -72,47 +72,58 @@ public class InfluxBean {
         return username;
     }
 
-    public void setUsername(String username) {
+    public InfluxBean setUsername(String username) {
         this.username = username;
+        return this;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public InfluxBean setPassword(String password) {
         this.password = password;
+        return this;
     }
 
     public String getOpenurl() {
         return openurl;
     }
 
-    public void setOpenurl(String openurl) {
+    public InfluxBean setOpenurl(String openurl) {
         this.openurl = openurl;
+        return this;
     }
 
     public String getDatabase() {
         return database;
     }
 
-    public void setDatabase(String database) {
+    public InfluxBean setDatabase(String database) {
         this.database = database;
+        return this;
     }
 
     public String getRetentionPolicy() {
         return retentionPolicy;
     }
 
-    public void setRetentionPolicy(String retentionPolicy) {
+    public InfluxBean setRetentionPolicy(String retentionPolicy) {
         this.retentionPolicy = retentionPolicy;
+        return this;
     }
 
     public boolean isCreatDateBase() {
         return isCreatDateBase;
     }
 
-    public void setCreatDateBase(boolean creatDateBase) {
+    public InfluxBean setCreatDateBase(boolean creatDateBase) {
         isCreatDateBase = creatDateBase;
+        return this;
+    }
+
+    @Override
+    public InfluxBean clone() {
+        return  new InfluxBean(username, password, openurl, database, retentionPolicy, isCreatDateBase);
     }
 }

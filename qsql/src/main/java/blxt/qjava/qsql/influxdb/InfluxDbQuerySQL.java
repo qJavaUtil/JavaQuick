@@ -168,4 +168,7 @@ public class InfluxDbQuerySQL {
     public void setTimezone(String timezone) {
         this.timezone = timezone;
     }
+
+
+
 }

@@ -1,5 +1,7 @@
 package blxt.qjava.qsql.influxdb;
 
+import blxt.qjava.autovalue.autoload.AutoValue;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +35,14 @@ public class InfluxConnectionPool {
         return instance;
     }
 
+    public static InfluxConnectionPool newInstance() throws Exception {
+        if(instance == null){
+            AutoValue autoValue = new AutoValue();
+            InfluxBean influxBean = (InfluxBean)autoValue.inject(InfluxBean.class);
+            instance = new InfluxConnectionPool(influxBean);
+        }
+        return instance;
+    }
     /**
      * 获取influx连接管理器
      * @return
@@ -56,7 +66,7 @@ public class InfluxConnectionPool {
     }
 
     private InfluxConnectionPool(InfluxBean influxBean) {
-        influxBaseBean = influxBean;
+        influxBaseBean = influxBean.clone();
     }
 
     /**
@@ -69,7 +79,7 @@ public class InfluxConnectionPool {
         // 每一个用户,分别由一个连接进行管理
         InfluxConnection influxConnection = influxMaps.get(tableName) ;
         if (influxConnection == null){
-            influxConnection = add(tableName, influxBaseBean);
+            influxConnection = add(tableName, influxBaseBean.clone());
         }
 
         return influxConnection;
@@ -115,7 +125,7 @@ public class InfluxConnectionPool {
         InfluxConnection connection = influxMaps.get(name);
 
         if(connection == null){
-            InfluxBean influxBean = influxBaseBean;
+            InfluxBean influxBean = influxBaseBean.clone();
             influxBean.setCreatDateBase(creat);
             this.add(name, influxBean);
         }
