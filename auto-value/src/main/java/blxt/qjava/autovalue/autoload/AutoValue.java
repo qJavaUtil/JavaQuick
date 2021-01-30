@@ -101,7 +101,8 @@ public class AutoValue extends AutoLoadBase {
             File file = new File(rootPath + File.separator + path);
             if (file.exists()) {
                 try {
-                    return new PropertiesFactory(file);
+                    propertiesFactory = new PropertiesFactory(file);
+                    return propertiesFactory;
                 } catch (IOException e) {
                     continue;
                 }
@@ -113,42 +114,35 @@ public class AutoValue extends AutoLoadBase {
     @Override
     public Object inject(Class<?> objClass) throws Exception {
         Object bean = ObjectPool.putObject(objClass);
-        autoVariable(bean);
+        autoVariable(bean, false);
         return bean;
     }
 
     /**
      * 自动 获取变量名
-     *
      * @param bean
      */
-    public void autoVariable(Object bean) {
+    @Deprecated
+    public void autoVariable(Object bean)
+    {
+        autoVariable(bean, false);
+    }
+
+    /**
+     * 自动 获取变量名
+     * @param bean
+     * @param fal  是否添加到对象池
+     */
+    public void autoVariable(Object bean, boolean fal) {
         PropertiesFactory properties = propertiesFactory;
-        String classPath = PackageUtil.getPath(rootClass);
 
         // 从类注解Configuration中获取值,判断是否是自定义的配置文件路径
         PropertySource anno = bean.getClass().getAnnotation(PropertySource.class);
         if (anno != null) {
-            String propertiePath = anno.value();
-            String propertieCode = anno.encoding();
-            if (!propertiePath.trim().isEmpty()) {
-                // 如果文件路径是以 . 开头的,那么认为这是相对路径
-                File file = null;
-                if (propertiePath.startsWith(".")) {
-                    file = new File(classPath + File.separator + propertiePath);
-                } else {
-                    file = new File(propertiePath);
-                }
-                try {
-                    properties = new PropertiesFactory(file, propertieCode);
-                }catch (Exception e){
-                    System.err.println("配置文件找不到:" + file.getAbsolutePath());
-                }
-            }
+            properties = getProperties(anno.value(), anno.encoding());
         }
 
-        // TODO 实现Configuration注解中的proxyBeanMethods,自定义的properties解析类
-        autoVariable(bean, properties);
+        autoVariable(bean, properties, fal);
     }
 
     /**
@@ -160,24 +154,47 @@ public class AutoValue extends AutoLoadBase {
      * @throws IllegalAccessException
      * @throws IOException
      */
+    @Deprecated
     public void autoVariable(Object bean, String directory, String fileName) throws Exception {
+        autoVariable(bean, directory, fileName , false);
+    }
+
+    /**
+     *
+     * @param bean
+     * @param directory 目录
+     * @param fileName  文件名
+     * @param fal       是否塞入对象池
+     * @throws Exception
+     */
+    public void autoVariable(Object bean, String directory, String fileName, boolean fal) throws Exception {
         // 如果文件路径是以 . 开头的,那么认为这是相对路径
         PropertiesFactory properties =
                 new PropertiesFactory(new File(directory + File.separator + fileName));
-
-        autoVariable(bean, properties);
+        autoVariable(bean, properties, fal);
     }
-
 
     /**
      * 从指定 Properties 中获取配置
-     *
      * @param bean
      * @param properties
-     * @throws IllegalAccessException
-     * @throws IOException
      */
-    public void autoVariable(Object bean, PropertiesFactory properties) {
+    public void autoVariable(Object bean, PropertiesFactory properties){
+        autoVariable(bean, properties, false);
+    }
+
+    /**
+     * 从指定 Properties 中获取配置
+     * @param bean
+     * @param properties
+     * @param fal         是否添加进对象池
+     */
+    @Deprecated
+    public void autoVariable(Object bean, PropertiesFactory properties, boolean fal) {
+        if (fal){
+            ObjectPool.putObject(bean.getClass(), bean);
+        }
+
         // 获取f对象对应类中的所有属性域
         Field[] fields = bean.getClass().getDeclaredFields();
 
@@ -315,6 +332,36 @@ public class AutoValue extends AutoLoadBase {
             value = ConvertTool.convert(propertiesFactory.getStr(key), valueType);
         }
         return value;
+    }
+
+    /**
+     * 获取配置文件工厂
+     * @param propertiePath
+     * @param propertieCode
+     * @return
+     */
+    public static PropertiesFactory getProperties(String propertiePath, String propertieCode){
+
+        if (propertiePath.trim().isEmpty()) {
+            return propertiesFactory;
+        }
+        PropertiesFactory properties = propertiesFactory;
+        String classPath = PackageUtil.getPath(rootClass);
+
+        // 如果文件路径是以 . 开头的,那么认为这是相对路径
+        File file;
+        if (propertiePath.startsWith(".")) {
+            file = new File(classPath + File.separator + propertiePath);
+        } else {
+            file = new File(propertiePath);
+        }
+        try {
+            properties = new PropertiesFactory(file, propertieCode);
+        }catch (Exception e){
+            System.err.println("配置文件找不到:" + file.getAbsolutePath());
+        }
+
+        return properties;
     }
 
     /**
