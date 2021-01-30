@@ -73,13 +73,11 @@ public class QHttpHandler implements HttpHandler {
             default:
         }
 
-
         /* 结果返回 */
         httpExchange.sendResponseHeaders(200, response.length());
         OutputStream os = httpExchange.getResponseBody();
         os.write(response.getBytes());
         os.close();
-
     }
 
 
@@ -115,7 +113,8 @@ public class QHttpHandler implements HttpHandler {
                 result.write(buffer, 0, length);
             }
             httpBody = result.toString("UTF-8");
-            map.putAll(getMap4body(httpBody));
+            JSONObject jsonObject = Converter.urlParam2Json(httpBody);
+            map.putAll(Converter.toMap(jsonObject));
         }
 
         // 解析入参
@@ -136,7 +135,7 @@ public class QHttpHandler implements HttpHandler {
                 }
             }
             if(args[i]== null){
-                throw new Exception("url参数不能为空." + url);
+                throw new Exception("url参数不能为空: " + url);
             }
             i++;
         }
