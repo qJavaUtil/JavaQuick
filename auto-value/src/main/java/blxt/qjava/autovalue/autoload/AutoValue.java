@@ -346,11 +346,11 @@ public class AutoValue extends AutoLoadBase {
             return propertiesFactory;
         }
         PropertiesFactory properties = propertiesFactory;
-        String classPath = PackageUtil.getPath(rootClass);
 
         // 如果文件路径是以 . 开头的,那么认为这是相对路径
         File file;
         if (propertiePath.startsWith(".")) {
+            String classPath = PackageUtil.getPath(rootClass);
             file = new File(classPath + File.separator + propertiePath);
         } else {
             file = new File(propertiePath);
