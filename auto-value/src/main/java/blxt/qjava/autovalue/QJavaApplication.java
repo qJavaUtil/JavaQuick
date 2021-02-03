@@ -6,11 +6,11 @@ import blxt.qjava.autovalue.inter.Configuration;
 import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.autovalue.reflect.PackageUtil;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static blxt.qjava.autovalue.reflect.PackageUtil.getClassName;
 
@@ -23,6 +23,8 @@ import static blxt.qjava.autovalue.reflect.PackageUtil.getClassName;
 public class QJavaApplication {
 
     static List<AutoLoadBase> autoLoadBases = new ArrayList<>() ;
+
+    public static Map<String, String> listPassPageName = new HashMap<>();
 
     static {
         // Configuration扫描, 实现@Value
@@ -95,32 +97,57 @@ public class QJavaApplication {
      * @return
      */
     public static List<AutoLoadBase> scanAutoLoad(String packageName) throws IOException {
-        List<AutoLoadBase> autoLoads = null;
+        List<AutoLoadBase> autoLoads = new ArrayList<>();
 
-        List<String> classNames = PackageUtil.getClassName(QJavaApplication.class.getClassLoader(), packageName);
-        if (classNames != null) {
-            autoLoads = new ArrayList<>();
-            for (String className : classNames) {
+        //List<String> classNames = PackageUtil.getClassName(QJavaApplication.class.getClassLoader(), packageName);
+        ImmutableSet<ClassPath.ClassInfo> classInfos =
+                PackageUtil.getClassInfo(QJavaApplication.class.getClassLoader(), packageName);
+
+        if(classInfos != null){
+            for (ClassPath.ClassInfo classInfo : classInfos) {
+
+ //               String className = classInfo.getName();
                 // 过滤测试类
-                if (className.indexOf("test-classes") > 0) {
-                    className = className.substring(className.indexOf("test-classes") + 13);
-                }
+//                if (className.indexOf("test-classes") > 0) {
+//                    className = className.substring(className.indexOf("test-classes") + 13);
+//                }
 
-                try {
-                    Class objClass = Class.forName(className);
-                    if (!AutoLoadBase.class.isAssignableFrom(objClass)){
-                        continue;
-                    }
-                    AutoLoadBase bean = analysisAutoLoad(objClass);
-                    if(bean == null) {
-                       continue;
-                    }
-                    autoLoads.add(bean);
-                } catch (ClassNotFoundException ignored) {
-                    System.err.println("自动装载类实现异常:" + className);
+                Class objClass = classInfo.load();
+                if (!AutoLoadBase.class.isAssignableFrom(objClass)){
+                    continue;
                 }
+                AutoLoadBase bean = analysisAutoLoad(objClass);
+                if(bean == null) {
+                    continue;
+                }
+                autoLoads.add(bean);
             }
         }
+
+
+//        if (classNames != null) {
+//            autoLoads = new ArrayList<>();
+//            for (String className : classNames) {
+//                // 过滤测试类
+//                if (className.indexOf("test-classes") > 0) {
+//                    className = className.substring(className.indexOf("test-classes") + 13);
+//                }
+//
+//                try {
+//                    Class objClass = Class.forName(className);
+//                    if (!AutoLoadBase.class.isAssignableFrom(objClass)){
+//                        continue;
+//                    }
+//                    AutoLoadBase bean = analysisAutoLoad(objClass);
+//                    if(bean == null) {
+//                       continue;
+//                    }
+//                    autoLoads.add(bean);
+//                } catch (ClassNotFoundException ignored) {
+//                    System.err.println("自动装载类实现异常:" + className);
+//                }
+//            }
+//        }
 
         return autoLoads;
     }

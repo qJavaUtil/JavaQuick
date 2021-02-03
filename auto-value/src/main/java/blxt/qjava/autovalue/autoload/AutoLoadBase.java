@@ -9,6 +9,8 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 
+import static blxt.qjava.autovalue.QJavaApplication.listPassPageName;
+
 
 /**
  * @Author: Zhang.Jialei
@@ -52,12 +54,23 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
             /* 指定包扫描 */
             ArrayList<String> arrayList = getValuesSplit(path, ",");
             for (String p : arrayList) {
-                scan(p);
+                /* 忽略指定包 */
+                if(listPassPageName.get(p) != null){
+                    continue;
+                }
+                try{
+                    scan(p);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
             return;
         }
         /* 默认包扫描 */
-        scan(path);
+        /* 忽略指定包 */
+        if(listPassPageName.get(path) != null){
+            scan(path);
+        }
     }
 
     /**
@@ -75,19 +88,15 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
                     className = className.substring(className.indexOf("test-classes") + 13);
                 }
 
-                Class<?>  objClass = Class.forName(className);
+                Class<?> objClass = Class.forName(className);
                 if (objClass.isEnum() || objClass.isAnnotation()
                         || objClass.isInterface()){
                     continue;
                 }
-
-
                 Annotation classAnnotation = objClass.getAnnotation(annotation);
                 if(classAnnotation == null){
                     continue;
                 }
-
-
                 inject(objClass);
             }
         }

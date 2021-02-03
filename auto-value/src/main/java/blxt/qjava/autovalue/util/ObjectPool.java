@@ -90,6 +90,14 @@ public class ObjectPool {
         }
     }
 
+    public static void remove(Class<?> key){
+        if(datas.get(key) != null){
+            Object o = datas.get(key);
+            o = null;
+            datas.remove(key);
+        }
+    }
+
     /**
      * 塞入接口实现类
      */

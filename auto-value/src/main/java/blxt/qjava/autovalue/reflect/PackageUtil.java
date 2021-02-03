@@ -1,5 +1,6 @@
 package blxt.qjava.autovalue.reflect;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -138,6 +139,11 @@ public class PackageUtil {
         }
 
         return fileNames;
+    }
+
+    public static ImmutableSet<ClassPath.ClassInfo> getClassInfo(ClassLoader classloader, String packageName) throws IOException {
+        ClassPath classpath = ClassPath.from(classloader);
+        return classpath.getTopLevelClasses(packageName);
     }
     /**
      * 从项目文件获取某包下所有类
