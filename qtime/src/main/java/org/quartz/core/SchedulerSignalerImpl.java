@@ -58,7 +58,7 @@ public class SchedulerSignalerImpl implements SchedulerSignaler {
         this.sched = sched;
         this.schedThread = schedThread;
         
-        log.info("Initialized Scheduler Signaller of type: " + getClass());
+        log.debug("Initialized Scheduler Signaller of type: " + getClass());
     }
 
     /*

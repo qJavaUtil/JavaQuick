@@ -127,8 +127,8 @@ public class QuartzScheduler implements RemotableQuartzScheduler {
                 }
             }
         } catch (Exception e) {
-            (LoggerFactory.getLogger(QuartzScheduler.class)).error(
-                "Error loading version info from quartz-build.properties.", e);
+            //(LoggerFactory.getLogger(QuartzScheduler.class)).error(
+            //    "Error loading version info from quartz-build.properties.", e);
         } finally {
             if(is != null) {
                 try { is.close(); } catch(Exception ignore) {}
@@ -226,7 +226,7 @@ public class QuartzScheduler implements RemotableQuartzScheduler {
 
         signaler = new SchedulerSignalerImpl(this, this.schedThread);
         
-        getLog().info("Quartz Scheduler v." + getVersion() + " created.");
+        getLog().debug("Quartz Scheduler v." + getVersion() + " created.");
     }
 
     public void initialize() throws SchedulerException {
@@ -291,13 +291,13 @@ public class QuartzScheduler implements RemotableQuartzScheduler {
         // }
 
         
-        getLog().info("Scheduler meta-data: " +
-                (new SchedulerMetaData(getSchedulerName(),
-                        getSchedulerInstanceId(), getClass(), boundRemotely, runningSince() != null, 
-                        isInStandbyMode(), isShutdown(), runningSince(), 
-                        numJobsExecuted(), getJobStoreClass(), 
-                        supportsPersistence(), isClustered(), getThreadPoolClass(), 
-                        getThreadPoolSize(), getVersion())).toString());
+//        getLog().info("Scheduler meta-data: " +
+//                (new SchedulerMetaData(getSchedulerName(),
+//                        getSchedulerInstanceId(), getClass(), boundRemotely, runningSince() != null,
+//                        isInStandbyMode(), isShutdown(), runningSince(),
+//                        numJobsExecuted(), getJobStoreClass(),
+//                        supportsPersistence(), isClustered(), getThreadPoolClass(),
+//                        getThreadPoolSize(), getVersion())).toString());
     }
     
     /*
@@ -351,7 +351,7 @@ public class QuartzScheduler implements RemotableQuartzScheduler {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         mbs.unregisterMBean(new ObjectName(jmxObjectName));
         jmxBean.setSampledStatisticsEnabled(false);
-        getLog().info("Scheduler unregistered from name '" + jmxObjectName + "' in the local MBeanServer.");
+        getLog().debug("Scheduler unregistered from name '" + jmxObjectName + "' in the local MBeanServer.");
     }
 
     /**

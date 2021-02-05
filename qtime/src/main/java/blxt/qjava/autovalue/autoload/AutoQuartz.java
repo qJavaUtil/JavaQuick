@@ -1,9 +1,7 @@
 package blxt.qjava.autovalue.autoload;
 
-import blxt.qjava.autovalue.inter.PropertySource;
 import blxt.qjava.autovalue.inter.Scheduled;
 import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
-import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.quartz.QuartzManager;
 import org.quartz.Job;
 

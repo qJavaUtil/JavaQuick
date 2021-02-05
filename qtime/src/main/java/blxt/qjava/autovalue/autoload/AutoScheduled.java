@@ -6,6 +6,8 @@ import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.quartz.QJob;
 import blxt.qjava.quartz.QuartzManager;
+import blxt.qjava.utils.check.CheckUtils;
+
 import java.lang.reflect.Method;
 
 @AutoLoadFactory(name="AutoScheduled", annotation = Component.class, priority = 20)
@@ -24,14 +26,10 @@ public class AutoScheduled extends AutoLoadBase {
                 continue;
             }
 
-            String JOB_NAME = object.getName() + "." +  method.getName();
-            String JOB_GROUP_NAME = object.getPackage().getName();
-            String TRIGGER_GROUP_NAME = object.getPackage().getName();
-            System.out.println("定时器:" + JOB_NAME);
-            QuartzManager.addJob(JOB_NAME, JOB_GROUP_NAME, JOB_NAME, TRIGGER_GROUP_NAME,
-                    new QJob(bean, method),
-                    valuename.cron());
+            String job_name = object.getName() + "." +  method.getName();
 
+            String group = valuename.group();
+            String trigger_group = object.getPackage().getName();
             String cron = valuename.cron();
             String zone = valuename.zone();
             long fixedDelay = valuename.fixedDelay();
@@ -40,6 +38,19 @@ public class AutoScheduled extends AutoLoadBase {
             String fixedRateString= valuename.fixedRateString();
             long initialDelay= valuename.initialDelay();
             String initialDelayString= valuename.initialDelayString();
+
+            System.out.println("定时任务:" + job_name + ":" + valuename.cron());
+
+            if(CheckUtils.isEmpty(group)){
+                group = object.getPackage().getName();
+            }
+            if(CheckUtils.isEmpty(trigger_group)){
+                trigger_group = object.getPackage().getName();
+            }
+
+            QuartzManager.addJob(job_name, group, job_name, trigger_group,
+                    new QJob(bean, method),
+                    valuename.cron());
 
         }
 

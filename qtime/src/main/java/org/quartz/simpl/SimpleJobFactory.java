@@ -47,11 +47,9 @@ public class SimpleJobFactory implements JobFactory {
         JobDetail jobDetail = bundle.getJobDetail();
         Class<? extends Job> jobClass = jobDetail.getJobClass();
         try {
-            if(log.isDebugEnabled()) {
-                log.debug(
-                    "Producing instance of Job '" + jobDetail.getKey() + 
-                    "', class=" + jobClass.getName());
-            }
+//            log.debug(
+//                "Producing instance of Job '" + jobDetail.getKey() +
+//                "', class=" + jobClass.getName());
             if(jobDetail.getJobBean() != null){
                 return jobDetail.getJobBean();
             }

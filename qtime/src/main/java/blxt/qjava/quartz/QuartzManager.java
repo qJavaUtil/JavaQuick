@@ -56,7 +56,8 @@ public class QuartzManager {
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static void addJob(String jobName, String jobGroupName,
-                              String triggerName, String triggerGroupName, Job jobClass, String cron) {
+                              String triggerName, String triggerGroupName,
+                              Job jobClass, String cron) {
 
         // 任务名，任务组，任务执行类
         JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobName, jobGroupName).build();
@@ -174,7 +175,7 @@ public class QuartzManager {
      * @return
      */
     public static boolean isExist(String jobName){
-        return jobMaps.get(jobName) == null ? false : true;
+        return jobMaps.get(jobName) != null;
     }
 
     /**

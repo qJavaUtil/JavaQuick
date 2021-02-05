@@ -16,6 +16,10 @@ public @interface Scheduled {
 
     String zone() default "";
 
+    String group() default "";
+
+    String trigger_group() default "";
+
     long fixedDelay() default -1L;
 
     /**  固定延时 */
