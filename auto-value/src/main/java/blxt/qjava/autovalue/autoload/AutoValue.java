@@ -14,12 +14,16 @@ import blxt.qjava.autovalue.inter.*;
 import blxt.qjava.autovalue.util.ConvertTool;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.autovalue.reflect.PackageUtil;
+import blxt.qjava.autovalue.util.ObjectValue;
 import blxt.qjava.properties.PropertiesFactory;
 
+import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * 自动装载属性
@@ -123,8 +127,7 @@ public class AutoValue extends AutoLoadBase {
      * @param bean
      */
     @Deprecated
-    public void autoVariable(Object bean)
-    {
+    public void autoVariable(Object bean) throws Exception {
         autoVariable(bean, false);
     }
 
@@ -133,7 +136,7 @@ public class AutoValue extends AutoLoadBase {
      * @param bean
      * @param fal  是否添加到对象池
      */
-    public void autoVariable(Object bean, boolean fal) {
+    public void autoVariable(Object bean, boolean fal) throws Exception {
         PropertiesFactory properties = propertiesFactory;
 
         // 从类注解Configuration中获取值,判断是否是自定义的配置文件路径
@@ -179,7 +182,7 @@ public class AutoValue extends AutoLoadBase {
      * @param bean
      * @param properties
      */
-    public void autoVariable(Object bean, PropertiesFactory properties){
+    public void autoVariable(Object bean, PropertiesFactory properties) {
         autoVariable(bean, properties, false);
     }
 
@@ -211,24 +214,11 @@ public class AutoValue extends AutoLoadBase {
                 continue;
             }
 
-            // 获取原来的访问控制权限
-            boolean accessFlag = field.isAccessible();
-            // 修改访问控制权限
-            field.setAccessible(true);
-
             // 属性值
             Object value = getPropertiesValue(valuenameKey, properties, bean, field);
-
             if (value != null) {
-                try {
-                    field.set(bean, value);
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+                ObjectValue.setObjectValue(bean,field, value, falSetAccessible);
             }
-
-            // 恢复访问控制权限
-            field.setAccessible(accessFlag);
         }
     }
 

@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>auto-value</artifactId>
-    <version>1.0.0-s</version>
+    <version>1.0.0</version>
 
     <dependencies>
         <dependency>
@@ -29,7 +29,13 @@
             <artifactId>guava</artifactId>
             <version>29.0-jre</version>
         </dependency>
-<!--        <dependency>-->
+        <dependency>
+            <groupId>org.blxt</groupId>
+            <artifactId>qtools</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <!--        <dependency>-->
 <!--            <groupId>org.blxt</groupId>-->
 <!--            <artifactId>qudp</artifactId>-->
 <!--            <version>1.0.0</version>-->

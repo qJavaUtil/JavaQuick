@@ -4,6 +4,7 @@ package blxt.qjava.autovalue.autoload;
 import blxt.qjava.autovalue.inter.ComponentScan;
 import blxt.qjava.autovalue.interfaces.AutoLoad;
 import blxt.qjava.autovalue.reflect.PackageUtil;
+import blxt.qjava.utils.system.JavaVersionUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ import static blxt.qjava.autovalue.QJavaApplication.listPassPageName;
 public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>{
 
     public static boolean isDebug = false;
+    /** java8 以上, 不允许使用setAccessible(true) **/
+    public static boolean falSetAccessible = JavaVersionUtils.getJDKVersion() <= 52;
 
     String name = "";
     /** 优先级 */
@@ -40,7 +43,7 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
      * @param object object     启动类,建议启动类在根包路径下,否则需要手动添加扫描路径
      * @throws Exception
      */
-    public void packageScan(Class<?> object) throws Exception {
+    public void packageScan(Class<?> object) {
         String path = getScanPackageName(object);
         init(object);
         if(path == null){
@@ -49,7 +52,7 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
         packageScan(path);
     }
 
-    public void packageScan(String path) throws Exception {
+    public void packageScan(String path) {
         if (path != null) {
             /* 指定包扫描 */
             ArrayList<String> arrayList = getValuesSplit(path, ",");
@@ -78,7 +81,7 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
      * @param packageName  要扫描的包名
      */
     @Override
-    public void scan(String packageName) throws Exception {
+    public void scan(String packageName) {
         List<String> classNames = PackageUtil.getClassName(packageName, true);
 
         if (classNames != null) {
@@ -88,16 +91,22 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
                     className = className.substring(className.indexOf("test-classes") + 13);
                 }
 
-                Class<?> objClass = Class.forName(className);
-                if (objClass.isEnum() || objClass.isAnnotation()
-                        || objClass.isInterface()){
+                Class<?> objClass = null;
+                try {
+                    objClass = Class.forName(className);
+                    if (objClass.isEnum() || objClass.isAnnotation()
+                            || objClass.isInterface()){
+                        continue;
+                    }
+                    Annotation classAnnotation = objClass.getAnnotation(annotation);
+                    if(classAnnotation == null){
+                        continue;
+                    }
+                    inject(objClass);
+                } catch (Exception e) {
                     continue;
                 }
-                Annotation classAnnotation = objClass.getAnnotation(annotation);
-                if(classAnnotation == null){
-                    continue;
-                }
-                inject(objClass);
+
             }
         }
     }
