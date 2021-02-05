@@ -22,10 +22,6 @@ public class AutoMqttClient extends AutoLoadBase{
             return null;
         }
 
-//        if(!PackageUtil.isInterfaces(object, MqttCallback.class)){
-//            throw new Exception("MqttClientListener需要实现org.eclipse.paho.mqttv5.client.MqttCallback接口。");
-//        }
-
         if (!MqttClient.class.isAssignableFrom(object)) {
             throw new IllegalArgumentException(
                     object.getName() + "MqttClientListener需要集成org.eclipse.paho.mqttv5.client.MqttClient类。");
@@ -62,7 +58,10 @@ public class AutoMqttClient extends AutoLoadBase{
         String[] params = new String[]{mqttBean.url, mqttBean.clientid};
         // 自动实现
         MqttClient bean = (MqttClient)ObjectPool.putObjectWithParams(object, params);
-        MqttFactory.onMqttBuild(bean, mqttBean);
+        if(!MqttFactory.onMqttBuild(bean, mqttBean)){
+            ObjectPool.remove(object);
+            throw new Exception("mqtt链接失败:");
+        }
 
         return bean;
     }

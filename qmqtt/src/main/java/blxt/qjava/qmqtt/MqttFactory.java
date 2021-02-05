@@ -25,7 +25,6 @@ public class MqttFactory {
         try {
             bean.connect(connOpts);
         } catch (MqttException e) {
-            e.printStackTrace();
             return false;
         }
         // 添加监听
