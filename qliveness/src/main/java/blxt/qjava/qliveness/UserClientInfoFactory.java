@@ -1,5 +1,7 @@
 package blxt.qjava.qliveness;
 
+import blxt.qjava.utils.network.MacTools;
+
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -20,6 +22,12 @@ public class UserClientInfoFactory {
             e.printStackTrace();
         }
         map.put("ip", getIpAddress().toString());
+        try {
+            List<String> macs = MacTools.getMacList();
+            map.put("macs", macs.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return map;
     }
