@@ -6,6 +6,7 @@ import blxt.qjava.autovalue.interfaces.AutoLoad;
 import blxt.qjava.autovalue.reflect.PackageUtil;
 import blxt.qjava.utils.system.JavaVersionUtils;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,11 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
         /* 默认包扫描 */
         /* 忽略指定包 */
         if(listPassPageName.get(path) != null){
-            scan(path);
+            try {
+                scan(path);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -81,8 +86,8 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
      * @param packageName  要扫描的包名
      */
     @Override
-    public void scan(String packageName) {
-        List<String> classNames = PackageUtil.getClassName(packageName, true);
+    public void scan(String packageName) throws IOException {
+        List<String> classNames = PackageUtil.getClassName(AutoLoadBase.class.getClassLoader(), packageName);
 
         if (classNames != null) {
             for (String className : classNames) {

@@ -12,8 +12,6 @@ import com.google.common.reflect.ClassPath;
 import java.io.IOException;
 import java.util.*;
 
-import static blxt.qjava.autovalue.reflect.PackageUtil.getClassName;
-
 /**
  * qjava框架注释自动加载启动类
  *

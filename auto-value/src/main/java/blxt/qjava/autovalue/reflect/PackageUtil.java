@@ -28,7 +28,7 @@ import java.util.jar.JarFile;
  *
  */
 public class PackageUtil {
-    private final static ClassPool CLASS_POOL = ClassPool.getDefault();
+
     /**
      * 判断摸个类是否集成了指定接口
      * @param object      需要判断的类
@@ -59,12 +59,12 @@ public class PackageUtil {
         }
         try {
             //类的反射信息
-            CtClass cc = CLASS_POOL.get(method.getDeclaringClass().getName());
+            CtClass cc = ClassPool.getDefault().get(method.getDeclaringClass().getName());
 
             Class<?>[] parameterTypes = method.getParameterTypes();
             CtClass[] ctClParamTypes = new CtClass[parameterTypes.length];
             for (int i = 0, length = parameterTypes.length; i < length; i++) {
-                ctClParamTypes[i] = CLASS_POOL.get(parameterTypes[i].getName());
+                ctClParamTypes[i] = ClassPool.getDefault().get(parameterTypes[i].getName());
             }
             CtMethod ctMethod = cc.getDeclaredMethod(method.getName(), ctClParamTypes);
 
