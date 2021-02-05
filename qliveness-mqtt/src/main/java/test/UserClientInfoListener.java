@@ -1,4 +1,4 @@
-package com.hivemq;
+package test;
 
 import blxt.qjava.autovalue.inter.*;
 import blxt.qjava.qsql.influxdb.InfluxConnection;

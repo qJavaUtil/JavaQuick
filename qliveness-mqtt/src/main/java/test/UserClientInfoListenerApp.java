@@ -1,4 +1,4 @@
-package com.hivemq;
+package test;
 
 import blxt.qjava.autovalue.QJavaApplication;
 import blxt.qjava.autovalue.inter.ComponentScan;
@@ -6,9 +6,6 @@ import blxt.qjava.autovalue.inter.ConfigurationScan;
 import blxt.qjava.autovalue.inter.EnHttpServer;
 import blxt.qjava.autovalue.inter.Liveness;
 
-@EnHttpServer()
-@ComponentScan()
-@ConfigurationScan()
 @Liveness(tag = "mqtt", url = "http://qjava.register.zhangjialei:60001/qliveness/register")
 public class UserClientInfoListenerApp {
 

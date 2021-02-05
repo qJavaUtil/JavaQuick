@@ -33,7 +33,7 @@ public class AutoUdpServer extends AutoLoadBase{
         QUdpServer udpServer = new QUdpServer(port, bean);
         udpServer.setMAX_LENGTH(anno.packageSize());
         if(!udpServer.creat()){
-            throw new Exception("创建UdpListener失败,可能端口被占用:" + port);
+            return null;
         }
         QThreadpool.getInstance().execute(udpServer);
 

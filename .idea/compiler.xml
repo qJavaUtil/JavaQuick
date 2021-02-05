@@ -21,6 +21,7 @@
         <module name="qthread" />
         <module name="qmqtt" />
         <module name="auto-value" />
+        <module name="qliveness-mqtt" />
         <module name="qFrame" />
       </profile>
     </annotationProcessing>
@@ -31,7 +32,9 @@
       <module name="qftp" target="8" />
       <module name="qhttpserver" target="1.8" />
       <module name="qjava" target="1.8" />
+      <module name="qjava-demo" target="11" />
       <module name="qliveness" target="8" />
+      <module name="qliveness-mqtt" target="8" />
       <module name="qlog" target="1.8" />
       <module name="qmqtt" target="8" />
       <module name="qopencv" target="1.8" />

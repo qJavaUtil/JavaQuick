@@ -5,6 +5,7 @@
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/qsql/pom.xml" />
+        <option value="$PROJECT_DIR$/qliveness-mqtt/pom.xml" />
       </list>
     </option>
   </component>

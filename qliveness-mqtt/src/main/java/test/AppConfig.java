@@ -1,4 +1,4 @@
-package com.hivemq;
+package test;
 
 import blxt.qjava.autovalue.inter.Component;
 import blxt.qjava.autovalue.inter.Run;

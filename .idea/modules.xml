@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/qhttpserver/qhttpserver.iml" filepath="$PROJECT_DIR$/qhttpserver/qhttpserver.iml" />
       <module fileurl="file://$PROJECT_DIR$/qjava.iml" filepath="$PROJECT_DIR$/qjava.iml" />
       <module fileurl="file://$PROJECT_DIR$/qliveness/qliveness.iml" filepath="$PROJECT_DIR$/qliveness/qliveness.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qliveness-mqtt/qliveness-mqtt.iml" filepath="$PROJECT_DIR$/qliveness-mqtt/qliveness-mqtt.iml" />
       <module fileurl="file://$PROJECT_DIR$/qlog/qlog.iml" filepath="$PROJECT_DIR$/qlog/qlog.iml" />
       <module fileurl="file://$PROJECT_DIR$/qmqtt/qmqtt.iml" filepath="$PROJECT_DIR$/qmqtt/qmqtt.iml" />
       <module fileurl="file://$PROJECT_DIR$/qopencv/qopencv.iml" filepath="$PROJECT_DIR$/qopencv/qopencv.iml" />
