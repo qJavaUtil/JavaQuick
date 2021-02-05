@@ -3,6 +3,8 @@ package blxt.qjava.qsql.influxdb;
 import blxt.qjava.autovalue.inter.PropertySource;
 import blxt.qjava.autovalue.inter.Value;
 
+import java.lang.annotation.RetentionPolicy;
+
 /**
  * 一个influxdb的连接参数
  * @auth 张家磊
@@ -35,7 +37,10 @@ public class InfluxBean {
      * 保留策略名
      */
     @Value("influx.replication")
-    public String retentionPolicy="default";
+    public String retentionPolicyStr ="default";
+
+    @Value("influx.replication.time")
+    public String retentionTimeStr ="0s";
 
     /**
      * 不存在是否创建
@@ -46,8 +51,16 @@ public class InfluxBean {
     @Value("influx.connect.timeout")
     public int connectTimeout;
 
+   // RetentionPolicy retentionPolicy = ;
+
     public InfluxBean(){
 
+    }
+
+    public InfluxBean(String username, String password, String openurl) {
+        this.username = username;
+        this.password = password;
+        this.openurl = openurl;
     }
 
     /**
@@ -56,15 +69,15 @@ public class InfluxBean {
      * @param password          密码
      * @param openurl           连接地址 http://192.168.0.118:8086
      * @param database          数据库名
-     * @param retentionPolicy   保留策略名
+     * @param retentionPolicyStr   保留策略名
      */
     public InfluxBean(String username, String password, String openurl,
-                      String database, String retentionPolicy, boolean isCreatDateBase) {
+                      String database, String retentionPolicyStr, boolean isCreatDateBase) {
         this.username = username;
         this.password = password;
         this.openurl = openurl;
         this.database = database;
-        this.retentionPolicy = retentionPolicy;
+        this.retentionPolicyStr = retentionPolicyStr;
         this.isCreatDateBase = isCreatDateBase;
     }
 
@@ -104,12 +117,12 @@ public class InfluxBean {
         return this;
     }
 
-    public String getRetentionPolicy() {
-        return retentionPolicy;
+    public String getRetentionPolicyStr() {
+        return retentionPolicyStr;
     }
 
-    public InfluxBean setRetentionPolicy(String retentionPolicy) {
-        this.retentionPolicy = retentionPolicy;
+    public InfluxBean setRetentionPolicyStr(String retentionPolicyStr) {
+        this.retentionPolicyStr = retentionPolicyStr;
         return this;
     }
 
@@ -122,8 +135,18 @@ public class InfluxBean {
         return this;
     }
 
+    public String getRetentionTimeStr() {
+        return retentionTimeStr;
+    }
+
+    public InfluxBean setRetentionTimeStr(String retentionTimeStr) {
+        this.retentionTimeStr = retentionTimeStr;
+        return this;
+    }
+
     @Override
     public InfluxBean clone() {
-        return  new InfluxBean(username, password, openurl, database, retentionPolicy, isCreatDateBase);
+        return  new InfluxBean(username, password, openurl, database, retentionPolicyStr, isCreatDateBase)
+                .setRetentionTimeStr(retentionTimeStr);
     }
 }

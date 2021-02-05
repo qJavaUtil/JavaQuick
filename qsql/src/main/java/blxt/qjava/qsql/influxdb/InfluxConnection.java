@@ -94,12 +94,12 @@ public class InfluxConnection {
         try {
             if (influxBean.isCreatDateBase && !influxDB.databaseExists(influxBean.database)) {
                 createDB(influxBean.database);
-                createDefaultRetentionPolicy("0h");
+                createDefaultRetentionPolicy( influxBean.getRetentionTimeStr());
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            influxDB.setRetentionPolicy(influxBean.getRetentionPolicy());
+            influxDB.setRetentionPolicy(influxBean.getRetentionPolicyStr());
         }
         influxDB.setLogLevel(InfluxDB.LogLevel.NONE);
         return influxDB;
@@ -122,16 +122,13 @@ public class InfluxConnection {
      * 创建自定义保留策略
      *
      * @param policyName  策略名
-     * @param duration    保存天数
+     * @param duration    保存时间
      * @param replication 保存副本数量
      * @param isDefault   是否设为默认保留策略
      */
     public void createRetentionPolicy(String policyName, String duration, int replication, Boolean isDefault) {
-        String sql = String.format("CREATE RETENTION POLICY \"%s\" ON \"%s\" DURATION %s REPLICATION %s ", policyName,
-                influxBean.database, duration, replication);
-        if (isDefault) {
-            sql = sql + " DEFAULT";
-        }
+        String sql = String.format("CREATE RETENTION POLICY \"%s\" ON \"%s\" DURATION %s REPLICATION %s %s", policyName,
+                influxBean.database, duration, replication, isDefault ? "DEFAULT" : "");
         this.query(sql);
     }
 
@@ -144,9 +141,7 @@ public class InfluxConnection {
      * @param times 保存时长, xxD :周w, 天d,小时h,分钟m,秒s
      */
     public void createDefaultRetentionPolicy(String times) {
-        String command = String.format("CREATE RETENTION POLICY \"%s\" ON \"%s\" DURATION %s REPLICATION %s DEFAULT",
-                "default", influxBean.database, times, 1);
-        this.query(command);
+        createRetentionPolicy("default", times, 1, true);
     }
 
     /**
@@ -174,7 +169,7 @@ public class InfluxConnection {
         if (0 != time) {
             builder.time(time, timeUnit);
         }
-        influxDB.write(influxBean.database, influxBean.retentionPolicy, builder.build());
+        influxDB.write(influxBean.database, influxBean.retentionPolicyStr, builder.build());
     }
 
     /**
