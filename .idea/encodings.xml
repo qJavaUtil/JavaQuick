@@ -35,6 +35,8 @@
     <file url="file://$PROJECT_DIR$/qtools/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/qudp/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/qudp/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qxml/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qxml/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
   </component>

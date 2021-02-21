@@ -25,6 +25,8 @@
         <module>qmqtt</module>
         <module>qftp</module>
         <module>qliveness</module>
+        <module>qxml</module>
+        <module>qsql</module>
     </modules>
 
     <properties>
@@ -87,7 +89,7 @@
         <repository>
             <id>zjlnexus</id>
             <name>zjlnexus</name>
-            <url>http://maven.zhangjialei.cn:8083/repository/maven-releases/</url>
+            <url>http://47.242.60.114:21003/repository/maven-releases/</url>
         </repository>
     </distributionManagement>
 

@@ -74,13 +74,4 @@
         </plugins>
     </build>
 
-    <distributionManagement>
-        <repository>
-            <id>zjlnexus</id>
-            <name>zjlnexus</name>
-            <url>http://maven.zhangjialei.cn:8083/repository/maven-releases/</url>
-        </repository>
-    </distributionManagement>
-
-
 </project>
