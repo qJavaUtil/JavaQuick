@@ -53,7 +53,7 @@ public class AppConfiguration   {
                 ", double_t=" + double_t +
                 ", boolean_t=" + boolean_t +
                 ", long_t=" + long_t +
-                ", bean1=" + (bean1 == null ? "" : bean1.toString()) +
+                ", bean1=" + (bean1 == null ? "null" : bean1.toString()) +
                 '}';
     }
 }

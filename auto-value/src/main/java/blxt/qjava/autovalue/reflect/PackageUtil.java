@@ -93,6 +93,7 @@ public class PackageUtil {
      *            包名
      * @return 类的完整名称
      */
+    @Deprecated
     public static List<String> getClassName(String packageName) {
         return getClassName(packageName, true);
     }
@@ -106,6 +107,7 @@ public class PackageUtil {
      *            是否遍历子包
      * @return 类的完整名称
      */
+    @Deprecated
     public static List<String> getClassName(String packageName, boolean childPackage) {
         List<String> fileNames = null;
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -114,7 +116,7 @@ public class PackageUtil {
         if (url != null) {
             String type = url.getProtocol();
             if (type.equals("file")) {
-                fileNames = getClassNameByFile(url.getPath(), null, childPackage);
+                fileNames = getClassNameByFile(url.getPath(), childPackage);
             } else if (type.equals("jar")) {
                 fileNames = getClassNameByJar(url.getPath(), childPackage);
             }
@@ -137,7 +139,6 @@ public class PackageUtil {
         for (ClassPath.ClassInfo classInfo : classpath.getTopLevelClasses(packageName)) {
             fileNames.add(classInfo.getName());
         }
-
         return fileNames;
     }
 
@@ -145,25 +146,46 @@ public class PackageUtil {
         ClassPath classpath = ClassPath.from(classloader);
         return classpath.getTopLevelClasses(packageName);
     }
+
+    /**
+     * 通过google.guava的getTopLevelClasses,获取class,递归获取子类
+     * @param classloader
+     * @param packageName
+     * @return
+     * @throws IOException
+     */
+    public static List<String> getClassNameAll(ClassLoader classloader, String packageName) throws IOException {
+        List<String> fileNames = new ArrayList<>();;
+        ClassPath classpath = ClassPath.from(classloader);;
+        for (ClassPath.ClassInfo classInfo : classpath.getTopLevelClassesRecursive(packageName)) {
+            fileNames.add(classInfo.getName());
+        }
+        return fileNames;
+    }
+    public static ImmutableSet<ClassPath.ClassInfo> getClassInfoAll(ClassLoader classloader, String packageName) throws IOException {
+        ClassPath classpath = ClassPath.from(classloader);
+        return classpath.getTopLevelClassesRecursive(packageName);
+    }
+
+
     /**
      * 从项目文件获取某包下所有类
      *
      * @param filePath
      *            文件路径
-     * @param className
-     *            类名集合
      * @param childPackage
      *            是否遍历子包
      * @return 类的完整名称
      */
-    private static List<String> getClassNameByFile(String filePath, List<String> className, boolean childPackage) {
+    @Deprecated
+    private static List<String> getClassNameByFile(String filePath, boolean childPackage) {
         List<String> myClassName = new ArrayList<>();
         File file = new File(filePath);
         File[] childFiles = file.listFiles();
         for (File childFile : childFiles) {
             if (childFile.isDirectory()) {
                 if (childPackage) {
-                    myClassName.addAll(getClassNameByFile(childFile.getPath(), myClassName, childPackage));
+                    myClassName.addAll(getClassNameByFile(childFile.getPath(), childPackage));
                 }
             } else {
                 String childFilePath = childFile.getPath();

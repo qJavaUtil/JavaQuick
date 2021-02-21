@@ -1,10 +1,13 @@
 package blxt.qjava.autovalue.autoload;
 
 
+import blxt.qjava.autovalue.QJavaApplication;
 import blxt.qjava.autovalue.inter.ComponentScan;
 import blxt.qjava.autovalue.interfaces.AutoLoad;
 import blxt.qjava.autovalue.reflect.PackageUtil;
 import blxt.qjava.utils.system.JavaVersionUtils;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -87,33 +90,43 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
      */
     @Override
     public void scan(String packageName) throws IOException {
-        List<String> classNames = PackageUtil.getClassName(AutoLoadBase.class.getClassLoader(), packageName);
+        ImmutableSet<ClassPath.ClassInfo> classInfos =
+                PackageUtil.getClassInfoAll(QJavaApplication.class.getClassLoader(), packageName);
 
-        if (classNames != null) {
-            for (String className : classNames) {
-                // 过滤测试类
-                if(className.indexOf("test-classes") > 0){
-                    className = className.substring(className.indexOf("test-classes") + 13);
-                }
-
-                Class<?> objClass = null;
-                try {
-                    objClass = Class.forName(className);
-                    if (objClass.isEnum() || objClass.isAnnotation()
-                            || objClass.isInterface()){
-                        continue;
-                    }
-                    Annotation classAnnotation = objClass.getAnnotation(annotation);
-                    if(classAnnotation == null){
-                        continue;
-                    }
-                    inject(objClass);
-                } catch (Exception e) {
-                    continue;
-                }
-
+        for (ClassPath.ClassInfo classInfo : classInfos) {
+            Class objClass = classInfo.load();
+            Annotation classAnnotation = objClass.getAnnotation(annotation);
+            if(classAnnotation == null){
+                continue;
+            }
+            try {
+                inject(objClass);
+            } catch (Exception e) {
             }
         }
+
+//        List<String> classNames = PackageUtil.getClassNameAll(AutoLoadBase.class.getClassLoader(), packageName);
+
+//        for (String className : classNames) {
+//            // 过滤测试类
+//            if(className.indexOf("test-classes") > 0){
+//                className = className.substring(className.indexOf("test-classes") + 13);
+//            }
+//
+//            try {
+//                Class<?> objClass = Class.forName(className);
+//                if (objClass.isEnum() || objClass.isAnnotation()
+//                        || objClass.isInterface()){
+//                    continue;
+//                }
+//                Annotation classAnnotation = objClass.getAnnotation(annotation);
+//                if(classAnnotation == null){
+//                    continue;
+//                }
+//                inject(objClass);
+//            } catch (Exception e) {
+//            }
+//        }
     }
 
     /**

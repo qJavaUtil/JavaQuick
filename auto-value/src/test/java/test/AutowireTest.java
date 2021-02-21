@@ -5,10 +5,13 @@ import blxt.qjava.autovalue.autoload.AutoValue;
 import blxt.qjava.autovalue.inter.ComponentScan;
 import blxt.qjava.autovalue.inter.ConfigurationScan;
 import blxt.qjava.autovalue.util.ObjectPool;
+import blxt.qjava.autovalue.util.ValueFactory;
+import test.util.AppConfiguration;
 import test.util.AutowireEntry;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.lang.reflect.Field;
 
 
 /**
