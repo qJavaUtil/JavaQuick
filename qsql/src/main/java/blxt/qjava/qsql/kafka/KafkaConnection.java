@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -27,9 +28,6 @@ public class KafkaConnection {
 
     private static final @NotNull Logger log = LoggerFactory.getLogger(KafkaConnection.class);
 
-    static {
-       // log.
-    }
 
     Properties properties = null;
     /** 第一个类型代表key的类型，第二个代表消息的类型 */
@@ -78,9 +76,9 @@ public class KafkaConnection {
      * @param topic  主题
      * @param msg    消息
      */
-    public void put(String topic, String msg) {
+    public Future<RecordMetadata> put(String topic, String msg) {
         ProducerRecord record = new ProducerRecord<String, String>(topic, msg);
-        kafkaProducer.send(record);
+        return kafkaProducer.send(record);
         // log.info("推送成成功{}",  record.partition());
     }
 
@@ -92,10 +90,10 @@ public class KafkaConnection {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public void putSync(String topic, String key, String msg) throws ExecutionException, InterruptedException {
+    public RecordMetadata putSync(String topic, String key, String msg) throws ExecutionException, InterruptedException {
         ProducerRecord<String,String> record = new ProducerRecord<>(topic, key, msg);
 
-        RecordMetadata result = kafkaProducer.send(record).get();
+        return kafkaProducer.send(record).get();
         //log.info("时间戳{}，主题{}，分区{}，位移{} ",  result.timestamp(), record.topic(), result.partition(), result.offset());
     }
 
@@ -106,10 +104,10 @@ public class KafkaConnection {
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    public void putSync(String topic, String msg) throws ExecutionException, InterruptedException {
+    public RecordMetadata putSync(String topic, String msg) throws ExecutionException, InterruptedException {
         ProducerRecord<String,String> record = new ProducerRecord<>(topic, msg);
 
-        RecordMetadata result = kafkaProducer.send(record).get();
+        return kafkaProducer.send(record).get();
         //log.info("时间戳{}，主题{}，分区{}，位移{} ",  result.timestamp(), record.topic(), result.partition(), result.offset());
     }
 

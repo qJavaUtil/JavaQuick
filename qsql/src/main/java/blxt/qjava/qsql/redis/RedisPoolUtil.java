@@ -8,8 +8,6 @@ import redis.clients.jedis.Jedis;
  */
 public class RedisPoolUtil {
 
-    private ResisSourceFactory resisSourceFactory;
-
     /**
      * 设置key的有效期，单位是秒
      * @param key
@@ -75,6 +73,32 @@ public class RedisPoolUtil {
                 return false;
             }
             result = jedis.set(key,value);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResisSourceFactory.returnBrokenResource(jedis);
+            return "OK".equals(result);
+        }
+        ResisSourceFactory.returnResource(jedis);
+        return "OK".equals(result);
+    }
+
+    /**
+     * 设置
+     * @param key
+     * @param value
+     * @return
+     */
+    public static boolean set(String key,int value){
+        Jedis jedis = null;
+        String result = null;
+
+        try {
+            jedis = ResisSourceFactory.getJedis();
+            if (jedis == null){
+                return false;
+            }
+            result = jedis.set(key,value
+                    + "");
         } catch (Exception e) {
             e.printStackTrace();
             ResisSourceFactory.returnBrokenResource(jedis);

@@ -1,12 +1,15 @@
 package postgres;
 
+import blxt.qjava.qsql.utils.ResultSetMapper;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import blxt.qjava.qsql.postgresql.DBPoolConnection;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @Author: Zhang.Jialei
@@ -14,37 +17,33 @@ import java.sql.SQLException;
  */
 public class postgres {
 
-    @Test
-    void test()
-    {
-        DBPoolConnection dbPoolConnection = DBPoolConnection.getInstance();
+
+    public static void main(String[] args) throws Exception {
+
+        DBPoolConnection.newInstance(new File("E:\\ZhangJieLei\\Documents\\workspace\\workJava\\JavaQuick\\JavaQuick\\qsql\\src\\test\\db_server.properties"));
         DruidPooledConnection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
-            connection =  dbPoolConnection.
-                    getConnection();
+            connection =  DBPoolConnection.getConnection();
             connection.setAutoCommit(false);
         }catch (Exception e){
             e.printStackTrace();
             return;
         }
 
-        String sql = "select * from mqtt.ut_device_product where user_key = 'user2'";
+        String sql = "select * from \"mqtt\".\"userbase\"";
         try {
             PreparedStatement pst = connection.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
 
-            while(rs.next()){
+            ResultSetMapper<User> resultSetMapper = new ResultSetMapper();
+            List<User> userList = resultSetMapper.toObject(rs, User.class);
 
-                System.out.print(rs.getString(1));
-                System.out.print(rs.getString(2));
-                System.out.print(rs.getString(3));
-                System.out.print(rs.getString(4));
-                System.out.print(rs.getString(5));
-                System.out.print(rs.getString(6));
-                System.out.println(rs.getString(7));
+            for(User u :userList){
+                System.out.println("结果" + u.toString());
             }
+
 
             pst.close();
             connection.close();

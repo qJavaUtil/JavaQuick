@@ -37,6 +37,7 @@ public class ResisSourceFactory {
     }
 
 
+
     public static RedisPool createDataSource(RedisConfiguration properties){
 
         ResisBean resisBean = new ResisBean(properties.getHost(), properties.getPort(),

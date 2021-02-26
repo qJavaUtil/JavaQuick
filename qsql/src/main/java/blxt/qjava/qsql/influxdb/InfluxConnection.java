@@ -6,6 +6,7 @@ import org.influxdb.InfluxDB.ConsistencyLevel;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.*;
 import org.influxdb.dto.Point.Builder;
+import org.influxdb.impl.InfluxDBResultMapper;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Mi
  */
-public class InfluxConnection {
+public class InfluxConnection<E> {
 
 
     private InfluxDB influxDB;
@@ -152,6 +153,20 @@ public class InfluxConnection {
      */
     public QueryResult query(String command) {
         return influxDB.query(new Query(command, influxBean.database));
+    }
+
+
+    /**
+     * 查询list
+     * @param sql
+     * @param classzs
+     * @return
+     */
+    public List<E> queryObject(String sql, Class<E> classzs){
+        QueryResult query = query(sql);
+        InfluxDBResultMapper mapper = new InfluxDBResultMapper();
+        List<E> users = mapper.toPOJO(query, classzs);
+        return users;
     }
 
     /**

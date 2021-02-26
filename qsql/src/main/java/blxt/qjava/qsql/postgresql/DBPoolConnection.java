@@ -1,11 +1,14 @@
 package blxt.qjava.qsql.postgresql;
 
 import blxt.qjava.qsql.utils.Toos;
+import blxt.qjava.utils.check.CheckUtils;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.pool.DruidPooledConnection;
 
 import java.io.File;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -16,7 +19,6 @@ import java.util.Properties;
  */
 public class DBPoolConnection {
 
-    private static DBPoolConnection dbPoolConnection = null;
     private static DruidDataSource druidDataSource = null;
 
     public static synchronized boolean newInstance(File file){
@@ -41,23 +43,56 @@ public class DBPoolConnection {
     }
 
     /**
-     * 数据库连接池单例
-     * @return
-     */
-    public static synchronized DBPoolConnection getInstance(){
-        if (null == dbPoolConnection){
-            dbPoolConnection = new DBPoolConnection();
-        }
-        return dbPoolConnection;
-    }
-
-    /**
      * 返回druid数据库连接
      * @return
      * @throws SQLException
      */
-    public synchronized DruidPooledConnection getConnection() throws SQLException{
+    public static synchronized DruidPooledConnection getConnection() throws SQLException{
+        CheckUtils.objectCheckNull(druidDataSource, "Druid未初始化", "0001", "" );
         return druidDataSource.getConnection();
+    }
+
+    public static synchronized void closeConnection(DruidPooledConnection connection) throws SQLException {
+        if(connection != null){
+            connection.close();
+        }
+    }
+
+    public static boolean execute(DruidPooledConnection connection, String sql){
+        CheckUtils.objectCheckNull(connection, "DruidPooledConnection不能为空", "0001", "");
+        try {
+            // 执行查询
+            PreparedStatement pst = connection.prepareStatement(sql);
+            return pst.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
+
+    public static ResultSet executeQuery(DruidPooledConnection connection, String sql){
+        // 连接
+        CheckUtils.objectCheckNull(connection, "DruidPooledConnection不能为空", "0001", "");
+        try {
+            // 执行查询
+            PreparedStatement pst = connection.prepareStatement(sql);
+            return pst.executeQuery();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return null;
+    }
+
+    public static int executeUpdate(DruidPooledConnection connection, String sql){
+        CheckUtils.objectCheckNull(connection, "DruidPooledConnection不能为空", "0001", "");
+        try {
+            // 执行查询
+            PreparedStatement pst = connection.prepareStatement(sql);
+            return pst.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return 0;
     }
 
 
