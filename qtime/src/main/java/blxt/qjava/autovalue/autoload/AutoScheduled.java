@@ -4,6 +4,7 @@ import blxt.qjava.autovalue.inter.Component;
 import blxt.qjava.autovalue.inter.Scheduled;
 import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
 import blxt.qjava.autovalue.util.ObjectPool;
+import blxt.qjava.autovalue.util.ObjectValue;
 import blxt.qjava.quartz.QJob;
 import blxt.qjava.quartz.QuartzManager;
 import blxt.qjava.utils.check.CheckUtils;
@@ -38,8 +39,12 @@ public class AutoScheduled extends AutoLoadBase {
             String fixedRateString= valuename.fixedRateString();
             long initialDelay= valuename.initialDelay();
             String initialDelayString= valuename.initialDelayString();
+            if (cron.startsWith("$")){
+                cron = cron.substring(1);
+                cron = (String) ObjectValue.getObjectValue(bean, cron, String.class);
+            }
 
-            System.out.println("定时任务:" + job_name + ":" + valuename.cron());
+           // System.out.println("定时任务:" + job_name + ":" + valuename.cron());
 
             if(CheckUtils.isEmpty(group)){
                 group = object.getPackage().getName();
@@ -49,8 +54,7 @@ public class AutoScheduled extends AutoLoadBase {
             }
 
             QuartzManager.addJob(job_name, group, job_name, trigger_group,
-                    new QJob(bean, method),
-                    valuename.cron());
+                    new QJob(bean, method),  cron);
 
         }
 
