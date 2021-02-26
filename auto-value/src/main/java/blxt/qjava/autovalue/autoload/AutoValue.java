@@ -47,6 +47,7 @@ public class AutoValue extends AutoLoadBase {
             "./config/application.properties",
             "./resources/application.properties",
             "config/application.properties",
+            "application.properties",
             "../application.properties",
             "../../application.properties",
             "../../../application.properties"};

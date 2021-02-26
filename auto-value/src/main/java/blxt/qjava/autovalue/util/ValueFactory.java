@@ -34,7 +34,7 @@ public class ValueFactory {
      */
     @Deprecated
     public void autoVariable(Class<?> classzs) throws Exception {
-        autoVariable(classzs, false);
+        autoVariable(classzs, true);
     }
 
     /**
@@ -65,7 +65,7 @@ public class ValueFactory {
      */
     @Deprecated
     public void autoVariable(Class<?> classzs, String directory, String fileName) throws Exception {
-        autoVariable(classzs, directory, fileName , false);
+        autoVariable(classzs, directory, fileName , true);
     }
 
     /**
@@ -89,7 +89,7 @@ public class ValueFactory {
      * @param properties
      */
     public void autoVariable(Class<?> classzs, PropertiesFactory properties) {
-        autoVariable(classzs, properties, false);
+        autoVariable(classzs, properties, true);
     }
 
     /**

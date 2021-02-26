@@ -25,23 +25,11 @@ public class QJavaApplication {
     public static Map<String, String> listPassPageName = new HashMap<>();
 
     static {
-        // Configuration扫描, 实现@Value
-//        autoLoadBases.add(new AutoValue());
-//        // Component扫描,实现 @Autowired
-//        autoLoadBases.add(new AutoObject());
-//        // Component扫描,实现 @Run
-//        autoLoadBases.add(new AutoMethod());
-//        // Component扫描,实现@UdpListener
-//        autoLoadBases.add(new AutoUdpServer());
-//        // Component扫描,实现@UdpClient
-//        autoLoadBases.add(new AutoUdpClient());
         try {
             autoLoadBases.addAll(scanAutoLoad("blxt.qjava.autovalue.autoload"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
 

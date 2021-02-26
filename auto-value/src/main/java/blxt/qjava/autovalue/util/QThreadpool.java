@@ -204,6 +204,13 @@ public class QThreadpool {
         return handler;
     }
 
+    /** 快速执行线程,不经过线程池 */
+    public Thread run(Runnable runnable){
+        Thread thread =  new Thread(runnable);
+        thread.start();
+        return thread;
+    }
+
     /** 执行线程 */
     public void execute(Runnable runnable){
         pool.execute(runnable);
@@ -290,11 +297,8 @@ public class QThreadpool {
 
         DefaultThreadFactory() {
             SecurityManager s = System.getSecurityManager();
-            group = (s != null) ? s.getThreadGroup() :
-                    Thread.currentThread().getThreadGroup();
-            namePrefix = "pool-" +
-                    poolNumber.getAndIncrement() +
-                    "-thread-";
+            group = (s == null) ? Thread.currentThread().getThreadGroup() : s.getThreadGroup();
+            namePrefix = "pool-" + poolNumber.getAndIncrement() + "-thread-";
         }
 
         @Override
