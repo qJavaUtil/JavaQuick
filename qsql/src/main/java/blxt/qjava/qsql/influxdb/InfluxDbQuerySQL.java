@@ -1,10 +1,17 @@
 package blxt.qjava.qsql.influxdb;
 
+import com.google.common.collect.Maps;
+import lombok.Data;
+
+import java.util.Formatter;
+import java.util.Map;
+
 /**
  * influxdb查询语句
  * @Author: Zhang.Jialei
  * @Date: 2020/8/7 15:40
  */
+@Data
 public class InfluxDbQuerySQL {
     /**                                     行名      表名            开始时间 结束时间 分组 排序 限制 分页偏移 时区*/
     public static final String SQL = "SELECT %s FROM \"%s\" WHERE true %s %s %s %s %s %s %s TZ('%s')";
@@ -28,6 +35,9 @@ public class InfluxDbQuerySQL {
     /** 默认时区 : 上海 Asia/Shanghai  */
     String timezone = "Asia/Shanghai";
 
+    Map<String, String> linkedHashMap = Maps.newLinkedHashMap();
+
+
     /**
      * 构建sql语句
      * @return
@@ -41,6 +51,7 @@ public class InfluxDbQuerySQL {
         if(columns == null || columns.trim().isEmpty()){
             return null;
         }
+
         // 开始时间
         if(timeStart != null && !timeStart.trim().isEmpty()){
             timeStart = "and time >= " + timeStart;
@@ -93,82 +104,12 @@ public class InfluxDbQuerySQL {
         return String.format(SQL, columns, table, timeStart, timeEnd, rule, group, order, limit, offset, timezone);
     }
 
-    public static String getSql() {
-        return SQL;
+    private String format(String format, Object arg) {
+
+        String format1 = null, format2 = null;
+        int index;
+
+        return new Formatter().format(format1, arg).toString() + format2;
     }
-
-    public String getColumns() {
-        return columns;
-    }
-
-    public void setColumns(String columns) {
-        this.columns = columns;
-    }
-
-    public String getTable() {
-        return table;
-    }
-
-    public void setTable(String table) {
-        this.table = table;
-    }
-
-    public String getTimeStart() {
-        return timeStart;
-    }
-
-    public void setTimeStart(String timeStart) {
-        this.timeStart = timeStart;
-    }
-
-    public String getTimeEnd() {
-        return timeEnd;
-    }
-
-    public void setTimeEnd(String timeEnd) {
-        this.timeEnd = timeEnd;
-    }
-
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    public String getOrder() {
-        return order;
-    }
-
-    public void setOrder(String order) {
-        this.order = order;
-    }
-
-    public String getLimit() {
-        return limit;
-    }
-
-    public void setLimit(String limit) {
-        this.limit = limit;
-    }
-
-    public String getOffset() {
-        return offset;
-    }
-
-    public void setOffset(String offset) {
-        this.offset = offset;
-    }
-
-    public String getTimezone() {
-        return timezone;
-    }
-
-    public void setTimezone(String timezone) {
-        this.timezone = timezone;
-    }
-
-
 
 }

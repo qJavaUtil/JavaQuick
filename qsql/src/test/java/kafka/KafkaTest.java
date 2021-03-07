@@ -20,7 +20,8 @@ public class KafkaTest {
 
     public static void main(String[] args) throws Exception {
 
-        String serverIp = "47.242.60.114:21006"; // 192.168.3.30:9092
+        //String serverIp = "47.242.60.114:21006"; // 192.168.3.30:9092
+        String serverIp = "192.168.3.30:9092";
         // 生产者配置
         Properties properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, serverIp);//kafka地址，多个地址用逗号分割
@@ -29,8 +30,7 @@ public class KafkaTest {
         //properties.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, "com.qjava.qsql.kafka.CidPartitioner"); // 自定义主题分区规则
         // 消费者配置
         Properties properties2 = new Properties();
-        properties2.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, serverIp
-        );//kafka地址，多个地址用逗号分割
+        properties2.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, serverIp);//kafka地址，多个地址用逗号分割
         properties2.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         properties2.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         properties2.put(ConsumerConfig.GROUP_ID_CONFIG, "user.test"); // 消费者组id

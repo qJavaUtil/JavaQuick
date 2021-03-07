@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Mi
  */
-public class InfluxConnection<E> {
+public class InfluxConnection{
 
 
     private InfluxDB influxDB;
@@ -155,19 +155,6 @@ public class InfluxConnection<E> {
         return influxDB.query(new Query(command, influxBean.database));
     }
 
-
-    /**
-     * 查询list
-     * @param sql
-     * @param classzs
-     * @return
-     */
-    public List<E> queryObject(String sql, Class<E> classzs){
-        QueryResult query = query(sql);
-        InfluxDBResultMapper mapper = new InfluxDBResultMapper();
-        List<E> users = mapper.toPOJO(query, classzs);
-        return users;
-    }
 
     /**
      * 插入
