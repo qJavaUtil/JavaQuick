@@ -48,13 +48,7 @@ public class QJavaApplication {
         // 首次注入时
         if(ObjectPool.isEmpty(object)){
             // autovalue作为基础必需控件,必需优先启动, 并且只加载一次,扫描路径是输入的用户类
-//            AutoValue autoValue = new AutoValue();
-//            autoValue.setAnnotation(Configuration.class);
-//            autoValue.packageScan(object);
-//            autoValue.packageScan(QJavaApplication.class);
-
-            //System.out.println("加载的自动注解模块:" + autoLoadBases.size());
-
+            AutoValue.scanPropertiesFile(object);
             // 先加载内部的注解
             ObjectPool.putObject(QJavaApplication.class);
             QJavaApplication.run(QJavaApplication.class);

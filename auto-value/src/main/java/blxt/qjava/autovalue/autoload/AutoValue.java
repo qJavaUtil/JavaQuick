@@ -67,7 +67,7 @@ public class AutoValue extends AutoLoadBase {
         }
         return true;
     }
-
+ 
     /***
      * 自动属性初始化
      * @param rootClass      项目起始类
@@ -79,11 +79,8 @@ public class AutoValue extends AutoLoadBase {
             return;
         }
         AutoValue.rootClass = rootClass;
-
-        // 扫描默认的配置文件
-        if(propertiesFactory == null){
-            String appPath = PackageUtil.getPath(rootClass);
-            propertiesFactory = scanPropertiesFile(appPath);
+        if (propertiesFactory == null){
+            propertiesFactory = scanPropertiesFile(rootClass);
         }
         if (propertiesFactory == null) {
             System.out.println("AutoValue 没有找到配置文件:" + PackageUtil.getPath(rootClass));
@@ -92,6 +89,17 @@ public class AutoValue extends AutoLoadBase {
             System.out.println("AutoValue 默认配置文件:" + propertiesFactory.getPropertiesFile().getAbsolutePath());
         }
     }
+
+    /**
+     * 扫描配置文件
+     * @param rootClass 项目根路径
+     * @return
+     */
+    public static PropertiesFactory scanPropertiesFile(Class<?> rootClass){
+        String appPath = PackageUtil.getPath(rootClass);
+        return scanPropertiesFile(appPath);
+    }
+    
 
     /**
      * 扫描配置文件
@@ -119,8 +127,7 @@ public class AutoValue extends AutoLoadBase {
         value.setFalSetAccessible(falSetAccessible);
         value.setWorkPath(PackageUtil.getPath(rootClass));
         value.autoVariable(objClass, true);
-        Object bean = ObjectPool.putObject(objClass);
-        return bean;
+        return ObjectPool.getObject(objClass);
     }
 
 

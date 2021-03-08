@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 
 /**
@@ -201,7 +203,19 @@ public class ValueFactory {
         // 属性值
         Object value = null;
         if(valueType.isArray()){
-            value = ConvertTool.convertArry(propertiesFactory.getStr(key), valueType);
+            if (valueType == List.class){
+                try {
+                    return ConvertTool.convertList(propertiesFactory.getStr(key),
+                            (ParameterizedType)valueType.getGenericSuperclass());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+            else{
+                value = ConvertTool.convertArry(propertiesFactory.getStr(key), valueType);
+            }
+
         }else{
             value = ConvertTool.convert(propertiesFactory.getStr(key), valueType);
         }
@@ -233,7 +247,22 @@ public class ValueFactory {
             System.err.println("元素的key不存在:" + key + "\r\n路径:" + properties.getPropertiesFile().getAbsolutePath());
         }
 
-        if(field.getType().isArray()){
+        boolean falList = false;
+        if (field.getGenericType() instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) field.getGenericType();
+            if (pt.getRawType().equals(List.class)){
+                falList = true;
+                try {
+                    return ConvertTool.convertList(propertiesFactory.getStr(key), pt);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+        }
+        if (falList){
+
+        }else if(field.getType().isArray()){
             value = ConvertTool.convertArry(properties.getStr(key), field.getType());
         }else{
             value = ConvertTool.convert(properties.getStr(key), field.getType());

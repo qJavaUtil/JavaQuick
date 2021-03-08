@@ -1,5 +1,10 @@
 package blxt.qjava.autovalue.util;
 
+import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @Author: Zhang.Jialei
  * @Date: 2020/12/8 15:31
@@ -40,6 +45,38 @@ public class ConvertTool {
 
 
         return value;
+    }
+
+    public static List convertList(String str, ParameterizedType pt) throws Exception {
+        if (!pt.getRawType().equals(List.class)) {
+            throw new Exception(pt + "不是List类型");
+        }
+
+        // 判断泛型类的类型
+        if (pt.getActualTypeArguments()[0].equals(String.class)) {
+            return new ArrayList(Arrays.asList(convertArry(str, String[].class)));
+        } else if (pt.getActualTypeArguments()[0].equals(int.class)
+                || pt.getActualTypeArguments()[0].equals(Integer[].class)) {
+            return new ArrayList(Arrays.asList(convertArry(str, Integer[].class)));
+        } else if (pt.getActualTypeArguments()[0].equals(float.class)
+                || pt.getActualTypeArguments()[0].equals(Float.class)) {
+            return new ArrayList(Arrays.asList(convertArry(str, Float[].class)));
+        }else if (pt.getActualTypeArguments()[0].equals(boolean.class)
+                || pt.getActualTypeArguments()[0].equals(Boolean.class)) {
+            return new ArrayList(Arrays.asList(convertArry(str, Boolean[].class)));
+        }else if (pt.getActualTypeArguments()[0].equals(long.class)
+                || pt.getActualTypeArguments()[0].equals(Long.class)) {
+            return new ArrayList(Arrays.asList(convertArry(str, Long[].class)));
+        }else if (pt.getActualTypeArguments()[0].equals(short.class)
+                || pt.getActualTypeArguments()[0].equals(Short.class)) {
+            return new ArrayList(Arrays.asList(convertArry(str, Short[].class)));
+        }else if (pt.getActualTypeArguments()[0].equals(double.class)
+                || pt.getActualTypeArguments()[0].equals(Double.class)) {
+            return new ArrayList(Arrays.asList(convertArry(str, Double[].class)));
+        }
+        else{
+            throw new Exception(pt + "不支持的List<T>类型:" + pt);
+        }
     }
 
     public static Object[] convertArry(String str, Class<?> parametertype){
@@ -90,8 +127,10 @@ public class ConvertTool {
             }
         }
 
+
         return value;
     }
+
 
 
 }
