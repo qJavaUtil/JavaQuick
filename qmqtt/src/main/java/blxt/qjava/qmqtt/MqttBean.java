@@ -1,8 +1,11 @@
 package blxt.qjava.qmqtt;
 
+import lombok.Data;
+
 /**
  * mqtt链接信息
  */
+@Data
 public class MqttBean {
     public String url;
     public String clientid;
@@ -16,7 +19,6 @@ public class MqttBean {
     public boolean isAuthor;
 
     public MqttBean(){}
-
 
     public MqttBean(String url, String clientid, String userName, String password, String[] topics, int[] qos, boolean isAuthor) {
         this.url = url;

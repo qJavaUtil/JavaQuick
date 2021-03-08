@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
  * @Author: Zhang.Jialei
  * @Date: 2020/12/4 12:34
  */
-@AutoLoadFactory(name="AutoObject", annotation = Component.class, priority = 2)
+@AutoLoadFactory(name="AutoObject", annotation = Component.class, priority = 3)
 public class AutoObject extends AutoLoadBase {
 
     /**
@@ -60,9 +60,10 @@ public class AutoObject extends AutoLoadBase {
             }
 
             // 设置值
-            ObjectValue.setObjectValue(bean,field, value, falSetAccessible);
+            ObjectValue.setObjectValue(bean,field, value, true);
 
         }
+        ObjectPool.upObject(object, bean);
         return bean;
     }
 

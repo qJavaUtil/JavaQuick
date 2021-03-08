@@ -44,8 +44,6 @@ public class AutoScheduled extends AutoLoadBase {
                 cron = (String) ObjectValue.getObjectValue(bean, cron, String.class);
             }
 
-           // System.out.println("定时任务:" + job_name + ":" + valuename.cron());
-
             if(CheckUtils.isEmpty(group)){
                 group = object.getPackage().getName();
             }

@@ -57,6 +57,9 @@ public class ObjectPool {
      * @return
      */
     public static Object putObjectWithParams(Class<?>  object, Object[] params){
+        if(datas.get(object) != null){
+            return null;
+        }
         try {
             Object obj = null;
             if (params != null) {
@@ -88,6 +91,15 @@ public class ObjectPool {
         if(datas.get(object) == null){
             datas.put(key, object);
         }
+    }
+
+    /**
+     * 更新对象
+     * @param key
+     * @param object
+     */
+    public static void upObject(Class<?> key, Object object){
+        datas.put(key, object);
     }
 
     public static void remove(Class<?> key){
