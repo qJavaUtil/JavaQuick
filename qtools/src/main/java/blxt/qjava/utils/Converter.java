@@ -3,14 +3,12 @@ package blxt.qjava.utils;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
+import java.lang.reflect.ParameterizedType;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 
 /***
@@ -329,35 +327,140 @@ public class Converter {
         return obj;
     }
 
+
     /**
-     * 常见类型值转换
-     * @param str          字符串
-     * @param objectclass   要转换的类型,如 String.class Int.class boolean.class
+     * 将字符串转换成常见类型
+     * @param str
+     * @param parametertype
      * @return
      */
-    public static Object toObject(String str, Class<?> objectclass){
+    public static Object toObject(String str, Class<?> parametertype){
         Object value = null;
-        if(objectclass == String.class){
+        str = str.trim();
+        if(parametertype == String.class){
             value = str;
         }
-        else if(objectclass == Integer.class || objectclass == int.class ){
+        else if(parametertype == Integer.class || parametertype == int.class ){
             value = Integer.parseInt(str);
         }
-        else if(objectclass == Float.class || objectclass == float.class){
+        else if(parametertype == Float.class || parametertype == float.class){
             value = Float.parseFloat(str);
         }
-        else if(objectclass == Boolean.class || objectclass == boolean.class){
+        else if(parametertype == Boolean.class || parametertype == boolean.class){
             value = Boolean.parseBoolean(str);
         }
-        else if(objectclass == Long.class || objectclass == long.class){
+        else if(parametertype == Long.class || parametertype == long.class){
             value = Long.parseLong(str);
         }
-        else if(objectclass == Short.class || objectclass == short.class){
+        else if(parametertype == Short.class || parametertype == short.class){
             value = Short.parseShort(str);
         }
-        else if(objectclass == Double.class || objectclass == double.class){
+        else if(parametertype == Double.class || parametertype == double.class){
             value = Double.parseDouble(str);
         }
+
+        return value;
+    }
+
+    /**
+     * 从字符串转换成List集合
+     * @param str
+     * @param pt
+     * @return
+     * @throws Exception
+     */
+    public static List toObjectList(String str, ParameterizedType pt) throws Exception {
+        if (pt == null || !pt.getRawType().equals(List.class)) {
+            throw new Exception(pt + "不是List类型");
+        }
+
+        // 判断泛型类的类型
+        if (pt.getActualTypeArguments()[0].equals(String.class)) {
+            return new ArrayList(Arrays.asList(toObjects(str, String[].class)));
+        } else if (pt.getActualTypeArguments()[0].equals(int.class)
+                || pt.getActualTypeArguments()[0].equals(Integer[].class)) {
+            return new ArrayList(Arrays.asList(toObjects(str, Integer[].class)));
+        } else if (pt.getActualTypeArguments()[0].equals(float.class)
+                || pt.getActualTypeArguments()[0].equals(Float.class)) {
+            return new ArrayList(Arrays.asList(toObjects(str, Float[].class)));
+        }else if (pt.getActualTypeArguments()[0].equals(boolean.class)
+                || pt.getActualTypeArguments()[0].equals(Boolean.class)) {
+            return new ArrayList(Arrays.asList(toObjects(str, Boolean[].class)));
+        }else if (pt.getActualTypeArguments()[0].equals(long.class)
+                || pt.getActualTypeArguments()[0].equals(Long.class)) {
+            return new ArrayList(Arrays.asList(toObjects(str, Long[].class)));
+        }else if (pt.getActualTypeArguments()[0].equals(short.class)
+                || pt.getActualTypeArguments()[0].equals(Short.class)) {
+            return new ArrayList(Arrays.asList(toObjects(str, Short[].class)));
+        }else if (pt.getActualTypeArguments()[0].equals(double.class)
+                || pt.getActualTypeArguments()[0].equals(Double.class)) {
+            return new ArrayList(Arrays.asList(toObjects(str, Double[].class)));
+        }
+        else{
+            throw new Exception(pt + "不支持的List<T>类型:" + pt);
+        }
+    }
+
+    /**
+     * 从字符串转换成数组
+     * @param str
+     * @param parametertype
+     * @return
+     */
+    public static Object[] toObjects(String str, Class<?> parametertype){
+        Object[] value = null;
+        str = str.trim();
+        if(str.startsWith("[") && str.endsWith("]")){
+            str = str.substring(1);
+            str = str.substring(0, str.length() - 1).trim();
+        }
+        String[] valueArreys = str.split(",");
+        if(parametertype == String[].class){
+            value = valueArreys;
+        }
+        else{
+            for(int i = 0; i < valueArreys.length; i++){
+                value[i] = toObject(valueArreys[i], parametertype);
+            }
+        }
+
+//        else if(parametertype == Integer[].class || parametertype == int[].class ){
+//            value = new Integer[valueArreys.length];
+//            for(int i = 0; i < valueArreys.length; i++){
+//                value[i] = Integer.parseInt(valueArreys[i]);
+//            }
+//        }
+//        else if(parametertype == Float[].class || parametertype == float[].class){
+//            value = new Float[valueArreys.length];
+//            for(int i = 0; i < valueArreys.length; i++){
+//                value[i] = Float.parseFloat(valueArreys[i]);
+//            }
+//        }
+//        else if(parametertype == Boolean[].class || parametertype == boolean[].class){
+//            value = new Boolean[valueArreys.length];
+//            for(int i = 0; i < valueArreys.length; i++){
+//                value[i] = Boolean.parseBoolean(valueArreys[i]);
+//            }
+//        }
+//        else if(parametertype == Long[].class || parametertype == long[].class){
+//            value = new Long[valueArreys.length];
+//            for(int i = 0; i < valueArreys.length; i++){
+//                value[i] = Long.parseLong(valueArreys[i]);
+//            }
+//        }
+//        else if(parametertype == Short[].class || parametertype == short[].class){
+//            value = new Short[valueArreys.length];
+//            for(int i = 0; i < valueArreys.length; i++){
+//                value[i] = Short.parseShort(valueArreys[i]);
+//            }
+//        }
+//        else if(parametertype == Double[].class || parametertype == double[].class){
+//            value = new Double[valueArreys.length];
+//            for(int i = 0; i < valueArreys.length; i++){
+//                value[i] = Double.parseDouble(valueArreys[i]);
+//            }
+//        }
+
         return value;
     }
 

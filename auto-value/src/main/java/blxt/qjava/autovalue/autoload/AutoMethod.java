@@ -2,15 +2,13 @@ package blxt.qjava.autovalue.autoload;
 
 import blxt.qjava.autovalue.inter.AliasFor;
 import blxt.qjava.autovalue.inter.Component;
-import blxt.qjava.autovalue.inter.ComponentScan;
 import blxt.qjava.autovalue.inter.Run;
 import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
-import blxt.qjava.autovalue.util.ConvertTool;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.autovalue.util.ObjectValue;
 import blxt.qjava.autovalue.util.QThreadpool;
+import blxt.qjava.utils.Converter;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
@@ -117,7 +115,7 @@ public class AutoMethod extends AutoLoadBase {
                     throw new Exception("拥有@Run注解的方法,方法入参不能为空.可以通过@AliasFor注解添加,或者添加@Component,自动注入. " +
                             "方法:" + method.toString() + "别名:" + aliasFor.value());
                 }
-                value = ConvertTool.convert(paramValueStr, parametertype);
+                value = Converter.toObject(paramValueStr, parametertype);
             }
         }
 

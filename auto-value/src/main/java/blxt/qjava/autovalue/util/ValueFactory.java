@@ -4,6 +4,8 @@ import blxt.qjava.autovalue.autoload.AutoValue;
 import blxt.qjava.autovalue.inter.ConfigurationProperties;
 import blxt.qjava.autovalue.inter.PropertySource;
 import blxt.qjava.properties.PropertiesFactory;
+import blxt.qjava.utils.Converter;
+import lombok.Data;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +18,7 @@ import java.util.List;
 /**
  * 反射配置文件值
  */
+@Data
 public class ValueFactory {
 
     PropertiesFactory propertiesFactory = AutoValue.propertiesFactory;
@@ -30,21 +33,12 @@ public class ValueFactory {
         this.propertiesFactory = propertiesFactory;
     }
 
-    /**
-     * 自动 获取变量名
-     * @param classzs
-     */
-    @Deprecated
-    public void autoVariable(Class<?> classzs) throws Exception {
-        autoVariable(classzs, true);
-    }
 
     /**
      * 自动 获取变量名
      * @param classzs
-     * @param fal  是否添加到对象池
      */
-    public void autoVariable(Class<?> classzs, boolean fal) throws Exception {
+    public Object autoVariable(Class<?> classzs) throws Exception {
         PropertiesFactory properties = propertiesFactory;
 
         // 从类注解Configuration中获取值,判断是否是自定义的配置文件路径
@@ -53,36 +47,7 @@ public class ValueFactory {
             properties = getProperties(anno.value(), anno.encoding());
         }
 
-        autoVariable(classzs, properties, fal);
-    }
-
-    /**
-     * 自动 获取变量名f
-     *
-     * @param classzs
-     * @param directory 目录
-     * @param fileName  文件名
-     * @throws IllegalAccessException
-     * @throws Exception
-     */
-    @Deprecated
-    public void autoVariable(Class<?> classzs, String directory, String fileName) throws Exception {
-        autoVariable(classzs, directory, fileName , true);
-    }
-
-    /**
-     *
-     * @param classzs
-     * @param directory 目录
-     * @param fileName  文件名
-     * @param fal       是否塞入对象池
-     * @throws Exception
-     */
-    public void autoVariable(Class<?> classzs, String directory, String fileName, boolean fal) throws Exception {
-        // 如果文件路径是以 . 开头的,那么认为这是相对路径
-        PropertiesFactory properties =
-                new PropertiesFactory(new File(directory + File.separator + fileName));
-        autoVariable(classzs, properties, fal);
+       return autoVariable(classzs, properties);
     }
 
     /**
@@ -90,8 +55,8 @@ public class ValueFactory {
      * @param classzs
      * @param properties
      */
-    public void autoVariable(Class<?> classzs, PropertiesFactory properties) {
-        autoVariable(classzs, properties, true);
+    public Object autoVariable(Class<?> classzs, PropertiesFactory properties) {
+        return autoVariable(classzs, properties, true);
     }
 
     /**
@@ -101,7 +66,7 @@ public class ValueFactory {
      * @param fal         是否添加进对象池
      */
     @Deprecated
-    public void autoVariable(Class<?> classzs, PropertiesFactory properties, boolean fal) {
+    public Object autoVariable(Class<?> classzs, PropertiesFactory properties, boolean fal) {
 
         Object bean = null;
         if (fal){
@@ -136,6 +101,8 @@ public class ValueFactory {
                 ObjectValue.setObjectValue(bean,field, value, falSetAccessible);
             }
         }
+
+        return bean;
     }
 
 
@@ -169,11 +136,9 @@ public class ValueFactory {
         if(key.isEmpty()){
             return null;
         }
-        else{ // 将_替换成.
-            // return key.replaceAll("_", ".");
+        else{
             return key.trim();
         }
-
     }
 
 
@@ -192,37 +157,21 @@ public class ValueFactory {
         return prefix.ignoreUnknownFields();
     }
 
-
     /**
-     * 获取默认参数
+     * 从properties中获取参数
      * @param key
      * @param valueType
      * @return
      */
-    public Object getPropertiesValue(String key, Class<?> valueType){
+    public Object getPropertiesValue(String key, Class<?> valueType) {
         // 属性值
-        Object value = null;
         if(valueType.isArray()){
-            if (valueType == List.class){
-                try {
-                    return ConvertTool.convertList(propertiesFactory.getStr(key),
-                            (ParameterizedType)valueType.getGenericSuperclass());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-            else{
-                value = ConvertTool.convertArry(propertiesFactory.getStr(key), valueType);
-            }
-
-        }else{
-            value = ConvertTool.convert(propertiesFactory.getStr(key), valueType);
+             return Converter.toObjects(propertiesFactory.getStr(key), valueType);
         }
-        return value;
+        else{
+            return Converter.toObject(propertiesFactory.getStr(key), valueType);
+        }
     }
-
-
 
     /**
      * 获取属性值
@@ -235,10 +184,6 @@ public class ValueFactory {
      */
     private Object getPropertiesValue(String key, PropertiesFactory properties,
                                       Object bean, Field field){
-        // 属性值
-        Object value = null;
-        String fieldType = field.getGenericType().toString();
-
         if(properties.isEmpty(key)){
             // 忽略没填写的key的元素
             if(isignoreUnknownFields(bean)){
@@ -247,30 +192,20 @@ public class ValueFactory {
             System.err.println("元素的key不存在:" + key + "\r\n路径:" + properties.getPropertiesFile().getAbsolutePath());
         }
 
-        boolean falList = false;
-        if (field.getGenericType() instanceof ParameterizedType) {
+        if (field.getType().equals(List.class)) {
             ParameterizedType pt = (ParameterizedType) field.getGenericType();
-            if (pt.getRawType().equals(List.class)){
-                falList = true;
-                try {
-                    return ConvertTool.convertList(propertiesFactory.getStr(key), pt);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return null;
-                }
+            try {
+                return Converter.toObjectList(propertiesFactory.getStr(key), pt);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
             }
         }
-        if (falList){
-
-        }else if(field.getType().isArray()){
-            value = ConvertTool.convertArry(properties.getStr(key), field.getType());
-        }else{
-            value = ConvertTool.convert(properties.getStr(key), field.getType());
+        else{
+            return getPropertiesValue(key,  field.getType());
         }
 
-        return value;
     }
-
 
 
     /**
@@ -311,10 +246,6 @@ public class ValueFactory {
         return properties;
     }
 
-    public PropertiesFactory getPropertiesFactory() {
-        return propertiesFactory;
-    }
-
     public ValueFactory setPropertiesFactory(PropertiesFactory propertiesFactory) {
         this.propertiesFactory = propertiesFactory;
         return this;
@@ -331,17 +262,9 @@ public class ValueFactory {
     }
 
 
-    public boolean isFalSetAccessible() {
-        return falSetAccessible;
-    }
-
     public ValueFactory setFalSetAccessible(boolean falSetAccessible) {
         this.falSetAccessible = falSetAccessible;
         return this;
-    }
-
-    public String getWorkPath() {
-        return workPath;
     }
 
     public ValueFactory setWorkPath(String workPath) {

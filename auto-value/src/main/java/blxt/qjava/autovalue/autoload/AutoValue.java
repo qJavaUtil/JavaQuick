@@ -12,11 +12,11 @@ package blxt.qjava.autovalue.autoload;
 
 import blxt.qjava.autovalue.inter.Configuration;
 import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
-import blxt.qjava.autovalue.util.ConvertTool;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.autovalue.reflect.PackageUtil;
 import blxt.qjava.autovalue.util.ValueFactory;
 import blxt.qjava.properties.PropertiesFactory;
+import blxt.qjava.utils.Converter;
 
 import java.io.File;
 import java.io.IOException;
@@ -126,7 +126,7 @@ public class AutoValue extends AutoLoadBase {
         ValueFactory value = new ValueFactory(propertiesFactory);
         value.setFalSetAccessible(falSetAccessible);
         value.setWorkPath(PackageUtil.getPath(rootClass));
-        value.autoVariable(objClass, true);
+        value.autoVariable(objClass);
         return ObjectPool.getObject(objClass);
     }
 
@@ -142,9 +142,9 @@ public class AutoValue extends AutoLoadBase {
         // 属性值
         Object value = null;
         if(valueType.isArray()){
-            value = ConvertTool.convertArry(propertiesFactory.getStr(key), valueType);
+            value = Converter.toObject(propertiesFactory.getStr(key), valueType);
         }else{
-            value = ConvertTool.convert(propertiesFactory.getStr(key), valueType);
+            value = Converter.toObject(propertiesFactory.getStr(key), valueType);
         }
         return value;
     }

@@ -2,6 +2,8 @@ package blxt.qjava.qsql.influxdb;
 
 import blxt.qjava.autovalue.util.ObjectValue;
 import org.influxdb.dto.QueryResult;
+import org.influxdb.impl.InfluxDBResultMapper;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,17 @@ import java.util.Map;
  * @param <T>
  */
 public class QueryResultMapper<T> {
+
+    /**
+     * influx查询结果适配, 官方自带方法
+     * @param rs
+     * @param outputClass
+     * @return
+     */
+    public List<T> toPOJO(QueryResult rs, Class<T> outputClass){
+        InfluxDBResultMapper mapper = new InfluxDBResultMapper();
+        return mapper.toPOJO(rs, outputClass);
+    }
 
     /**
      * influx查询结果适配
