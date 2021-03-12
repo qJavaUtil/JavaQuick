@@ -126,8 +126,9 @@ public class AutoValue extends AutoLoadBase {
         ValueFactory value = new ValueFactory(propertiesFactory);
         value.setFalSetAccessible(falSetAccessible);
         value.setWorkPath(PackageUtil.getPath(rootClass));
-        value.autoVariable(objClass);
-        return ObjectPool.getObject(objClass);
+        Object bean = value.autoVariable(objClass);
+        ObjectPool.upObject(objClass, bean);
+        return bean;
     }
 
 

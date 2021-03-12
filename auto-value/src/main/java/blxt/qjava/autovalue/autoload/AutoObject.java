@@ -60,7 +60,7 @@ public class AutoObject extends AutoLoadBase {
             }
 
             // 设置值
-            ObjectValue.setObjectValue(bean,field, value, true);
+            ObjectValue.setObjectValue(bean,field, value, falSetAccessible);
 
         }
         ObjectPool.upObject(object, bean);
