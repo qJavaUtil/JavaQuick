@@ -30,14 +30,13 @@
       <module name="auto-value" target="1.8" />
       <module name="qfile4J" target="1.8" />
       <module name="qFrame" target="1.8" />
-      <module name="qftp" target="8" />
+      <module name="qftp" target="1.8" />
       <module name="qhttpserver" target="1.8" />
       <module name="qjava" target="1.8" />
-      <module name="qjava-demo" target="11" />
-      <module name="qliveness" target="8" />
-      <module name="qliveness-mqtt" target="8" />
+      <module name="qliveness" target="1.8" />
+      <module name="qliveness-mqtt" target="1.8" />
       <module name="qlog" target="1.8" />
-      <module name="qmqtt" target="8" />
+      <module name="qmqtt" target="1.8" />
       <module name="qopencv" target="1.8" />
       <module name="qproperties" target="1.8" />
       <module name="qsql" target="1.8" />
@@ -46,7 +45,7 @@
       <module name="qtime" target="1.8" />
       <module name="qtools" target="1.8" />
       <module name="qudp" target="1.8" />
-      <module name="qxml" target="8" />
+      <module name="qxml" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
