@@ -228,7 +228,12 @@ public class QFile {
         }
 
         public static String getFileName(String filePath) {
-            return filePath.substring(filePath.lastIndexOf(File.separator) + 1);
+            int i = filePath.lastIndexOf(File.separator);
+            i = Math.max(i, 0);
+            int l = filePath.lastIndexOf(".");
+            l = l < 0 ? filePath.length() : l;
+            filePath = filePath.substring(i, l);
+            return filePath;
         }
 
         public static String getNameWithoutFormat(String filePath) {

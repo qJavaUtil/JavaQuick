@@ -58,7 +58,7 @@ public class ObjectPool {
      */
     public static Object putObjectWithParams(Class<?>  object, Object[] params){
         if(datas.get(object) != null){
-            return null;
+            return datas.get(object);
         }
         try {
             Object obj = null;

@@ -8,12 +8,16 @@ import blxt.qjava.autovalue.reflect.PackageUtil;
 import blxt.qjava.autovalue.util.QThreadpool;
 import blxt.qjava.qudp.QUdpServer;
 
+import java.util.HashMap;
+
 /**
  * @Author: Zhang.Jialei
  * @Date: 2020/12/17 21:18
  */
 @AutoLoadFactory(name="AutoUdpServer", annotation = UdpListener.class, priority = 20)
 public class AutoUdpServer extends AutoLoadBase{
+
+    static HashMap<Object, QUdpServer> udpServerHashMap = new HashMap<>();
 
     public static void load(){
         QJavaApplication.addAutoLoadBases(AutoUdpServer.class);
@@ -31,6 +35,7 @@ public class AutoUdpServer extends AutoLoadBase{
         QUdpServer.QUdpListener bean = (QUdpServer.QUdpListener)ObjectPool.getObject(object);
         int port = anno.port();
         QUdpServer udpServer = new QUdpServer(port, bean);
+        udpServerHashMap.put(object, udpServer);
         udpServer.setMAX_LENGTH(anno.packageSize());
         if(!udpServer.creat()){
             return null;
@@ -39,4 +44,19 @@ public class AutoUdpServer extends AutoLoadBase{
 
         return null;
     }
+
+
+    /**
+     * 关闭并移除服务
+     * @param key
+     */
+    public static void close(Object key){
+        QUdpServer server = udpServerHashMap.get(key);
+        if(server != null){
+            server.close();
+        }
+        server = null;
+        udpServerHashMap.remove(key);
+    }
+
 }

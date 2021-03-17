@@ -5,6 +5,7 @@ import blxt.qjava.autovalue.QJavaApplication;
 import blxt.qjava.autovalue.inter.ComponentScan;
 import blxt.qjava.autovalue.interfaces.AutoLoad;
 import blxt.qjava.autovalue.reflect.PackageUtil;
+import blxt.qjava.autovalue.util.ObjectValue;
 import blxt.qjava.utils.system.JavaVersionUtils;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
@@ -190,6 +191,20 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
     public int compareTo(AutoLoadBase bean) {
         // 根据优先级升序, 自动加载是,从第优先级开始加载
         return this.priority - bean.getPriority();
+    }
+
+
+    public Object getValue(Object bean, Class<?> parameterType, String key, Object defalut){
+        Object value = defalut;
+        if(key.startsWith("$")){
+            key = key.substring(1);
+            try {
+                value = ObjectValue.getObjectValue(bean, key, parameterType);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return value;
     }
 
 }

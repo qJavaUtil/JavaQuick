@@ -18,8 +18,11 @@ public class ObjectValue {
      * @return
      * @throws Exception
      */
-    public static Object getObjectValue(Object bean, String key, Class<?> parameterType) throws Exception {
+    public static  <T extends Object> T  getObjectValue(Object bean, String key, Class<?> parameterType) throws Exception {
         Object obj = null;
+        if(key.startsWith("$")) {
+            key = key.substring(1);
+        }
         Field[] fields = bean.getClass().getDeclaredFields();
         // 先从当前类的变量中匹配
         for (Field field : fields) {
@@ -46,7 +49,7 @@ public class ObjectValue {
         if (obj == null && !AutoValue.isNull(key)) {
             obj = AutoValue.getPropertiesValue(key, parameterType);
         }
-        return obj;
+        return (T) obj;
     }
 
     /**

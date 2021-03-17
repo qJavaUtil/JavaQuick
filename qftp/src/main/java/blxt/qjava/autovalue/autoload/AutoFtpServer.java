@@ -6,6 +6,7 @@ import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
 import blxt.qjava.autovalue.reflect.PackageUtil;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.qftp.MFtpServerFactory;
+import blxt.qjava.qftp.QFTPClient;
 import blxt.qjava.utils.PropertiesTools;
 import org.apache.ftpserver.listener.Listener;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
@@ -20,7 +21,7 @@ public class AutoFtpServer extends AutoLoadBase{
     final String FTP_LISTENER_KEY = "ftp.listener";
 
     @Override
-    public Object inject(Class<?> object) throws Exception {
+    public Object  inject(Class<?> object) throws Exception {
 
         EnFtpServer anno = object.getAnnotation(EnFtpServer.class);
 

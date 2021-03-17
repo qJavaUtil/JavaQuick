@@ -4,7 +4,11 @@ import blxt.qjava.autovalue.QJavaApplication;
 import blxt.qjava.autovalue.inter.UdpClient;
 import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
 import blxt.qjava.autovalue.util.ObjectPool;
+import blxt.qjava.autovalue.util.ObjectValue;
 import blxt.qjava.qudp.QUdpClient;
+import blxt.qjava.qudp.QUdpServer;
+
+import java.util.HashMap;
 
 /**
  * @Author: Zhang.Jialei
@@ -12,6 +16,7 @@ import blxt.qjava.qudp.QUdpClient;
  */
 @AutoLoadFactory(name="AutoUdpClient", annotation = UdpClient.class, priority = 20)
 public class AutoUdpClient extends AutoLoadBase{
+   // static HashMap<Object, QUdpClient> udpClientHashMap = new HashMap<>();
 
     public static void load(){
         QJavaApplication.addAutoLoadBases(AutoUdpClient.class);
@@ -27,15 +32,19 @@ public class AutoUdpClient extends AutoLoadBase{
         }
 
         if(!QUdpClient.class.isAssignableFrom(object)){
-            throw new Exception("拥有@UdpClient,需要集成QUdpClient");
+            throw new Exception("拥有@UdpClient,需要继承QUdpClient");
         }
 
-        // 自动实现QUdpServer
+        // 自动实现QUdpClient
         QUdpClient bean = (QUdpClient)ObjectPool.getObject(object);
-        if(!bean.connect(anno.hostIp(), anno.port())){
+   //     String host = (String) ObjectValue.getValue(bean, String.class, anno.hostIp(), anno.hostIp());
+        String host = anno.hostIp();
+        int port = anno.port();
+
+        if(!bean.connect(host, port)){
             throw new Exception("创建QUdpClient失败,可能端口被占用:" + anno.port());
         }
 
-        return null;
+        return bean;
     }
 }

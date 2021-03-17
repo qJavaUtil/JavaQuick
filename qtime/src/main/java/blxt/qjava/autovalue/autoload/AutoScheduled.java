@@ -1,5 +1,7 @@
 package blxt.qjava.autovalue.autoload;
 
+
+import java.beans.Introspector;
 import blxt.qjava.autovalue.inter.Component;
 import blxt.qjava.autovalue.inter.Scheduled;
 import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;

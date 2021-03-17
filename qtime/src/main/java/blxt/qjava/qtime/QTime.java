@@ -6,9 +6,11 @@ import java.util.Date;
 
  /**
   * 快速时间格式化工具
+  * 迁移到 @links{blxt.qjava.utils.TimeHelper}
   * @author MI
   *
   */
+ @Deprecated()
  public class QTime {
 
      public static Long getTime() {
