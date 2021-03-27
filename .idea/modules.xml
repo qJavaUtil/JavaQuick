@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/qftp/qftp.iml" filepath="$PROJECT_DIR$/qftp/qftp.iml" />
       <module fileurl="file://$PROJECT_DIR$/qhttpserver/qhttpserver.iml" filepath="$PROJECT_DIR$/qhttpserver/qhttpserver.iml" />
       <module fileurl="file://$PROJECT_DIR$/qjava.iml" filepath="$PROJECT_DIR$/qjava.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JavaQuickDemo/qjava-demo.iml" filepath="$PROJECT_DIR$/JavaQuickDemo/qjava-demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/qliveness/qliveness.iml" filepath="$PROJECT_DIR$/qliveness/qliveness.iml" />
       <module fileurl="file://$PROJECT_DIR$/qliveness-mqtt/qliveness-mqtt.iml" filepath="$PROJECT_DIR$/qliveness-mqtt/qliveness-mqtt.iml" />
       <module fileurl="file://$PROJECT_DIR$/qlog/qlog.iml" filepath="$PROJECT_DIR$/qlog/qlog.iml" />
@@ -16,6 +17,7 @@
       <module fileurl="file://$PROJECT_DIR$/qproperties/qproperties.iml" filepath="$PROJECT_DIR$/qproperties/qproperties.iml" />
       <module fileurl="file://$PROJECT_DIR$/qsql/qsql.iml" filepath="$PROJECT_DIR$/qsql/qsql.iml" />
       <module fileurl="file://$PROJECT_DIR$/qtcp/qtcp.iml" filepath="$PROJECT_DIR$/qtcp/qtcp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qtelnet/qtelnet.iml" filepath="$PROJECT_DIR$/qtelnet/qtelnet.iml" />
       <module fileurl="file://$PROJECT_DIR$/qthread/qthread.iml" filepath="$PROJECT_DIR$/qthread/qthread.iml" />
       <module fileurl="file://$PROJECT_DIR$/qtime/qtime.iml" filepath="$PROJECT_DIR$/qtime/qtime.iml" />
       <module fileurl="file://$PROJECT_DIR$/qtools/qtools.iml" filepath="$PROJECT_DIR$/qtools/qtools.iml" />

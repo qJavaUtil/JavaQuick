@@ -47,19 +47,21 @@ public class HttpServerFactory {
         bind();
     }
 
-    private void bind() throws IOException {
+    private HttpServerFactory bind() throws IOException {
         httpServer = HttpServer.create(new InetSocketAddress(port), backlog);
         httpServer.createContext(path, httpHandler);
         httpServer.setExecutor(executor);
         System.out.println("启动HttpServer:" + port);
+        return this;
     }
 
     public static void setHttpHandler(HttpHandler httpHandler){
         HttpServerFactory.httpHandler = httpHandler;
     }
 
-    public void start(){
+    public HttpServerFactory start(){
         httpServer.start();
+        return this;
     }
 
 }

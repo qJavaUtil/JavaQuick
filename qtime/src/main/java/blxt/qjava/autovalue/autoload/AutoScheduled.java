@@ -17,9 +17,9 @@ import java.lang.reflect.Method;
 public class AutoScheduled extends AutoLoadBase {
 
     @Override
-    public Object inject(Class<?> object) throws Exception {
+    public  <T> T inject(Class<?> object) throws Exception {
         // 自动实现QUdpServer
-        Object bean = ObjectPool.getObject(object);
+        T bean = ObjectPool.getObject(object);
 
         // 获取f对象对应类中的所有属性域
         Method[] methods = bean.getClass().getMethods();

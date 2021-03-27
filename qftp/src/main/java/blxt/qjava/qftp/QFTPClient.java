@@ -1,5 +1,7 @@
 package blxt.qjava.qftp;
 
+import blxt.qjava.autovalue.inter.value.IntDef;
+import blxt.qjava.utils.BitUtils;
 import lombok.Data;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -9,6 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +24,9 @@ import java.util.List;
 @Data
 public class QFTPClient extends FTPClient {
     static Logger logger = LoggerFactory.getLogger(QFTPClient.class);
+    public final static byte ONLY_FILE = 0x01;
+    public final static byte ONLY_DIR = 0x03;
+    public final static byte ONLY_FILE_DIR = 0x02;
 
     String host;
     int port;
@@ -32,7 +41,10 @@ public class QFTPClient extends FTPClient {
 
     /** 服务器编码 FTP协议里面，规定文件名编码为iso-8859-1 */
     String serverCharset = "iso-8859-1";
+    /** 启用编码转换 */
+    boolean falChangCharset = false;
 
+    OnFTPClientListener listener = null;
 
     public QFTPClient(){
 
@@ -56,6 +68,9 @@ public class QFTPClient extends FTPClient {
             e.printStackTrace();
             return false;
         }
+        if(listener != null){
+            listener.onConnected(true);
+        }
         return  true;
     }
 
@@ -65,11 +80,19 @@ public class QFTPClient extends FTPClient {
     public boolean login()
     {
         try {
-            return super.login(uname, pwd);
+            boolean fal =  super.login(uname, pwd);
+            if(listener != null){
+                listener.onLogin(fal);
+            }
+            return fal;
         } catch (IOException e) {
             e.printStackTrace();
+            if(listener != null){
+                listener.onLogin(false);
+            }
             return false;
         }
+
     }
 
 
@@ -80,9 +103,16 @@ public class QFTPClient extends FTPClient {
         try {
             logout();     //退出登录
             disconnect(); //关闭连接
+            if(listener != null){
+                listener.onDisConnected(true);
+            }
         } catch (IOException e) {
             e.printStackTrace();
+            if(listener != null){
+                listener.onDisConnected(false);
+            }
         }
+
     }
 
     /**
@@ -108,10 +138,19 @@ public class QFTPClient extends FTPClient {
      * @throws IOException
      */
     public boolean changeWorkingDirectory(String pathname) {
+        if(!pathname.endsWith(File.separator)){
+            pathname += File.separator;
+        }
+        if(!pathname.startsWith(File.separator)){
+            pathname = File.separator + pathname;
+        }
         try {
             // 对中文文件名进行转码，否则中文名称的文件下载失败ftpPath
-            pathUse = new String(pathname.getBytes(localCharset), serverCharset);
-            return super.changeWorkingDirectory(pathUse);
+            pathUse = pathname;
+            if(falChangCharset){
+                pathname = new String(pathname.getBytes(localCharset), serverCharset);
+            }
+            return super.changeWorkingDirectory(pathname);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -125,8 +164,18 @@ public class QFTPClient extends FTPClient {
      * @throws IOException
      */
     public boolean makeDirectory(String pathname){
+        if(!pathname.endsWith(File.separator)){
+            pathname += File.separator;
+        }
+        if(!pathname.startsWith(File.separator)){
+            pathname = File.separator + pathname;
+        }
         try {
-            return super.makeDirectory(new String(pathname.getBytes(localCharset), serverCharset));
+            pathUse = pathname;
+            if(falChangCharset){
+                pathname = new String(pathname.getBytes(localCharset), serverCharset);
+            }
+            return super.makeDirectory(pathname);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -140,7 +189,7 @@ public class QFTPClient extends FTPClient {
      * @return
      * @throws IOException
      */
-    public boolean makeMultiDir(String remoteDir) throws IOException {
+    public boolean makeMultiDir(String remoteDir)  {
         if (changeWorkingDirectory(remoteDir)) {
             return false;
         }
@@ -153,7 +202,8 @@ public class QFTPClient extends FTPClient {
             temp = temp.substring(0, temp.lastIndexOf("/"));// 将该多级目录分解
             if (!changeWorkingDirectory(temp)) {// 说明该分级目录不存在
                 if (i == 1) {
-                    throw new IOException("Make directory " + temp + " fail! ");// 不允许创建第一级目录
+                    // 不允许创建第一级目录
+                    return false;
                 }
                 if (!makeDirectory(temp)) {// 该远程路径不存在，创建该分级目录
                     return false;
@@ -308,19 +358,41 @@ public class QFTPClient extends FTPClient {
 
 
     /**
-     * 获取文件列表
+     * 获取文件和文件夹列表
      * @param pathName  绝对路径, 如 /xxx/xxx/. 已 '/' 开头和结尾
      * @return
      */
     public List<String> getFileList(String pathName){
+        return getFilesList(pathName, ONLY_FILE_DIR);
+    }
+
+    /**
+     * 仅获取文件列表
+     * @param pathName  绝对路径, 如 /xxx/xxx/. 已 '/' 开头和结尾
+     * @return
+     */
+    public List<String> getFilesList(String pathName){
+        return getFilesList(pathName, ONLY_FILE);
+    }
+
+    /**
+     * 仅获取文件夹列表
+     * @param pathName 绝对路径, 如 /xxx/xxx/. 已 '/' 开头和结尾
+     * @return
+     */
+    public List<String> getDirList(String pathName){
+        return getFilesList(pathName, ONLY_DIR);
+    }
+
+
+    /**
+     * 获取文件夹列表
+     * @param pathName   绝对路径, 如 /xxx/xxx/. 已 '/' 开头和结尾
+     * @param fileType   筛选. ONLY_FILE 或  ONLY_DIR 或 ONLY_FILE_DIR
+     * @return
+     */
+    public List<String> getFilesList(String pathName, @VisibleValue byte fileType){
         ArrayList<String> arFiles = new ArrayList<>();
-        String path = pathName;
-        if(!pathName.endsWith(File.separator)){
-            pathName += File.separator;
-        }
-        if(!pathName.startsWith(File.separator)){
-            pathName = File.separator + pathName;
-        }
 
         //更换目录到当前目录
         FTPFile[] files = null;
@@ -334,7 +406,21 @@ public class QFTPClient extends FTPClient {
             return arFiles;
         }
         for (FTPFile file : files) {
-            if (file.isFile()) {
+            boolean falFile = false;
+            boolean falDir  = false;
+
+            if(BitUtils.checkBitValue(fileType, 0)){
+                falFile = true;
+            }
+            if(BitUtils.checkBitValue(fileType, 0)){
+                falDir = true;
+            }
+
+            if (falFile && file.isFile()) {
+                arFiles.add(pathName + file.getName());
+            }
+
+            if (falDir && file.isDirectory()) {
                 arFiles.add(pathName + file.getName());
             }
         }
@@ -342,38 +428,26 @@ public class QFTPClient extends FTPClient {
         return arFiles;
     }
 
+
     /**
-     * 获取文件夹列表
-     * @param pathName 绝对路径, 如 /xxx/xxx/. 已 '/' 开头和结尾
-     * @return
+     * 文件列表获取筛选入参限定
      */
-    public List<String> getDirList(String pathName){
-        ArrayList<String> arFiles = new ArrayList<>();
-        String path = pathName;
-        if(!pathName.endsWith(File.separator)){
-            pathName += File.separator;
-        }
-        if(!pathName.startsWith(File.separator)){
-            pathName = File.separator + pathName;
-        }
+    @IntDef({ONLY_FILE,ONLY_DIR, ONLY_FILE_DIR})
+    @Retention(RetentionPolicy.SOURCE)
+    @Target(ElementType.PARAMETER)
+    public @interface VisibleValue{}
 
-        //更换目录到当前目录
-        FTPFile[] files = null;
-        try {
-            changeWorkingDirectory(pathName);
-            files = listFiles();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if(files == null){
-            return arFiles;
-        }
-        for (FTPFile file : files) {
-            if (!file.isFile()) {
-                arFiles.add(pathName + file.getName());
-            }
-        }
 
-        return arFiles;
+    /**
+     * ftp监听回调
+     */
+    public interface OnFTPClientListener{
+        /**
+         * 链接和断开链接
+         * @param isConnected
+         */
+        void onConnected(boolean isConnected);
+        void onDisConnected(boolean isConnected);
+        void onLogin(boolean isLogin);
     }
 }

@@ -8,7 +8,7 @@ import blxt.qjava.qliveness.Register;
 public class Autoliveness extends AutoLoadBase{
 
     @Override
-    public Object inject(Class<?> object) throws Exception {
+    public <T> T inject(Class<?> object) throws Exception {
         Liveness liveness = object.getAnnotation(Liveness.class);
         Register register = new Register();
         register.setArl(liveness.url());

@@ -38,7 +38,7 @@ public class ValueFactory {
      * 自动 获取变量名
      * @param classzs
      */
-    public Object autoVariable(Class<?> classzs) throws Exception {
+    public  <T extends Object> T  autoVariable(Class<?> classzs) throws Exception {
         PropertiesFactory properties = propertiesFactory;
 
         // 从类注解Configuration中获取值,判断是否是自定义的配置文件路径
@@ -55,7 +55,7 @@ public class ValueFactory {
      * @param classzs
      * @param properties
      */
-    public Object autoVariable(Class<?> classzs, PropertiesFactory properties) {
+    public  <T extends Object> T  autoVariable(Class<?> classzs, PropertiesFactory properties) {
         return autoVariable(classzs, properties, true);
     }
 
@@ -66,15 +66,15 @@ public class ValueFactory {
      * @param fal         是否添加进对象池
      */
     @Deprecated
-    public Object autoVariable(Class<?> classzs, PropertiesFactory properties, boolean fal) {
+    public <T> T autoVariable(Class<?> classzs, PropertiesFactory properties, boolean fal) {
 
-        Object bean = null;
+        T bean = null;
         if (fal){
             bean = ObjectPool.putObject(classzs);
         }
         else{
             try {
-                bean = classzs.newInstance();
+                bean = (T)classzs.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }

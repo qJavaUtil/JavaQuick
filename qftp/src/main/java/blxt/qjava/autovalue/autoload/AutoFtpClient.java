@@ -3,6 +3,7 @@ package blxt.qjava.autovalue.autoload;
 
 import blxt.qjava.autovalue.inter.FtpClientMark;
 import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
+import blxt.qjava.autovalue.reflect.PackageUtil;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.autovalue.util.ObjectValue;
 import blxt.qjava.qftp.QFTPClient;
@@ -14,14 +15,14 @@ import blxt.qjava.qftp.QFTPClient;
 public class AutoFtpClient extends AutoLoadBase{
 
     @Override
-    public Object inject(Class<?> object) throws Exception {
+    public <T>T inject(Class<?> object) throws Exception {
 
         FtpClientMark annotation = object.getAnnotation(FtpClientMark.class);
         if(annotation == null){
             return null;
         }
 
-        QFTPClient bean = (QFTPClient)ObjectPool.getObject(object);
+        QFTPClient bean = ObjectPool.getObject(object);
         String host = annotation.hostIp();
         int port = annotation.port();
         String uname = annotation.uname();
@@ -58,20 +59,24 @@ public class AutoFtpClient extends AutoLoadBase{
         bean.setLocalCharset(serverCharset);
         bean.setServerCharset(serverCharset);
 
-        if(annotation.OTP_UTF8()){
-            bean.setUtf8();
+        if(PackageUtil.isInterfaces(object, QFTPClient.OnFTPClientListener.class)){
+            bean.setListener((QFTPClient.OnFTPClientListener) bean);
         }
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 if(bean.connect()){
-                    bean.login();
+                    if(bean.login()){
+                        if(annotation.OTP_UTF8()){
+                            bean.setUtf8();
+                        }
+                    }
                 }
             }
         }).start();
 
-        return bean;
+        return (T) bean;
     }
 
 }

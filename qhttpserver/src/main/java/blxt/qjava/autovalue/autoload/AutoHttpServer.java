@@ -9,8 +9,13 @@ import com.sun.net.httpserver.HttpHandler;
 
 @AutoLoadFactory(name="AutoHttpServer", annotation = EnHttpServer.class, priority = 40)
 public class AutoHttpServer extends AutoLoadBase{
+
+    public AutoHttpServer(){
+
+    }
+
     @Override
-    public Object inject(Class<?> object) throws Exception {
+    public  <T> T inject(Class<?> object) throws Exception {
 
         /** 默认端口 */
         int port = 8080;
@@ -34,8 +39,9 @@ public class AutoHttpServer extends AutoLoadBase{
             HttpHandler handler = (HttpHandler)handlerNameClass.newInstance();
             HttpServerFactory.setHttpHandler(handler);
         }
-        HttpServerFactory.newInstance(path, port, backlog).start();
+        HttpServerFactory factory = HttpServerFactory.newInstance(path, port, backlog);
+        factory.start();
 
-        return null;
+        return (T) factory;
     }
 }

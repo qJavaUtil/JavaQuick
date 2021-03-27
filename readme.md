@@ -30,8 +30,8 @@
 1. 启动类 
 ```java
 
-@ConfigurationScan("test.util") // 配置文件扫描包地址 
-@ComponentScan("test.util") // 自动注入扫描包地址，支持多个包，用逗号隔开 
+@ConfigurationScan("com.test.util") // 配置文件扫描包地址 
+@ComponentScan("com.test.util") // 自动注入扫描包地址，支持多个包，用逗号隔开 
 public class AutowireTest{
 
     public static void main(String[] args) throws Exception {
@@ -46,10 +46,10 @@ public class AutowireTest{
 
         // 方式2 手动实现扫描 
         // //Configuration扫描, 实现@Value
-        // AutoValue.init(test.class);
-        // AutoValue.scan(test.class.getPackage().getName());
+        // AutoValue.init(com.test.class);
+        // AutoValue.scan(com.test.class.getPackage().getName());
         // // Component扫描,实现 @Autowired
-        // AutoObject.autoWiredScan("test");
+        // AutoObject.autoWiredScan("com.test");
  
         // 获取自动加载的类, 并检验注解效果 
         AutowireEntry autowireEntry = (AutowireEntry)ObjectPool.getObject(AutowireEntry.class);
@@ -63,7 +63,7 @@ public class AutowireTest{
 如果需要实现自动扫描, 需要天机@Configuration注解, 可以自定义properties文件路径,支持相对路径和绝对路径 
 ```java
 
-package test.util;
+package com.test.util;
 
 import blxt.qjava.blxt.qjava.autovalue.inter.*;
 
@@ -71,24 +71,24 @@ import blxt.qjava.blxt.qjava.autovalue.inter.*;
  * 插件通用配置
  * @author 张家磊
  */
-//@Configuration("../src/test.Test1/resources/application.properties")
+//@Configuration("../src/com.test.Test1/resources/application.properties")
 @Configuration
 @Component()
 public class AppConfiguration   {
 
-    @Value("test.string_t")
+    @Value("com.test.string_t")
     private String string_t = "Default";
 
-    @Value("test.int_t" )
+    @Value("com.test.int_t" )
     private int int_t;
 
-    @Value("test.float_t" )
+    @Value("com.test.float_t" )
     private float float_t ;
-    @Value("test.double_t" )
+    @Value("com.test.double_t" )
     private double double_t ;
-    @Value("test.boolean_t" )
+    @Value("com.test.boolean_t" )
     private boolean boolean_t ;
-    @Value("test.long_t" )
+    @Value("com.test.long_t" )
     private long long_t ;
 
     @Autowired
@@ -102,7 +102,7 @@ public class AppConfiguration   {
 
     @Override
     public String toString() {
-        return "test.Test1.util.AppConfiguration{" +
+        return "com.test.Test1.util.AppConfiguration{" +
                 "string_t='" + string_t + '\'' +
                 ", int_t=" + int_t +
                 ", float_t=" + float_t +
@@ -117,7 +117,7 @@ public class AppConfiguration   {
 ```
 
 ```java
-package test.util;
+package com.test.util;
 
 import blxt.qjava.blxt.qjava.autovalue.inter.Autowired;
 import blxt.qjava.blxt.qjava.autovalue.inter.Component;
@@ -145,7 +145,7 @@ public class Bean1 {
 ```
 
 ```java
-package test.util;
+package com.test.util;
  
 import blxt.qjava.blxt.qjava.autovalue.inter.Component;
 
@@ -170,7 +170,7 @@ public class Bean2 {
 3. 实现@Autowired 
 如果需要实现@Autowired,需要实现@Component()。对需要自动注入的类,添加@Autowired,对有@Autowired的类,需要实现@Component。  
 ```java
-package test.util;
+package com.test.util;
 
 import blxt.qjava.blxt.qjava.autovalue.inter.Autowired;
 import blxt.qjava.blxt.qjava.autovalue.inter.Component;

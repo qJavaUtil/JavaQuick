@@ -23,7 +23,7 @@ public class AutoUdpClient extends AutoLoadBase{
     }
 
     @Override
-    public Object inject(Class<?> object) throws Exception {
+    public  <T> T inject(Class<?> object) throws Exception {
         // 从类注解UdpListener中获取监听端口
 
         UdpClient anno = object.getAnnotation(UdpClient.class);
@@ -36,12 +36,12 @@ public class AutoUdpClient extends AutoLoadBase{
         }
 
         // 自动实现QUdpClient
-        QUdpClient bean = (QUdpClient)ObjectPool.getObject(object);
+        T bean = ObjectPool.getObject(object);
    //     String host = (String) ObjectValue.getValue(bean, String.class, anno.hostIp(), anno.hostIp());
         String host = anno.hostIp();
         int port = anno.port();
 
-        if(!bean.connect(host, port)){
+        if(!((QUdpClient)bean).connect(host, port)){
             throw new Exception("创建QUdpClient失败,可能端口被占用:" + anno.port());
         }
 

@@ -21,7 +21,7 @@ public class AutoFtpServer extends AutoLoadBase{
     final String FTP_LISTENER_KEY = "ftp.listener";
 
     @Override
-    public Object  inject(Class<?> object) throws Exception {
+    public <T>T  inject(Class<?> object) throws Exception {
 
         EnFtpServer anno = object.getAnnotation(EnFtpServer.class);
 

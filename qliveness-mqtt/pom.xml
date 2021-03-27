@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>qliveness-mqtt</artifactId>
-    <version>1.0.0</version>
+    <version>${qjava.version}</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -21,13 +21,13 @@
         <dependency>
             <groupId>org.blxt</groupId>
             <artifactId>qliveness</artifactId>
-            <version>1.0.0</version>
+            <version>${qjava.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.blxt</groupId>
             <artifactId>qhttpserver</artifactId>
-            <version>1.0.1-snapshoot</version>
+            <version>${qjava.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

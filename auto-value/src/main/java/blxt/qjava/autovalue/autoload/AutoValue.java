@@ -122,11 +122,11 @@ public class AutoValue extends AutoLoadBase {
     }
 
     @Override
-    public Object inject(Class<?> objClass) throws Exception {
+    public  <T extends Object> T  inject(Class<?> objClass) throws Exception {
         ValueFactory value = new ValueFactory(propertiesFactory);
         value.setFalSetAccessible(falSetAccessible);
         value.setWorkPath(PackageUtil.getPath(rootClass));
-        Object bean = value.autoVariable(objClass);
+        T bean = value.autoVariable(objClass);
         ObjectPool.upObject(objClass, bean);
         return bean;
     }

@@ -33,8 +33,8 @@ public class ObjectPool {
      * @param object
      * @return
      */
-    public static Object getObject(Class<?>  object){
-        Object obj = datas.get(object);
+    public static <T> T  getObject(Class<?>  object){
+        T obj = (T) datas.get(object);
         if(obj == null){
             obj = ObjectPool.putObject(object);
         }
@@ -46,7 +46,7 @@ public class ObjectPool {
      * @param object
      * @return
      */
-    public static Object putObject(Class<?>  object){
+    public static  <T> T  putObject(Class<?>  object){
         return putObjectWithParams(object, null);
     }
 
@@ -56,22 +56,22 @@ public class ObjectPool {
      * @param params
      * @return
      */
-    public static Object putObjectWithParams(Class<?>  object, Object[] params){
+    public static <T> T  putObjectWithParams(Class<?>  object, Object[] params){
         if(datas.get(object) != null){
-            return datas.get(object);
+            return (T)datas.get(object);
         }
         try {
-            Object obj = null;
+            T obj = null;
             if (params != null) {
                 Class[] argsClass = new Class[params.length];
                 for (int i = 0, j = params.length; i < j; i++) {
                     argsClass[i] = params[i].getClass();
                 }
                 Constructor cons = object.getConstructor(argsClass);
-                obj = cons.newInstance(params);
+                obj = (T) cons.newInstance(params);
             }
             else{
-                obj = object.newInstance();
+                obj = (T) object.newInstance();
             }
             putObject(object, obj);
             return obj;

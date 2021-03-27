@@ -24,8 +24,8 @@ public class AutoBean extends AutoMethod {
      * @return 初始化后的实例对象
      */
     @Override
-    public Object inject(Class<?> object) throws Exception {
-        Object bean = ObjectPool.getObject(object);
+    public <T> T  inject(Class<?> object) throws Exception {
+        T bean = ObjectPool.getObject(object);
 
         // 获取f对象对应类中的所有属性域
         Method[] methods = bean.getClass().getMethods();

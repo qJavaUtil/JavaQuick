@@ -24,7 +24,7 @@ public class AutoUdpServer extends AutoLoadBase{
     }
 
     @Override
-    public Object inject(Class<?> object) throws Exception {
+    public <T> T inject(Class<?> object) throws Exception {
         // 从类注解UdpListener中获取监听端口
 
         UdpListener anno = object.getAnnotation(UdpListener.class);

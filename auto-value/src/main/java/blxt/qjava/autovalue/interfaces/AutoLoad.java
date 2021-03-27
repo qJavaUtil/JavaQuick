@@ -19,5 +19,5 @@ public interface AutoLoad {
      * @param object
      * @throws Exception
      */
-    Object inject(Class<?> object) throws Exception;
+    <T extends Object> T inject(Class<?> object) throws Exception;
 }

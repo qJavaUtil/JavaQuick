@@ -30,7 +30,7 @@ public class AutoMethod extends AutoLoadBase {
      * @throws Exception
      */
     @Override
-    public Object inject(Class<?> object) throws Exception {
+    public  <T extends Object> T  inject(Class<?> object) throws Exception {
 
         Object bean = ObjectPool.getObject(object);
 
@@ -76,7 +76,7 @@ public class AutoMethod extends AutoLoadBase {
         }
 
         ObjectPool.upObject(object, bean);
-        return bean;
+        return (T) bean;
     }
 
     /**

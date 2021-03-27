@@ -18,7 +18,7 @@ public class ObjectValue {
      * @return
      * @throws Exception
      */
-    public static  <T extends Object> T  getObjectValue(Object bean, String key, Class<?> parameterType) throws Exception {
+    public static  <T> T  getObjectValue(Object bean, String key, Class<?> parameterType) throws Exception {
         Object obj = null;
         if(key.startsWith("$")) {
             key = key.substring(1);

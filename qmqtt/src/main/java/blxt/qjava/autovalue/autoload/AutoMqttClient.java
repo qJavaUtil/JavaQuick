@@ -15,7 +15,7 @@ import org.eclipse.paho.mqttv5.client.MqttClient;
 public class AutoMqttClient extends AutoLoadBase{
 
     @Override
-    public Object inject(Class<?> object) throws Exception {
+    public <T> T inject(Class<?> object) throws Exception {
 
         MqttClientListener anno = object.getAnnotation(MqttClientListener.class);
         if(anno == null){
@@ -57,8 +57,8 @@ public class AutoMqttClient extends AutoLoadBase{
         // 链接和客户端id
         String[] params = new String[]{mqttBean.url, mqttBean.clientid};
         // 自动实现
-        MqttClient bean = (MqttClient)ObjectPool.putObjectWithParams(object, params);
-        if(!MqttFactory.onMqttBuild(bean, mqttBean)){
+        T bean = ObjectPool.putObjectWithParams(object, params);
+        if(!MqttFactory.onMqttBuild((MqttClient)bean, mqttBean)){
             ObjectPool.remove(object);
             throw new Exception("mqtt链接失败:");
         }

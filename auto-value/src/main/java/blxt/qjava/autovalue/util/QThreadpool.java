@@ -175,6 +175,7 @@ public class QThreadpool {
                 threadFactoryClass.newInstance();
             } catch (Exception e) {
                 System.err.println("线程工厂加载失败,请设置入参为空的的公开构造方法:" + threadFactory);
+                e.printStackTrace();
             }
         }
 

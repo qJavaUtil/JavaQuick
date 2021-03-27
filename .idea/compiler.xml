@@ -12,6 +12,7 @@
         <module name="qftp" />
         <module name="qtcp" />
         <module name="qlog" />
+        <module name="qtelnet" />
         <module name="qsql" />
         <module name="qfile4J" />
         <module name="qopencv" />
@@ -33,6 +34,7 @@
       <module name="qftp" target="8" />
       <module name="qhttpserver" target="1.8" />
       <module name="qjava" target="1.8" />
+      <module name="qjava-demo" target="1.8" />
       <module name="qliveness" target="8" />
       <module name="qliveness-mqtt" target="8" />
       <module name="qlog" target="1.8" />
@@ -41,6 +43,7 @@
       <module name="qproperties" target="1.8" />
       <module name="qsql" target="1.8" />
       <module name="qtcp" target="1.8" />
+      <module name="qtelnet" target="8" />
       <module name="qthread" target="1.8" />
       <module name="qtime" target="1.8" />
       <module name="qtools" target="1.8" />

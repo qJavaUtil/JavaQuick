@@ -28,6 +28,8 @@
     <file url="file://$PROJECT_DIR$/qsql/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/qtcp/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/qtcp/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qtelnet/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/qtelnet/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/qthread/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/qtime/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/qtime/src/main/resources" charset="UTF-8" />

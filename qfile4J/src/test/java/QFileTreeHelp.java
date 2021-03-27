@@ -144,6 +144,11 @@ public class QFileTreeHelp {
         FileTreeBean fileTreeBean =  getFileTree(new File("E:\\ZhangJieLei\\Documents\\workspace\\workSudy\\笔记"), -1);
         JSONObject jsonObject = (JSONObject) JSONObject.toJSON(fileTreeBean);
         System.out.println(jsonObject);
+        int fileCount = 1000;
+//        File fileRoot = new File("E:\\ZhangJieLei\\Documents\\workspace\\workSudy\\笔记");
+//        File[] files = fileRoot.listFiles();
+
+
         //System.out.println(fileTreeBean.toString());
     }
 }

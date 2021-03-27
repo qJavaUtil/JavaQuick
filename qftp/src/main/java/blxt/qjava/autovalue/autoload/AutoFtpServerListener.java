@@ -15,10 +15,8 @@ import org.apache.ftpserver.listener.Listener;
 @AutoLoadFactory(name="AutoFtpServerListener", annotation = OnFtpServerListener.class, priority = 30)
 public class AutoFtpServerListener extends AutoLoadBase{
 
-
     @Override
-    public Object inject(Class<?> object) throws Exception {
-
+    public <T>T inject(Class<?> object) throws Exception {
         if(!PackageUtil.isInterfaces(object, Listener.class)){
             throw new Exception("OnFtpServerListener需要实现org.apache.ftpserver.listener.Listener接口。");
         }
@@ -28,7 +26,6 @@ public class AutoFtpServerListener extends AutoLoadBase{
 
         Listener listener = (Listener)ObjectPool.getObject(object);
         ftpServerFactory.addListener(object.getName(), listener);
-
         return null;
     }
 

@@ -22,6 +22,6 @@ public @interface FtpClientMark {
 
     /** 是否开启服务器utf8支持 */
     boolean OTP_UTF8() default true;
-
-
+    /** 启用 服务器和本地编码转换*/
+    boolean ChangCharset() default false;
 }

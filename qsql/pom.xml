@@ -25,7 +25,7 @@
         <dependency>
             <groupId>org.blxt</groupId>
             <artifactId>auto-value</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
             <scope>compile</scope>
         </dependency>
         <!-- tDengine -->
@@ -81,13 +81,13 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.6.2</version>
-            <scope>test</scope>
+            <scope>com.test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.10</version>
-            <scope>test</scope>
+            <scope>com.test</scope>
         </dependency>
 
         <!--Hutool Java工具包-->
@@ -95,13 +95,13 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
             <version>5.4.0</version>
-            <scope>test</scope>
+            <scope>com.test</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>RELEASE</version>
-            <scope>test</scope>
+            <scope>com.test</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

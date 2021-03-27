@@ -8,7 +8,7 @@ import org.quartz.Job;
 @AutoLoadFactory(name="AutoQuartz", annotation = Scheduled.class, priority = 20)
 public class AutoQuartz extends AutoLoadBase {
     @Override
-    public Object inject(Class<?> object) throws Exception {
+    public  <T> T inject(Class<?> object) throws Exception {
 
         Scheduled scheduled = object.getAnnotation(Scheduled.class);
 

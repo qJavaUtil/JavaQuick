@@ -95,14 +95,22 @@ public abstract class AutoLoadBase implements AutoLoad ,Comparable<AutoLoadBase>
                 PackageUtil.getClassInfoAll(QJavaApplication.class.getClassLoader(), packageName);
 
         for (ClassPath.ClassInfo classInfo : classInfos) {
-            Class objClass = classInfo.load();
+//
+
+            Class objClass = null;
+            objClass = classInfo.load();
             Annotation classAnnotation = objClass.getAnnotation(annotation);
+            // 跳过注解
+            if (objClass.isAnnotation()){
+                continue;
+            }
             if(classAnnotation == null){
                 continue;
             }
             try {
                 inject(objClass);
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
