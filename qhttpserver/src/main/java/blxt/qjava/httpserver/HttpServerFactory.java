@@ -1,7 +1,10 @@
 package blxt.qjava.httpserver;
 
+import blxt.qjava.autovalue.autoload.AutoRestController;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -13,6 +16,8 @@ import java.util.concurrent.Executor;
  * @Date: 2020/9/24 10:52
  */
 public class HttpServerFactory {
+
+    static Logger logger = LoggerFactory.getLogger(HttpServerFactory.class);
 
     static HttpServerFactory instance = null;
     static HttpHandler httpHandler = new QHttpHandler();
@@ -43,6 +48,12 @@ public class HttpServerFactory {
         this.port = port;
         this.backlog = backlog;
         this.path = path;
+        if(!this.path.startsWith("/")){
+            this.path = "/" + this.path;
+        }
+        if(this.path.length() > 1 && this.path.endsWith("/")){
+            this.path = this.path.substring(0, this.path.length() - 1);
+        }
 
         bind();
     }
@@ -51,7 +62,10 @@ public class HttpServerFactory {
         httpServer = HttpServer.create(new InetSocketAddress(port), backlog);
         httpServer.createContext(path, httpHandler);
         httpServer.setExecutor(executor);
-        System.out.println("启动HttpServer:" + port);
+        if(path.length() > 1){
+            AutoRestController.appPath = path;
+        }
+        logger.debug("启动HttpServer, 端口:{}, 路径:{}", port, path);
         return this;
     }
 

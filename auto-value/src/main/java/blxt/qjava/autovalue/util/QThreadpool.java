@@ -1,6 +1,7 @@
 package blxt.qjava.autovalue.util;
 
 import blxt.qjava.autovalue.inter.*;
+import blxt.qjava.utils.check.CheckUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -168,8 +169,10 @@ public class QThreadpool {
      */
     private ThreadFactory getThreadFactory(String threadFactory){
         ThreadFactory defaultThreadFactory = new DefaultThreadFactory();
-
-        if(threadFactory != null && !threadFactory.isEmpty()){
+        if(CheckUtils.isEmpty(threadFactory) || threadFactory.equals("default")){
+            return defaultThreadFactory;
+        }
+        else{
             try {
                 Class threadFactoryClass = Class.forName(threadFactory);
                 threadFactoryClass.newInstance();

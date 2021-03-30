@@ -23,6 +23,9 @@ public class InfluxConnectionPool {
     InfluxBean influxBaseBean = null;
 
 
+    public InfluxConnectionPool(){
+
+    }
     /**
      *
      * @param influxBean

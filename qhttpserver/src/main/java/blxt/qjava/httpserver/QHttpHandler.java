@@ -9,6 +9,8 @@ import blxt.qjava.utils.check.CheckUtils;
 import blxt.qjava.utils.Converter;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.Method;
@@ -25,6 +27,7 @@ import java.util.regex.Pattern;
  * @Date: 2020/9/24 11:07
  */
 public class QHttpHandler implements HttpHandler {
+    static Logger logger = LoggerFactory.getLogger(QHttpHandler.class);
 
     @Override
     public void handle(HttpExchange httpExchange) throws IOException {
@@ -104,7 +107,6 @@ public class QHttpHandler implements HttpHandler {
 
         // post,从表单获取数据
         if(httpExchange.getRequestMethod().equals("POST")){
-            String httpBody = null;
             InputStream inputStream = httpExchange.getRequestBody();
             ByteArrayOutputStream result = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
@@ -112,19 +114,37 @@ public class QHttpHandler implements HttpHandler {
             while ((length = inputStream.read(buffer)) != -1) {
                 result.write(buffer, 0, length);
             }
-            httpBody = result.toString("UTF-8");
+            String httpBody = result.toString("UTF-8");
             JSONObject jsonObject = Converter.urlParam2Json(httpBody);
             map.putAll(Converter.toMap(jsonObject));
         }
 
         // 解析入参
         int i = 0;
+        int j = 0;
         for (Class<?>  param : parameterTypes){
-            args[i] = map.get(params[i]);
+            if(j >= map.size()){
+                continue;
+            }
             if(param == HttpExchange.class ){
                 args[i] = httpExchange;
             }
-            else if(args[i] == null && defaultValue[i]!= null){
+            else if(param == Map.class){
+                args[i] = map;
+                break;
+            }
+            else{
+                if(param.equals(map.get(params[j]).getClass())){
+                    args[i] = map.get(params[j]);
+                }
+                else if(map.get(params[j]) != null){
+                    Object object = map.get(params[j]);
+                    args[i] = Converter.toObject(object.toString(), param);
+                }
+                j++;
+            }
+
+            if(args[i] == null && defaultValue[i]!= null){
                 /* 以$开头的,则从类的属性里面获取.属性可以加@value,实现配置动态加载 */
                 if(defaultValue[i].startsWith("$")){
                     String key = defaultValue[i].substring(1);
@@ -135,7 +155,7 @@ public class QHttpHandler implements HttpHandler {
                 }
             }
             if(args[i]== null){
-                throw new Exception("url参数不能为空: " + url);
+                logger.warn("空的URL参数:{}, 参数名:{}", url, params[j - 1]);
             }
             i++;
         }

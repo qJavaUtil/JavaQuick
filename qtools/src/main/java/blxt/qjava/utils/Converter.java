@@ -1,5 +1,7 @@
 package blxt.qjava.utils;
 
+import blxt.qjava.utils.check.CheckUtils;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
@@ -306,11 +308,13 @@ public class Converter {
      * @return
      */
     public static JSONObject urlParam2Json(String paramStr) {
-
+        if(getJSONType(paramStr)){
+            return  JSON.parseObject(paramStr);
+        }
         String[] params = paramStr.split("&");
         JSONObject obj = new JSONObject();
         for (int i = 0; i < params.length; i++) {
-            String[] param = params[i].split("=");
+            String[] param = params[i].split("=|:");
             if (param.length >= 2) {
                 String key = param[0];
                 String value = param[1];
@@ -327,6 +331,42 @@ public class Converter {
         return obj;
     }
 
+    /**
+     * 简单判断是否为json格式 .
+     * 判断规则：判断首尾字母是否为{}或[]，如果都不是则不是一个JSON格式的文本。
+     * @author lipeng
+     * @version 1.0
+     * @date 2020/5/21 15:48
+     *
+     */
+    public static boolean getJSONType(String str) {
+        boolean result = false;
+        str = str.trim();
+        if (str.startsWith("{") && str.endsWith("}")) {
+            result = true;
+        } else if (str.startsWith("[") && str.endsWith("]")) {
+            result = true;
+        }
+        return result;
+    }
+
+    /**
+     * 转换成json
+     * @param bean
+     * @return
+     */
+    public static Object toJson(Object bean){
+        return JSON.toJSON(bean);
+    }
+
+    /**
+     * 转换成json字符串
+     * @param bean
+     * @return
+     */
+    public static String toJsonStr(Object bean){
+        return JSON.toJSONString(bean);
+    }
 
     /**
      * 将字符串转换成常见类型
@@ -336,12 +376,19 @@ public class Converter {
      */
     public static Object toObject(String str, Class<?> parametertype){
         Object value = null;
+        if (CheckUtils.isEmpty(str)){
+            return null;
+        }
         str = str.trim();
         if(parametertype == String.class){
             value = str;
         }
         else if(parametertype == Integer.class || parametertype == int.class ){
-            value = Integer.parseInt(str);
+            try {
+                value = Integer.parseInt(str);
+            }catch (Exception e){
+                value = (int)Long.parseLong(str);
+            }
         }
         else if(parametertype == Float.class || parametertype == float.class){
             value = Float.parseFloat(str);

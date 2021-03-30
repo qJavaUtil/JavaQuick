@@ -9,6 +9,8 @@ import blxt.qjava.autovalue.inter.RequestMethod;
 import blxt.qjava.autovalue.inter.autoload.AutoLoadFactory;
 import blxt.qjava.autovalue.util.ObjectPool;
 import blxt.qjava.httpserver.util.ControllerMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -18,10 +20,11 @@ import java.util.Map;
 /**
  * 路由注册
  */
-@AutoLoadFactory(name="AutoRestController", annotation = RequestMapping.class, priority = 30)
+@AutoLoadFactory(name="AutoRestController", annotation = RequestMapping.class, priority = 41)
 public class AutoRestController extends AutoLoadBase{
+    static Logger logger = LoggerFactory.getLogger(AutoRestController.class);
 
-    static String appPath="";
+    public static String appPath="";
     public final static String separator = "/";
     public static Map<String, ControllerMap> urlMap = new HashMap<String, ControllerMap>();
 
@@ -31,6 +34,12 @@ public class AutoRestController extends AutoLoadBase{
         RequestMapping requestMapping = object.getAnnotation(RequestMapping.class);
         if(requestMapping != null){
             modelPath = getPath(requestMapping.value());
+        }
+        if(!modelPath.startsWith("/")){
+            modelPath = "/" + modelPath;
+        }
+        if(modelPath.endsWith("/")){
+            modelPath = modelPath.substring(0, modelPath.length() - 1);
         }
 
         modelPath = appPath + modelPath;
@@ -98,7 +107,7 @@ public class AutoRestController extends AutoLoadBase{
             // 注册路由
             urlMap.put( methodPath , controllerMap);
             // 根据对象获取注解值
-            System.out.println("Controller, URL: " + methodPath + ",方法:" + declaredMethod.getName() + "," + controllerMap.toString() );
+            logger.debug("URL:{}, 方法:{}, 参数:{}", methodPath, declaredMethod.getName(), controllerMap.toString());
         }
 
         return bean;

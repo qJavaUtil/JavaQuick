@@ -67,6 +67,13 @@ public class AutoValue extends AutoLoadBase {
         }
         return true;
     }
+
+    /**
+     * 设置运行根类
+     */
+    public static void setRunClass(Class classzs){
+        AutoValue.rootClass = classzs;
+    }
  
     /***
      * 自动属性初始化
@@ -75,19 +82,20 @@ public class AutoValue extends AutoLoadBase {
      */
     @Override
     public void init(Class<?> rootClass) {
-        if (AutoValue.rootClass != null) {
-            return;
+        if (AutoValue.rootClass == null) {
+            AutoValue.rootClass = rootClass;
         }
-        AutoValue.rootClass = rootClass;
+
         if (propertiesFactory == null){
-            propertiesFactory = scanPropertiesFile(rootClass);
+            propertiesFactory = scanPropertiesFile(AutoValue.rootClass);
+            if (propertiesFactory == null) {
+                System.out.println("AutoValue 没有找到配置文件:" + PackageUtil.getPath(AutoValue.rootClass));
+            }
+            else{
+                System.out.println("AutoValue 默认配置文件:" + propertiesFactory.getPropertiesFile().getAbsolutePath());
+            }
         }
-        if (propertiesFactory == null) {
-            System.out.println("AutoValue 没有找到配置文件:" + PackageUtil.getPath(rootClass));
-        }
-        else{
-            System.out.println("AutoValue 默认配置文件:" + propertiesFactory.getPropertiesFile().getAbsolutePath());
-        }
+
     }
 
     /**
