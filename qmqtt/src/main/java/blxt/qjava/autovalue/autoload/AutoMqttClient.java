@@ -60,7 +60,7 @@ public class AutoMqttClient extends AutoLoadBase{
         T bean = ObjectPool.putObjectWithParams(object, params);
         if(!MqttFactory.onMqttBuild((MqttClient)bean, mqttBean)){
             ObjectPool.remove(object);
-            throw new Exception("mqtt链接失败:");
+            throw new Exception("mqtt链接失败:"+ mqttBean.toString());
         }
 
         return bean;
