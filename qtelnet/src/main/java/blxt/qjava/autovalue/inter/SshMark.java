@@ -11,18 +11,13 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TelnetMark {
-
+public @interface SshMark {
 
     String tag() default "default";
     String hostIP();
-    int port() default 23;
+    int port() default 22;
     String uname();
     String upwd();
-    String prompt() default "$";
-    String termtype() default "VT100";
-    // 编码转换 ORIG_CODEC -> TRANSLATE_CODEC
-    String ORIG_CODEC() default "UTF-8";
-    String TRANSLATE_CODEC() default "UTF-8";
+    String CODEC() default "UTF-8";
 
 }

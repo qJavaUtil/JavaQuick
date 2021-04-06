@@ -1,10 +1,8 @@
 package blxt.qjava.qlog;
 
-import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 
 /**
  * @Author: Zhang.Jialei
@@ -21,12 +19,12 @@ public class QLog {
         logger = LoggerFactory.getLogger(name);
     }
 
-    /**
-     * 指定配置文件,默认路径 src/main/resources下
-     * @param file  文件路径
-     */
-    public static void loadConfigure(File file){
-        PropertyConfigurator.configure(file.getPath());
-    }
+//    /**
+//     * 指定配置文件,默认路径 src/main/resources下
+//     * @param file  文件路径
+//     */
+//    public static void loadConfigure(File file){
+//        PropertyConfigurator.configure(file.getPath());
+//    }
 
 }

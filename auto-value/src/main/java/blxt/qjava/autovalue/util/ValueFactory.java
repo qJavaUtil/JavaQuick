@@ -38,7 +38,7 @@ public class ValueFactory {
      * 自动 获取变量名
      * @param classzs
      */
-    public  <T extends Object> T  autoVariable(Class<?> classzs) throws Exception {
+    public  <T extends Object> T  autoVariable(Class<?> classzs) {
         PropertiesFactory properties = propertiesFactory;
 
         // 从类注解Configuration中获取值,判断是否是自定义的配置文件路径

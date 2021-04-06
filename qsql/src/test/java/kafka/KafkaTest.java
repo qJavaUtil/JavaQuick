@@ -1,6 +1,10 @@
 package kafka;
 
+import blxt.qjava.autovalue.util.ObjectPool;
+import blxt.qjava.qsql.kafka.KafkaConfiguration;
 import blxt.qjava.qsql.kafka.KafkaConnection;
+import blxt.qjava.qsql.kafka.KafkaPool;
+import blxt.qjava.qsql.kafka.KafkaProducerConnection;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -19,6 +23,14 @@ public class KafkaTest {
     static String msg = "{\"modelData\":{\"clientInformation\":{\"clientId\":\"d123123\",\"groupId\":\"p1\",\"tags\":\"g1\",\"userId\":\"user1\"},\"fields\":{\"temperature\":15,\"humidity\":58,\"active\":false,\"fengsu\":50},\"tags\":{\"devicekey\":\"dev132123\",\"productKey\":\"a1wsYOqfoAi\",\"user\":\"user1\",\"groupkey\":\"group1\"},\"topic\":\"/sys/data/p1/d123123/things/properts\"},\"ruleEntitry\":{\"empty\":false,\"identifier\":\"temperature\",\"name\":\"属性测试\",\"symbos\":\"notmore\",\"type\":1,\"value\":\"30\"}}";
 
     public static void main(String[] args) throws Exception {
+
+        KafkaConfiguration kafkaConfiguration = new KafkaConfiguration();
+        kafkaConfiguration.setBootstrap_servers("ip:port");
+        KafkaPool.newInstance(kafkaConfiguration);
+        KafkaPool.getInstance().addProducer("Producer");
+
+        KafkaProducerConnection connection = KafkaPool.getInstance().getProducer("Producer");
+        connection.put("topic", "msg");
 
         //String serverIp = "47.242.60.114:21006"; // 192.168.3.30:9092
         String serverIp = "192.168.3.30:9092";
@@ -44,7 +56,6 @@ public class KafkaTest {
         Runnable runnable = kafkaConnection_c.makeListener(new SubscribeListenerImpTest(), 1000);
 
         new Thread(runnable).start();
-
 
         // 生产者
         KafkaConnection KafkaConnection = new KafkaConnection(properties);

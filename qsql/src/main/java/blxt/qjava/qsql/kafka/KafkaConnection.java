@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public class KafkaConnection {
 
-    private static final @NotNull Logger log = LoggerFactory.getLogger(KafkaConnection.class);
+    private static final Logger log = LoggerFactory.getLogger(KafkaConnection.class);
 
 
     Properties properties = null;

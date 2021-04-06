@@ -13,22 +13,27 @@ import java.io.UnsupportedEncodingException;
  */
 @Data
 public class QTelnetClient extends TelnetClient {
+    public static String LoginMark = "login:";
+    public static String PasswdMark = "password:";
+    public static String LoginFailedMark = "Login Failed";
+
     Object lock = new Object();
+    String tag = "default";
     String hostIp = "127.0.0.1";
     int port = 22;
     String username;
     String password;
     boolean isLogin = false;
 
-    private String prompt = "$";    //结束标识字符串,Windows中是>,Linux中是#
+    private String prompt = "]$";    //结束标识字符串,Windows中是>,Linux中是#
     private char promptChar = '$';    //结束标识字符
     private InputStream in;        // 输入流,接收返回信息
     private PrintStream out;    // 向服务器写入 命令
     String termtype = "VT100"; // 协议类型 .VT100、VT52、VT220、VTNT、ANSI
 
     // 编码转换
-    private String ORIG_CODEC = "ISO8859-1";
-    private String TRANSLATE_CODEC = "GBK";
+    private String ORIG_CODEC = "UTF-8";
+    private String TRANSLATE_CODEC = "UTF-8";
     boolean isChangeCode = false;
 
 
@@ -44,7 +49,7 @@ public class QTelnetClient extends TelnetClient {
 
     /**
      * 连接
-     *
+     * 某些系统,connect后需要sleep 1秒才能登录
      * @return
      */
     public boolean connect() {
@@ -56,7 +61,7 @@ public class QTelnetClient extends TelnetClient {
             return false;
         }
         if (onTelnetClientListener != null) {
-            onTelnetClientListener.onConnect(true);
+            onTelnetClientListener.onConnect(tag, true);
         }
         return true;
     }
@@ -76,7 +81,7 @@ public class QTelnetClient extends TelnetClient {
             return false;
         }
         if (onTelnetClientListener != null) {
-            onTelnetClientListener.onDisConnect(true);
+            onTelnetClientListener.onDisConnect(tag, true);
         }
         return true;
     }
@@ -87,10 +92,8 @@ public class QTelnetClient extends TelnetClient {
      * @param prompt
      */
     public void setPrompt(String prompt) {
-        if (prompt != null) {
-            this.prompt = prompt;
-            this.promptChar = prompt.charAt(prompt.length() - 1);
-        }
+        this.prompt = "]" + prompt;
+        this.promptChar = prompt.charAt(prompt.length() - 1);
     }
 
 
@@ -98,27 +101,28 @@ public class QTelnetClient extends TelnetClient {
      * 登录到目标主机
      */
     public boolean login() {
+
         in = getInputStream();
         out = new PrintStream(getOutputStream());
-        readUntil("login:");
+
+        readUntil(LoginMark);
         write(username);
-        // 如果是linux,那么就设置用户识别符是#
-        if (username.equals("root") && prompt.equals("$")) {
-            setPrompt("#");
-        }
-        readUntil("password:");
+
+        readUntil(PasswdMark);
         write(password);
-        String rs = readUntil(null);
-        if (rs.contains("Login Failed")) {
+
+        String rs = readUntil(prompt);
+        if (rs.contains(LoginFailedMark)) {
             isLogin = false;
         }else{
             isLogin = true;
         }
         if (onTelnetClientListener != null) {
-            onTelnetClientListener.onLogin(isLogin);
+            onTelnetClientListener.onLogin(tag, isLogin);
         }
         return isLogin;
     }
+
 
 
     /**
@@ -141,7 +145,7 @@ public class QTelnetClient extends TelnetClient {
      * 发送命令, 线程
      * @param command
      */
-    public boolean sendCommandThread(final String command){
+    public synchronized boolean sendCommandThread(final String command){
         if(!isLogin()){
             return false;
         }
@@ -169,7 +173,20 @@ public class QTelnetClient extends TelnetClient {
      */
     public void write(String value) {
         try {
-            out.write(value.getBytes());
+            out.println(value);
+            out.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 发送命令
+     * @param value
+     */
+    public void write(byte[] value) {
+        try {
+            out.write(value);
             out.flush();
         } catch (Exception e) {
             e.printStackTrace();
@@ -205,7 +222,7 @@ public class QTelnetClient extends TelnetClient {
                         break;
                 }
                 //登录失败时返回结果
-                if (!isLogin && sb.toString().contains("Login Failed")) {
+                if (!isLogin && sb.toString().contains(LoginFailedMark)) {
                     break;
                 }
             }
@@ -215,12 +232,12 @@ public class QTelnetClient extends TelnetClient {
         if (onTelnetClientListener != null) {
             if (isChangeCode) {
                 try {
-                    onTelnetClientListener.onGetDate(new String(sb.toString().getBytes(ORIG_CODEC), TRANSLATE_CODEC));
+                    onTelnetClientListener.onGetDate(tag, new String(sb.toString().getBytes(ORIG_CODEC), TRANSLATE_CODEC));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             } else {
-                onTelnetClientListener.onGetDate(sb.toString());
+                onTelnetClientListener.onGetDate(tag, sb.toString());
             }
         }
         return sb.toString();
@@ -230,15 +247,15 @@ public class QTelnetClient extends TelnetClient {
      * Telnet监听
      */
     public interface OnTelnetClientListener {
-        void onConnect(final boolean isconnect);
+        void onConnect(final String tag, final boolean isconnect);
 
-        void onDisConnect(final boolean isconnect);
+        void onDisConnect(final String tag, final boolean isconnect);
 
-        void onLogin(final boolean isLogin);
+        void onLogin(final String tag, final boolean isLogin);
 
-        void onGetDate(final String data);
+        void onGetDate(final String tag, final String data);
 
-        void onGetDate(final byte[] data);
+        void onGetDate(final String tag, final byte[] data);
     }
 
 

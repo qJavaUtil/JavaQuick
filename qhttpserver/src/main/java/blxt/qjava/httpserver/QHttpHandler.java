@@ -123,15 +123,17 @@ public class QHttpHandler implements HttpHandler {
         int i = 0;
         int j = 0;
         for (Class<?>  param : parameterTypes){
-            if(j >= map.size()){
-                continue;
-            }
             if(param == HttpExchange.class ){
                 args[i] = httpExchange;
+                map.put("__httpExchange__", httpExchange);
+                j++;
             }
             else if(param == Map.class){
                 args[i] = map;
                 break;
+            }
+            else if(j >= map.size()){
+                continue;
             }
             else{
                 if(param.equals(map.get(params[j]).getClass())){

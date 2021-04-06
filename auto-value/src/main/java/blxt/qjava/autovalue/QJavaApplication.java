@@ -52,17 +52,13 @@ public class QJavaApplication {
             // 先加载内部的注解
             ObjectPool.putObject(QJavaApplication.class);
             QJavaApplication.run(QJavaApplication.class);
-            //System.out.println("内部自注解加载完成");
         }
 
         // 按优先级排序, 优先加载优先值底的
         Collections.sort(autoLoadBases);
-        //System.out.println("开始注解:" + object.getName());
 
         // 扫描指定包路径, 实现自动装载
         for(AutoLoadBase autoLoad : autoLoadBases){
-//            System.out.println(String.format("模块:%s, 优先级:%d, 扫描注解:%s",
-//                    autoLoad.getName(),autoLoad.getPriority(), autoLoad.getAnnotation().getName()));
             autoLoad.packageScan(object);
         }
 
@@ -101,31 +97,6 @@ public class QJavaApplication {
                 autoLoads.add(bean);
             }
         }
-
-
-//        if (classNames != null) {
-//            autoLoads = new ArrayList<>();
-//            for (String className : classNames) {
-//                // 过滤测试类
-//                if (className.indexOf("test-classes") > 0) {
-//                    className = className.substring(className.indexOf("test-classes") + 13);
-//                }
-//
-//                try {
-//                    Class objClass = Class.forName(className);
-//                    if (!AutoLoadBase.class.isAssignableFrom(objClass)){
-//                        continue;
-//                    }
-//                    AutoLoadBase bean = analysisAutoLoad(objClass);
-//                    if(bean == null) {
-//                       continue;
-//                    }
-//                    autoLoads.add(bean);
-//                } catch (ClassNotFoundException ignored) {
-//                    System.err.println("自动装载类实现异常:" + className);
-//                }
-//            }
-//        }
 
         return autoLoads;
     }

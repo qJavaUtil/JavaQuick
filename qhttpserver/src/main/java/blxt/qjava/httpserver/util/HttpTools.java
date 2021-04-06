@@ -1,5 +1,7 @@
 package blxt.qjava.httpserver.util;
 
+import com.sun.net.httpserver.HttpExchange;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,6 +20,13 @@ import java.util.Map;
  * http 工具
  */
 public class HttpTools {
+
+//    public static String getIpAddr(HttpExchange request){
+//        String ip ="";
+//        request.getRemoteAddress().getHostString();
+//
+//        return ip;
+//    }
 
     public static String sendPost(String arl, String s) {
 // 创建url资源

@@ -22,6 +22,11 @@
       <option name="url" value="https://maven.aliyun.com/repository/public/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="nexus-snapshots" />
+      <option name="name" value="和能私服-快照" />
+      <option name="url" value="https://maven.aliyun.com/repository/public/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="github" />
       <option name="name" value="GitHub OWNER Apache Maven Packages" />
       <option name="url" value="ttp://47.242.60.114:21003/repository/maven-public/" />
@@ -30,6 +35,16 @@
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="ttp://47.242.60.114:21003/repository/maven-public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="zjlnexus" />
+      <option name="name" value="柏拉小图私服" />
+      <option name="url" value="http://192.168.0.100:8083/repository/maven-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="nexus" />
+      <option name="name" value="和能私服" />
+      <option name="url" value="http://192.168.0.100:8083/repository/maven-releases/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />
@@ -42,8 +57,18 @@
       <option name="url" value="ttp://47.242.60.114:21003/repository/maven-releases/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="http://192.168.0.100:8083/repository/maven-releases/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="zjlnexus-snapshots" />
       <option name="name" value="柏拉小图私服" />
+      <option name="url" value="https://maven.aliyun.com/repository/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="nexus" />
+      <option name="name" value="和能私服" />
       <option name="url" value="https://maven.aliyun.com/repository/public/" />
     </remote-repository>
     <remote-repository>
@@ -52,9 +77,24 @@
       <option name="url" value="ttp://47.242.60.114:21003/repository/maven-releases/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="nexus-snapshots" />
+      <option name="name" value="和能私服-快照" />
+      <option name="url" value="http://192.168.0.100:8083/repository/maven-releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="github" />
+      <option name="name" value="GitHub OWNER Apache Maven Packages" />
+      <option name="url" value="http://192.168.0.100:8083/repository/maven-releases/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="zjlnexus-snapshots" />
       <option name="name" value="柏拉小图私服" />
       <option name="url" value="ttp://47.242.60.114:21003/repository/maven-public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="zjlnexus-snapshots" />
+      <option name="name" value="柏拉小图私服" />
+      <option name="url" value="http://192.168.0.100:8083/repository/maven-releases/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="github" />

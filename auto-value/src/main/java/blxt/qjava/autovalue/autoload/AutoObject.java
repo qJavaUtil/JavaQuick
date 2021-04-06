@@ -15,7 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * 自动装载对象
+ * 自动装载对象, 注意不要循环依赖
  * @Author: Zhang.Jialei
  * @Date: 2020/12/4 12:34
  */
@@ -30,6 +30,7 @@ public class AutoObject extends AutoLoadBase {
      */
     @Override
     public  <T> T  inject(Class<?> object) throws Exception {
+
         T bean = ObjectPool.getObject(object);
 
         // 获取f对象对应类中的所有属性域
@@ -61,7 +62,6 @@ public class AutoObject extends AutoLoadBase {
 
             // 设置值
             ObjectValue.setObjectValue(bean,field, value, falSetAccessible);
-
         }
         ObjectPool.upObject(object, bean);
         return bean;

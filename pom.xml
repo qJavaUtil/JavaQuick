@@ -85,11 +85,18 @@
     </build>
 
 
+<!--    <distributionManagement>-->
+<!--        <repository>-->
+<!--            <id>zjlnexus</id>-->
+<!--            <name>zjlnexus</name>-->
+<!--            <url>http://47.242.60.114:21003/repository/maven-releases/</url>-->
+<!--        </repository>-->
+<!--    </distributionManagement>-->
     <distributionManagement>
         <repository>
-            <id>zjlnexus</id>
-            <name>zjlnexus</name>
-            <url>http://47.242.60.114:21003/repository/maven-releases/</url>
+            <id>hn-nexus</id>
+            <name>hn-nexus</name>
+            <url>http://192.168.0.100:8083/repository/maven-releases/</url>
         </repository>
     </distributionManagement>
 

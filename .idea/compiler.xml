@@ -17,6 +17,7 @@
         <module name="qfile4J" />
         <module name="qopencv" />
         <module name="qtime" />
+        <module name="UserStatistics" />
         <module name="qhttpserver" />
         <module name="qxml" />
         <module name="qliveness" />
@@ -49,6 +50,7 @@
       <module name="qtools" target="1.8" />
       <module name="qudp" target="1.8" />
       <module name="qxml" target="8" />
+      <module name="UserStatistics" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>
