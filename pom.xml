@@ -28,6 +28,7 @@
         <module>qxml</module>
         <module>qsql</module>
         <module>qtelnet</module>
+        <module>qExecute</module>
     </modules>
 
     <properties>

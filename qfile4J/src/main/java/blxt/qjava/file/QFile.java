@@ -54,7 +54,7 @@ public class QFile {
     }
 
     public static boolean move(File oldFile, File newFile) {
-        return oldFile.isDirectory() && newFile.isDirectory() ? MFolder.moveFolder(oldFile, newFile) : MFile.moveFile(oldFile, newFile);
+        return oldFile.isDirectory() ? MFolder.moveFolder(oldFile, newFile) : MFile.moveFile(oldFile, newFile);
     }
 
     public static boolean copy(File oldFile, File newFile) {
@@ -131,20 +131,27 @@ public class QFile {
             return status;
         }
 
+        /**
+         * 删除文件
+         * @param dirFile
+         * @return
+         */
+        public static boolean delete(File dirFile) {
+            // 如果dir对应的文件不存在，则退出
+            if (dirFile==null || !dirFile.exists()) {
+                return false;
+            }
 
-        public static boolean deleteDir(File dir) {
-            if (dir != null && dir.isDirectory()) {
-                String[] children = dir.list();
-
-                for (int i = 0; i < children.length; ++i) {
-                    boolean success = deleteDir(new File(dir, children[i]));
-                    if (!success) {
+            if (dirFile.isFile()) {
+                return dirFile.delete();
+            } else {
+                for (File file : dirFile.listFiles()) {
+                    if (!delete(file)){
                         return false;
                     }
                 }
             }
-
-            return dir == null ? false : dir.delete();
+            return dirFile.delete();
         }
 
         public static boolean copyFolder(File oldFile, File newPath) {
@@ -186,7 +193,7 @@ public class QFile {
         }
 
         public static boolean moveFolder(File oldFile, File newPath) {
-            return copyFolder(oldFile, newPath) && deleteDir(oldFile);
+            return copyFolder(oldFile, newPath) && delete(oldFile);
         }
     }
 
@@ -367,11 +374,11 @@ public class QFile {
         }
 
         public static boolean delete(File file) {
-            return MFolder.deleteDir(file);
+            return MFolder.delete(file);
         }
 
         public static boolean moveFile(File oldPath, File newPath) {
-            if (!oldPath.isFile()) {
+            if (oldPath.isDirectory()) {
                 return false;
             } else {
                 if (newPath.isDirectory()) {
@@ -437,7 +444,7 @@ public class QFile {
             for (; br.read(buff) != -1; ) {
                 sb.append(buff);
             }
-
+            br.close();
             return sb.toString();
         }
 
@@ -455,22 +462,20 @@ public class QFile {
             } else {
                 try {
                     InputStream instream = new FileInputStream(file);
-                    if (instream != null) {
-                        InputStreamReader inputreader = new InputStreamReader(instream);
-                        BufferedReader buffreader = new BufferedReader(inputreader);
+                    InputStreamReader inputreader = new InputStreamReader(instream);
+                    BufferedReader buffreader = new BufferedReader(inputreader);
 
-                        String line;
-                        while ((line = buffreader.readLine()) != null) {
-                            strList.add(line);
-                        }
-
-                        instream.close();
+                    String line;
+                    while ((line = buffreader.readLine()) != null) {
+                        strList.add(line);
                     }
 
+                    instream.close();
+                    inputreader.close();
+                    buffreader.close();
+
                     return strList;
-                } catch (FileNotFoundException var7) {
-                    return null;
-                } catch (IOException var8) {
+                } catch (IOException var7) {
                     return null;
                 }
             }
@@ -662,6 +667,23 @@ public class QFile {
     }
 
 
+    /**
+     * qingxi mulu
+     * @param path
+     * @return
+     */
+    public static String cleanPath(String path){
+        int index = path.indexOf("..\\");
+        while(index >= 0){
+            int indexI = path.lastIndexOf("..\\", index);
+            indexI = path.lastIndexOf("\\", indexI - 4);
+            path = path.substring(0, indexI + 1) +
+                    path.substring(index + 3);
+            index = path.indexOf("..\\");
+        }
+        path = path.replace(".\\", "");;
+        return path;
+    }
 
 
 }

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -18,6 +19,7 @@
         <module name="qopencv" />
         <module name="qtime" />
         <module name="UserStatistics" />
+        <module name="qExecute" />
         <module name="qhttpserver" />
         <module name="qxml" />
         <module name="qliveness" />
@@ -30,6 +32,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="auto-value" target="1.8" />
+      <module name="qExecute" target="8" />
       <module name="qfile4J" target="1.8" />
       <module name="qFrame" target="1.8" />
       <module name="qftp" target="8" />

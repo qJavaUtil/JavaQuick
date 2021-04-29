@@ -19,8 +19,8 @@ public class TelnetTest {
       //  AutoTelnet autoFtpClient = new AutoTelnet();
       //  MQTelnetClient mqTelnetClient = autoFtpClient.inject(MQTelnetClient.class);
 
-        TelnetOperator telnetOperator = new TelnetOperator();
-        telnetOperator.login("127.0.0.1", 23, "root","root");
+        TelnetOperator telnetOperator = new TelnetOperator("VT220");
+        telnetOperator.login("127.0.0.1", 23, "ZhangJieLei","bbhn123");
         String res = telnetOperator.sendCommand("mkdir test");
         System.out.println("结果:" + res);
         res = telnetOperator.sendCommand("ls");

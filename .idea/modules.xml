@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/JavaQuickDemo/UserStatistics/UserStatistics.iml" filepath="$PROJECT_DIR$/JavaQuickDemo/UserStatistics/UserStatistics.iml" />
       <module fileurl="file://$PROJECT_DIR$/auto-value/auto-value.iml" filepath="$PROJECT_DIR$/auto-value/auto-value.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qExecute/qExecute.iml" filepath="$PROJECT_DIR$/qExecute/qExecute.iml" />
       <module fileurl="file://$PROJECT_DIR$/qFrame/qFrame.iml" filepath="$PROJECT_DIR$/qFrame/qFrame.iml" />
       <module fileurl="file://$PROJECT_DIR$/qfile4J/qfile4J.iml" filepath="$PROJECT_DIR$/qfile4J/qfile4J.iml" />
       <module fileurl="file://$PROJECT_DIR$/qftp/qftp.iml" filepath="$PROJECT_DIR$/qftp/qftp.iml" />

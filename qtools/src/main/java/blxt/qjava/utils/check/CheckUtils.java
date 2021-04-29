@@ -224,6 +224,14 @@ public class CheckUtils {
             if (((float[]) o).length == 0) {
                 return true;
             }
+        }else if(o instanceof List){
+            if(((List<?>) o).size() <= 0){
+                return true;
+            }
+        }else if(o instanceof Map){
+            if(((Map) o).size() <= 0){
+                return true;
+            }
         }
         return false;
     }
