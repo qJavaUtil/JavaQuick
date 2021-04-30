@@ -9,17 +9,17 @@ import java.io.File;
  */
 public class LogTest {
 
-    @Test
-    public void testSlf4j() {
-        QLog.loadConfigure(new File("E:/Documents/workspace/java/JavaQuick/Qlog/logconfgDemo/log4j.properties"));
-        fun();
-    }
-
-    public void fun(){
-        QLog.logger.trace("123");
-        QLog.logger.debug("123");
-        QLog.logger.info("123");
-        QLog.logger.warn("123");
-        QLog.logger.error("123");
-    }
+//    @Test
+//    public void testSlf4j() {
+//        QLog.loadConfigure(new File("E:/Documents/workspace/java/JavaQuick/Qlog/logconfgDemo/log4j.properties"));
+//        fun();
+//    }
+//
+//    public void fun(){
+//        QLog.logger.trace("123");
+//        QLog.logger.debug("123");
+//        QLog.logger.info("123");
+//        QLog.logger.warn("123");
+//        QLog.logger.error("123");
+//    }
 }
