@@ -435,16 +435,30 @@ public class QFile {
         }
 
         @SuppressWarnings("resource")
-        public static String getStr(File file) throws IOException {
+        public static String getStr(File file) {
             StringBuilder sb = new StringBuilder();
 
-            BufferedReader br = new BufferedReader(new FileReader(file.getPath()));
-            char[] buff = new char[BUFFER_MAX];
+            BufferedReader br = null;
+            try {
+                br = new BufferedReader(new FileReader(file.getPath()));
+                char[] buff = new char[BUFFER_MAX];
 
-            for (; br.read(buff) != -1; ) {
-                sb.append(buff);
+                for (; br.read(buff) != -1; ) {
+                    sb.append(buff);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }finally {
+                if(br != null){
+                    try {
+                        br.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-            br.close();
+
             return sb.toString();
         }
 
@@ -681,9 +695,29 @@ public class QFile {
                     path.substring(index + 3);
             index = path.indexOf("..\\");
         }
-        path = path.replace(".\\", "");;
+        path = path.replace(".\\", "");
         return path;
     }
 
+    /**
+     * 获取真实路径
+     * @param docWorkSpace
+     * @return
+     */
+    public static String getRealPath(String docWorkSpace){
+        docWorkSpace = docWorkSpace.trim();
+
+        File fileHome = new File(docWorkSpace);
+        fileHome = new File(fileHome.getParentFile().getAbsolutePath(), fileHome.getName());
+        docWorkSpace = fileHome.getAbsolutePath();
+        // 处理相对目录
+        docWorkSpace = QFile.cleanPath(docWorkSpace);
+
+        fileHome = new File(docWorkSpace);
+        if(!fileHome.exists()){
+            fileHome.mkdirs();
+        }
+        return fileHome.getAbsolutePath();
+    }
 
 }
