@@ -77,6 +77,9 @@ public class QueryResultMapper<T> {
                     T bean = outputClass.newInstance();
                     for (Object o : value) {
                         if(o == null){ continue; }
+                        if(fid >= fields.size()){
+                            break;
+                        }
                         ObjectValue.setObjectValue(bean,fields.get(fid), o, true);
                         fid++;
                     }
