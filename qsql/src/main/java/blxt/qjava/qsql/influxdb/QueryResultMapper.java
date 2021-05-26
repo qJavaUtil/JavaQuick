@@ -4,6 +4,9 @@ import blxt.qjava.autovalue.util.ObjectValue;
 import lombok.extern.slf4j.Slf4j;
 import org.influxdb.dto.QueryResult;
 import org.influxdb.impl.InfluxDBResultMapper;
+import org.apache.commons.beanutils.ConvertUtils;
+import scala.Int;
+import scala.annotation.meta.field;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -80,8 +83,20 @@ public class QueryResultMapper<T> {
                         if(fid >= fields.size()){
                             break;
                         }
-                        ObjectValue.setObjectValue(bean,fields.get(fid), o, true);
-                        fid++;
+                        try {
+                            // ObjectValue.setObjectValue(bean,fields.get(fid), o, true);
+                            Field field = fields.get(fid);
+                            Object convert = ConvertUtils.convert(o, field.getType());
+                            boolean accessFlag = field.isAccessible();
+                            field.setAccessible(true);
+                            field.set(bean, convert);
+                            field.setAccessible(accessFlag);
+                        } catch (Exception var5) {
+                            log.error("负值异常:{}<-{}", fields.get(fid).getName(), o);
+                            var5.printStackTrace();
+                        }finally {
+                            fid++;
+                        }
                     }
                     beans.add(bean);
                 }

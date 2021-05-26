@@ -1,11 +1,14 @@
 package blxt.qjava.autovalue.util;
 
 import blxt.qjava.autovalue.autoload.AutoValue;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.ConvertUtils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+@Slf4j
 public class ObjectValue {
 
 
@@ -63,17 +66,21 @@ public class ObjectValue {
      */
     public static boolean setObjectValue(Object bean, Field field, Object value, boolean falSetAccessible) {
         try {
+            // 这里对值做一个转换
+            Object convert = ConvertUtils.convert(value, field.getType());
             if (falSetAccessible) {
                 // 获取原来的访问控制权限
                 boolean accessFlag = field.isAccessible();
                 field.setAccessible(true);
-                field.set(bean, value);
+                field.set(bean, field);
                 field.setAccessible(accessFlag);
             } else {
-                field.set(bean, value);
+                field.set(bean, convert);
             }
             return true;
         } catch (Exception e) {
+            log.error("负值异常:{}<-{}", field.getName(), value);
+            e.printStackTrace();
             return false;
         }
     }
@@ -90,7 +97,8 @@ public class ObjectValue {
         try {
             // 设置值
             PropertyDescriptor pd = new PropertyDescriptor(field.getName(), bean.getClass());
-            Method wM = pd.getWriteMethod();//获得写方法
+            //获得写方法 
+            Method wM = pd.getWriteMethod();
             // Method getter = property.getReadMethod();
             wM.invoke(bean, value);
             return true;
