@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 public class FileTreeBean {
     /** 包名截取 */
-    public static int packageIndex = 0;
+    public static int PACKAGE_INDEX = 0;
 
     /** 目录标记 */
     boolean dir;
@@ -29,13 +29,30 @@ public class FileTreeBean {
     /** 包名(文件夹名) */
     String packageName;
 
+    String hashId;
+
+    @JsonIgnore
+    int packageIndex;
+
     /** 子文件 */
     List<FileTreeBean> files = new ArrayList<>();
 
     public FileTreeBean(File file) {
         this.file = file;
+        packageIndex = PACKAGE_INDEX;
+        init(PACKAGE_INDEX);
+    }
+
+    public FileTreeBean(File file, int packageIndex) {
+        this.file = file;
+        this.packageIndex = packageIndex;
+        init(packageIndex);
+    }
+
+    private void init(int packageIndex){
         name = file.getName();
-        packageName = file.getParent().substring(packageIndex);
+        packageName = file.getAbsolutePath().substring(packageIndex);
+        hashId = ((packageName + File.separator + name).hashCode() & Integer.MAX_VALUE) + System.currentTimeMillis() + "";
     }
 
     /**
@@ -48,7 +65,7 @@ public class FileTreeBean {
             File[] files = file.listFiles();
             if (files != null){
                 for (File file1 : files) {
-                    this.files.add(new FileTreeBean(file1).buile());
+                    this.files.add(new FileTreeBean(file1, packageIndex).buile());
                 }
             }
         }
@@ -62,11 +79,11 @@ public class FileTreeBean {
 
 
     public static void main(String[] args) {
-        File file = new File("E:\\ZhangJieLei\\Documents\\workspace\\workProject\\IotDoc\\IDEH_HOME\\workspace\\test1");
-        FileTreeBean fileTreeBean = new FileTreeBean(file);
+        File file = new File("E:/ZhangJieLei/Documents/workspace/workProject/IotDoc/IDEH_HOME/workspace/test1");
+        FileTreeBean fileTreeBean = new FileTreeBean(file, file.getAbsolutePath().length());
         fileTreeBean.buile();
 
-        System.out.println(fileTreeBean.toJsonString("E:\\\\ZhangJieLei\\\\Documents\\\\workspace\\\\workProject\\\\IotDoc\\\\IDEH_HOME\\\\workspace"));
+        System.out.println(fileTreeBean.toString());
     }
 
 }
