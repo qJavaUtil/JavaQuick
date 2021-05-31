@@ -30,7 +30,6 @@
     <orderEntry type="library" name="Maven: com.google.auto.service:auto-service-annotations:1.0-rc7" level="project" />
     <orderEntry type="library" name="Maven: com.google.auto:auto-common:0.10" level="project" />
     <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.18.18" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
     <orderEntry type="module" module-name="qtime" />
     <orderEntry type="library" name="Maven: com.mchange:c3p0:0.9.5.4" level="project" />
     <orderEntry type="library" name="Maven: com.mchange:mchange-commons-java:0.2.15" level="project" />

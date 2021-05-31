@@ -1,5 +1,6 @@
 package redis;
 
+import blxt.qjava.qsql.redis.RedisPool;
 import blxt.qjava.qsql.redis.ResisSourceFactory;
 import blxt.qjava.qsql.utils.RedisConfiguration;
 import cn.hutool.core.date.DateUtil;
@@ -12,7 +13,7 @@ import java.io.File;
 
 public class RedisConnetionTest {
 
-//    RedisConnetion redisConnetion = new RedisConnetion("auth.zhangjialei.cn", "redis", 8379, 0,
+//    RedisPool redisConnetion = new RedisPool("auth.zhangjialei.cn", "redis", 8379, 0,
 //            -100, 100, 0, 0, 0);
 
     public static void main(String[] args) throws Exception {

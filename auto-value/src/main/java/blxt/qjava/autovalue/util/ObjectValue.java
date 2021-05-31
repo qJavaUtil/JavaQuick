@@ -8,7 +8,6 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-@Slf4j
 public class ObjectValue {
 
 
@@ -67,19 +66,22 @@ public class ObjectValue {
     public static boolean setObjectValue(Object bean, Field field, Object value, boolean falSetAccessible) {
         try {
             // 这里对值做一个转换
-            Object convert = ConvertUtils.convert(value, field.getType());
+            if (!value.getClass().equals(field.getType())){
+                value = ConvertUtils.convert(value, field.getType());
+            }
+
             if (falSetAccessible) {
                 // 获取原来的访问控制权限
                 boolean accessFlag = field.isAccessible();
                 field.setAccessible(true);
-                field.set(bean, field);
+                field.set(bean, value);
                 field.setAccessible(accessFlag);
             } else {
-                field.set(bean, convert);
+                field.set(bean, value);
             }
             return true;
         } catch (Exception e) {
-            log.error("负值异常:{}<-{}", field.getName(), value);
+            //log.error("负值异常:{}<-{}", field.getName(), value);
             e.printStackTrace();
             return false;
         }

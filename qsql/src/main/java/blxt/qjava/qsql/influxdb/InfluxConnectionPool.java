@@ -38,14 +38,14 @@ public class InfluxConnectionPool {
         return instance;
     }
 
-    public static InfluxConnectionPool newInstance() throws Exception {
-        if(instance == null){
-            AutoValue autoValue = new AutoValue();
-            InfluxBean influxBean = (InfluxBean)autoValue.inject(InfluxBean.class);
-            instance = new InfluxConnectionPool(influxBean);
-        }
-        return instance;
-    }
+//    public static InfluxConnectionPool newInstance() throws Exception {
+//        if(instance == null){
+//            AutoValue autoValue = new AutoValue();
+//            InfluxBean influxBean = (InfluxBean)autoValue.inject(InfluxBean.class);
+//            instance = new InfluxConnectionPool(influxBean);
+//        }
+//        return instance;
+//    }
     /**
      * 获取influx连接管理器
      * @return

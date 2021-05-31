@@ -28,7 +28,7 @@ public class CheckUtils {
          * @param code    code
          * @param data    data
          */
-        public static void stringIsNullCheck(String filed, String message, String code, Object data) {
+        public static void stringIsNullCheck(String filed, String message, Integer code, Object data) {
             if (StringCheck.isBlank(filed)) {
                 throw new DataException(code, message, data);
             }
@@ -42,7 +42,7 @@ public class CheckUtils {
          * @param code    code
          * @param data    data
          */
-        public static void isNumberCheck(String filed, String message, String code, Object data) {
+        public static void isNumberCheck(String filed, String message, Integer code, Object data) {
             if (!StringCheck.isNumber(filed)) {
                 throw new DataException(code, message, data);
             }
@@ -58,7 +58,7 @@ public class CheckUtils {
          * @param code    code
          * @param data    data
          */
-        public static void isIntCheck(String filed, String message, String code, Object data) {
+        public static void isIntCheck(String filed, String message, Integer code, Object data) {
             if (!StringCheck.isInteger(filed)) {
                 throw new DataException(code, message, data);
             }
@@ -72,7 +72,7 @@ public class CheckUtils {
          * @param code    code
          * @param data    data
          */
-        public static void isEmailCheck(String filed, String message, String code, Object data) {
+        public static void isEmailCheck(String filed, String message, Integer code, Object data) {
             if (!StringCheck.isEmail(filed)) {
                 throw new DataException(code, message, data);
             }
@@ -86,7 +86,7 @@ public class CheckUtils {
          * @param code    code
          * @param data    data
          */
-        public static void isMobileCheck(String filed, String message, String code, Object data) {
+        public static void isMobileCheck(String filed, String message, Integer code, Object data) {
             if (!StringCheck.isMobile(filed)) {
                 throw new DataException(code, message, data);
             }
@@ -101,7 +101,7 @@ public class CheckUtils {
          * @param code
          * @param data
          */
-        public static void checkFile(File file, String message, String code, Object data){
+        public static void checkFile(File file, String message, Integer code, Object data){
             if(isEmpty(file)){
                 throw new DataException(code, message, data);
             }
@@ -117,7 +117,7 @@ public class CheckUtils {
          * @param code
          * @param data
          */
-        public static void checkFileDirectory(File file, String message, String code, Object data){
+        public static void checkFileDirectory(File file, String message, Integer code, Object data){
             if(isEmpty(file)){
                 throw new DataException(code, message, data);
             }
@@ -137,7 +137,7 @@ public class CheckUtils {
      * @param code
      * @param data
      */
-    public static <T> T objectCheckNull(T object, String message, String code, Object data) {
+    public static <T> T objectCheckNull(T object, String message, Integer code, Object data) {
         if (isEmpty(object)) {
             throw new DataException(code, message, data);
         }
@@ -152,7 +152,7 @@ public class CheckUtils {
      * @param code
      * @param data
      */
-    public static <T> T objectCheckNotNull(T object, String message, String code, Object data) {
+    public static <T> T objectCheckNotNull(T object, String message, Integer code, Object data) {
         if (isNotEmpty(object)) {
             throw new DataException(code, message, data);
         }

@@ -48,7 +48,7 @@ public class DBPoolConnection {
      * @throws SQLException
      */
     public static synchronized DruidPooledConnection getConnection() throws SQLException{
-        CheckUtils.objectCheckNull(druidDataSource, "Druid未初始化", "0001", "" );
+        CheckUtils.objectCheckNull(druidDataSource, "Druid未初始化", -1, "" );
         return druidDataSource.getConnection();
     }
 
@@ -59,7 +59,7 @@ public class DBPoolConnection {
     }
 
     public static boolean execute(DruidPooledConnection connection, String sql){
-        CheckUtils.objectCheckNull(connection, "DruidPooledConnection不能为空", "0001", "");
+        CheckUtils.objectCheckNull(connection, "DruidPooledConnection不能为空", -1, "");
         try {
             // 执行查询
             PreparedStatement pst = connection.prepareStatement(sql);
@@ -72,7 +72,7 @@ public class DBPoolConnection {
 
     public static ResultSet executeQuery(DruidPooledConnection connection, String sql){
         // 连接
-        CheckUtils.objectCheckNull(connection, "DruidPooledConnection不能为空", "0001", "");
+        CheckUtils.objectCheckNull(connection, "DruidPooledConnection不能为空", -1, "");
         try {
             // 执行查询
             PreparedStatement pst = connection.prepareStatement(sql);
@@ -84,7 +84,7 @@ public class DBPoolConnection {
     }
 
     public static int executeUpdate(DruidPooledConnection connection, String sql){
-        CheckUtils.objectCheckNull(connection, "DruidPooledConnection不能为空", "0001", "");
+        CheckUtils.objectCheckNull(connection, "DruidPooledConnection不能为空", -1, "");
         try {
             // 执行查询
             PreparedStatement pst = connection.prepareStatement(sql);

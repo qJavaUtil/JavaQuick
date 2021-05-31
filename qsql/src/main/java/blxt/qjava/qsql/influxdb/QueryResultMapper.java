@@ -84,13 +84,7 @@ public class QueryResultMapper<T> {
                             break;
                         }
                         try {
-                            // ObjectValue.setObjectValue(bean,fields.get(fid), o, true);
-                            Field field = fields.get(fid);
-                            Object convert = ConvertUtils.convert(o, field.getType());
-                            boolean accessFlag = field.isAccessible();
-                            field.setAccessible(true);
-                            field.set(bean, convert);
-                            field.setAccessible(accessFlag);
+                            ObjectValue.setObjectValue(bean,fields.get(fid), o, true);
                         } catch (Exception var5) {
                             log.error("负值异常:{}<-{}", fields.get(fid).getName(), o);
                             var5.printStackTrace();

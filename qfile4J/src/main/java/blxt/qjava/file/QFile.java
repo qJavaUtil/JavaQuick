@@ -687,15 +687,15 @@ public class QFile {
      * @return
      */
     public static String cleanPath(String path){
-        int index = path.indexOf("..\\");
+        int index = path.indexOf(".." + File.separator);
         while(index >= 0){
-            int indexI = path.lastIndexOf("..\\", index);
-            indexI = path.lastIndexOf("\\", indexI - 4);
+            int indexI = path.lastIndexOf(".." + File.separator, index);
+            indexI = path.lastIndexOf(File.separator, indexI - 4);
             path = path.substring(0, indexI + 1) +
                     path.substring(index + 3);
-            index = path.indexOf("..\\");
+            index = path.indexOf(".." + File.separator);
         }
-        path = path.replace(".\\", "");
+        path = path.replace("." + File.separator, "");
         return path;
     }
 

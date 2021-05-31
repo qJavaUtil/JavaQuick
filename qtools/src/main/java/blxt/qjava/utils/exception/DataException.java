@@ -7,18 +7,18 @@ package blxt.qjava.utils.exception;
  */
 public class DataException extends RuntimeException{
 
-    private String code;
+    private Integer code;
     private String msg;
     private Object data;
 
-    public DataException(String code, String msg, Object data) {
+    public DataException(Integer code, String msg, Object data) {
         super(String.format(code == null ? "%s" : "%s, 错误码:%s", msg, code));
         this.code = code;
         this.msg = msg;
         this.data = data;
     }
 
-    public String getCode() {
+    public Integer getCode() {
         return code;
     }
 

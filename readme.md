@@ -79,7 +79,7 @@ public class AppConfiguration   {
     @Value("com.test.string_t")
     private String string_t = "Default";
 
-    @Value("com.test.int_t" )
+    //@Value("com.test.int_t" )
     private int int_t;
 
     @Value("com.test.float_t" )

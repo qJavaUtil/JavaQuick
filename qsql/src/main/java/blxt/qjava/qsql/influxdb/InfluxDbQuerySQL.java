@@ -68,7 +68,7 @@ public class InfluxDbQuerySQL {
         }
         // 其他筛选条件
         if(rule != null && !rule.trim().isEmpty()){
-            rule = "and" + rule;
+            rule = "and " + rule;
         }
         else{
             rule = "";
