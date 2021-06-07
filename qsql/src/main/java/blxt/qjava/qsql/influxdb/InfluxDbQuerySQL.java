@@ -43,6 +43,20 @@ public class InfluxDbQuerySQL {
      * @return
      */
     public String build(){
+        String columns = this.columns;
+        String table = this.table;
+        String timeStart = this.timeStart;
+        String timeEnd = this.timeEnd;
+        String rule = this.rule;
+        String group = this.group;
+        String order = this.order;
+        String limit = this.limit;
+        String offset = this.offset;
+        String timezone = this.timezone;
+
+        Map<String, String> linkedHashMap = this.linkedHashMap;
+
+
         // table不能为空
         if(table == null || table.trim().isEmpty()){
             return null;
