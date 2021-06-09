@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -462,7 +463,6 @@ public class QFile {
             return sb.toString();
         }
 
-
         public static List<String> getStrByLine(File file, int leng) {
             List<String> strList = null;
             if (leng <= 0) {
@@ -494,6 +494,34 @@ public class QFile {
                 }
             }
         }
+
+        /**
+         *
+         * @param inStream
+         * @return
+         */
+        public static String getStrByInputStream(InputStream inStream){
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(
+                        inStream, StandardCharsets.UTF_8));
+                StringBuilder strber = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    strber.append(line).append("\n");
+                }
+                return strber.toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }finally {
+                try {
+                    inStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
 
         @SuppressWarnings("resource")
         public static byte[] getBytes4Access(String filePath) {
@@ -545,6 +573,10 @@ public class QFile {
                 return null;
             }
         }
+
+
+
+
     }
 
     public static class Write {
