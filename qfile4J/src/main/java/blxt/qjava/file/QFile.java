@@ -494,7 +494,23 @@ public class QFile {
                 }
             }
         }
-
+        /**
+         *
+         * @return
+         */
+        public static String getStrByBufferedReader(BufferedReader reader){
+            try {
+                StringBuilder strber = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    strber.append(line).append("\n");
+                }
+                return strber.toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
         /**
          *
          * @param inStream

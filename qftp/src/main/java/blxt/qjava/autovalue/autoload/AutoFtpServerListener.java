@@ -22,7 +22,7 @@ public class AutoFtpServerListener extends AutoLoadBase{
         }
 
         MFtpServerFactory ftpServerFactory = MFtpServerFactory.getInstance();
-        CheckUtils.objectCheckNull(ftpServerFactory, "需要启动ftp服务，添加@EnFtpServer注解","0001", null);
+        CheckUtils.objectCheckNull(ftpServerFactory, "需要启动ftp服务，添加@EnFtpServer注解",0001, null);
 
         Listener listener = (Listener)ObjectPool.getObject(object);
         ftpServerFactory.addListener(object.getName(), listener);
