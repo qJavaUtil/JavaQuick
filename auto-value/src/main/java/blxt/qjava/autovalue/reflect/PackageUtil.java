@@ -30,6 +30,20 @@ import java.util.jar.JarFile;
 public class PackageUtil {
 
     /**
+     * 某个类是否存在
+     * @param classPackagename  org.apache.log4j.Logger
+     * @return
+     */
+    public static boolean isClassExist(String classPackagename){
+        try {
+            Class<?> classzs = Class.forName(classPackagename);
+            return classzs != null;
+        } catch (ClassNotFoundException e) {
+        }
+        return false;
+    }
+
+    /**
      * 判断摸个类是否集成了指定接口
      * @param object      需要判断的类
      * @param interfaces  需要判断的接口

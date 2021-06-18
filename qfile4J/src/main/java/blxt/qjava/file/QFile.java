@@ -6,8 +6,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 简单文件工具
@@ -393,6 +392,89 @@ public class QFile {
                     return false;
                 }
             }
+        }
+
+        /**
+         * 更具文件名称排序
+         * @param files
+         * @return
+         */
+        public static List<File> orderByName(File[] files) {
+            List<File> fileList = Arrays.asList(files);
+            Collections.sort(fileList, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    if (o1.isDirectory() && o2.isFile()) {
+                        return -1;
+                    }
+                    if (o1.isFile() && o2.isDirectory()) {
+                        return 1;
+                    }
+                    return o1.getName().compareTo(o2.getName());
+                }
+            });
+            return fileList;
+        }
+
+        /**
+         * 文件日期排序
+         * @param files
+         * @return
+         */
+        public static List<File> orderByDate(File[] files) {
+            Arrays.sort(files, new Comparator<File>() {
+                @Override
+                public int compare(File f1, File f2) {
+                    long diff = f1.lastModified() - f2.lastModified();
+                    if (diff > 0) {
+                        return 1;
+                    }
+                    else if (diff == 0) {
+                        return 0;
+                    }
+                    else {
+                        return -1;//如果 if 中修改为 返回-1 同时此处修改为返回 1  排序就会是递减
+                    }
+                }
+
+                @Override
+                public boolean equals(Object obj) {
+                    return true;
+                }
+
+            });
+            return Arrays.asList(files);
+        }
+
+        /**
+         * 文件大小排序
+         * @param files
+         * @return
+         */
+        public static List<File> orderByLength(File[] files) {
+            List<File> fileList = Arrays.asList(files);
+            Collections.sort(fileList, new Comparator<File>() {
+                @Override
+                public int compare(File f1, File f2) {
+                    long diff = f1.length() - f2.length();
+                    if (diff > 0) {
+                        return 1;
+                    }
+                    else if (diff == 0) {
+                        return 0;
+                    }
+                    else {
+                        return -1;//如果 if 中修改为 返回-1 同时此处修改为返回 1  排序就会是递减
+                    }
+                }
+
+                @Override
+                public boolean equals(Object obj) {
+                    return true;
+                }
+            });
+
+            return fileList;
         }
     }
 

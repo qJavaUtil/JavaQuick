@@ -64,7 +64,9 @@ public class FileTreeBean {
             dir = true;
             File[] files = file.listFiles();
             if (files != null){
-                for (File file1 : files) {
+                // 按文件名排序
+                List<File>  fileList = QFile.MFile.orderByName(files);
+                for (File file1 : fileList) {
                     this.files.add(new FileTreeBean(file1, packageIndex).buile());
                 }
             }
