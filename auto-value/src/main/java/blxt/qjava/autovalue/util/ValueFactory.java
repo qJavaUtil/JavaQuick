@@ -3,6 +3,7 @@ package blxt.qjava.autovalue.util;
 import blxt.qjava.autovalue.autoload.AutoValue;
 import blxt.qjava.autovalue.inter.ConfigurationProperties;
 import blxt.qjava.autovalue.inter.PropertySource;
+import blxt.qjava.autovalue.inter.Value;
 import blxt.qjava.properties.PropertiesFactory;
 import blxt.qjava.utils.Converter;
 import lombok.Data;
@@ -115,7 +116,7 @@ public class ValueFactory {
      * @return
      */
     private String getKey(Object bean, Field field){
-        blxt.qjava.autovalue.inter.Value valuename = field.getAnnotation(blxt.qjava.autovalue.inter.Value.class);
+        Value valuename = field.getAnnotation(Value.class);
         ConfigurationProperties prefix = bean.getClass().getAnnotation(ConfigurationProperties.class);
 
         String keyBase = "";

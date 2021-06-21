@@ -29,6 +29,7 @@ public class FileTreeBean {
     /** 包名(文件夹名) */
     String packageName;
 
+    /** 文件路径hash */
     String hashId;
 
     @JsonIgnore

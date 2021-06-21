@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 @SqlBean
 public class User {
-    @SqlColumn("uid")
+    @SqlColumn(value = "uid")
     int uid;
-    @SqlColumn("uname")
+    @SqlColumn(value = "uname")
     String uname;
 }
