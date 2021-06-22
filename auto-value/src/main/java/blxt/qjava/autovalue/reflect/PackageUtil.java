@@ -12,11 +12,13 @@ import javassist.bytecode.MethodInfo;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -60,6 +62,24 @@ public class PackageUtil {
         }
         return false;
     }
+
+    /**
+     * 获取包括父类的所有字段元素
+     * @param classes
+     * @return
+     */
+    public static List<Field> getfieldList(Class classes){
+        List<Field> fieldList = new ArrayList<>() ;
+        Class tempClass = classes;
+        //当父类为null的时候说明到达了最上层的父类(Object类).
+        while (tempClass !=null && !tempClass.equals(Object.class)) {
+            fieldList.addAll(Arrays.asList(tempClass .getDeclaredFields()));
+            //得到父类,然后赋给自己
+            tempClass = tempClass.getSuperclass();
+        }
+        return fieldList;
+    }
+
 
     /**
      * 根据方法获取真实参数名称

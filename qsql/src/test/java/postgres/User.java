@@ -5,7 +5,7 @@ import blxt.qjava.autovalue.inter.SqlColumn;
 import lombok.Data;
 
 @Data
-@SqlBean
+@SqlBean(keyId = "uid")
 public class User {
     @SqlColumn(value = "uid")
     int uid;

@@ -1,5 +1,6 @@
 package blxt.qjava.file;
 
+import blxt.qjava.file.callback.FileScanCallback;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -35,6 +36,8 @@ public class FileTreeBean {
     @JsonIgnore
     int packageIndex;
 
+    FileScanCallback callback = null;
+
     /** 子文件 */
     List<FileTreeBean> files = new ArrayList<>();
 
@@ -68,6 +71,21 @@ public class FileTreeBean {
                 // 按文件名排序
                 List<File>  fileList = QFile.MFile.orderByName(files);
                 for (File file1 : fileList) {
+                    // 接口回调
+                    if(callback != null){
+                        boolean isAdd = false;
+                        if(file1.isDirectory()){
+                            isAdd = callback.onDir(file1);
+                        }
+                        else {
+                            isAdd = callback.onFile(file1);
+                        }
+                        // 如果不添加, 就忽略
+                        if(!isAdd){
+                            continue;
+                        }
+                    }
+                    // 添加解析
                     this.files.add(new FileTreeBean(file1, packageIndex).buile());
                 }
             }

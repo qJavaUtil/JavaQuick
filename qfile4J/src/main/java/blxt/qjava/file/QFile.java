@@ -234,6 +234,11 @@ public class QFile {
             return new File(folderPath, fileName + fileName);
         }
 
+        /**
+         * 获取文件名, 不包括后缀
+         * @param filePath
+         * @return
+         */
         public static String getFileName(String filePath) {
             int i = filePath.lastIndexOf(File.separator);
             i = Math.max(i, 0);
@@ -242,6 +247,20 @@ public class QFile {
             filePath = filePath.substring(i, l);
             return filePath;
         }
+
+        /**
+         * 获取文件后缀
+         * @param fileName
+         * @return
+         */
+        public static String getSuffix(String fileName){
+            String[] suffix = fileName.split("\\.");
+            if(suffix.length <= 1){
+                return null;
+            }
+            return suffix[suffix.length - 1];
+        }
+
 
         public static String getNameWithoutFormat(String filePath) {
 
