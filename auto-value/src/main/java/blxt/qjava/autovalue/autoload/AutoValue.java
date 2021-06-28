@@ -165,6 +165,9 @@ public class AutoValue extends AutoLoadBase {
      * @return
      */
     public static boolean isNull(String key){
+        if(propertiesFactory == null){
+            return true;
+        }
         return propertiesFactory.isEmpty(key);
     }
 

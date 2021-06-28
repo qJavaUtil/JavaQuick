@@ -21,6 +21,9 @@ public @interface SqlColumn {
     /** 字段描述 */
     String comment() default "";
 
+    /** select 中可见 */
+    boolean selectEnable() default true;
     /** 自增序列*/
     boolean sequence() default false;
+
 }

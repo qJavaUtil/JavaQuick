@@ -80,6 +80,30 @@ public class PackageUtil {
         return fieldList;
     }
 
+    /**
+     * 查找 Field
+     * @param classes
+     * @param fieldName
+     * @return
+     */
+    public static Field findField(Class classes, String fieldName){
+        Class tempClass = classes;
+        //当父类为null的时候说明到达了最上层的父类(Object类).
+        while (tempClass !=null && !tempClass.equals(Object.class)) {
+            try {
+                return tempClass.getField(fieldName);
+            } catch (NoSuchFieldException e) {
+                try {
+                    return tempClass.getDeclaredField(fieldName);
+                } catch (NoSuchFieldException noSuchFieldException) {
+                    //得到父类,然后赋给自己
+                    tempClass = tempClass.getSuperclass();
+                }
+            }
+        }
+        return null;
+    }
+
 
     /**
      * 根据方法获取真实参数名称

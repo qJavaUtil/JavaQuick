@@ -1,7 +1,7 @@
 package blxt.qjava.autovalue.util;
 
 import blxt.qjava.autovalue.autoload.AutoValue;
-import lombok.extern.slf4j.Slf4j;
+import blxt.qjava.autovalue.reflect.PackageUtil;
 import org.apache.commons.beanutils.ConvertUtils;
 
 import java.beans.PropertyDescriptor;
@@ -25,28 +25,20 @@ public class ObjectValue {
         if(key.startsWith("$")) {
             key = key.substring(1);
         }
-        Field[] fields = bean.getClass().getDeclaredFields();
         // 先从当前类的变量中匹配
-        for (Field field : fields) {
-            if (key.equals(field.getName())) {
-                if (field.getType() != parameterType) {
-                    throw new Exception(String.format("变量:($%s)和内部参数类型不一致,请检查. 变量类型:%s, 所需类型:%s", key, field.getType(), parameterType));
-                }
-
-                //获取属性值
+        Field field = PackageUtil.findField(bean.getClass(), key);
+        if(field == null){
+            throw new Exception("field 没找到." + bean.getClass().getName() + ":" + key);
+        }
+        //获取属性值
 //                PropertyDescriptor pd = new PropertyDescriptor(field.getName(), bean.getClass());
 //                //Method wM = pd.getWriteMethod();//获得写方法
 //                Method getter = pd.getReadMethod();
 //                obj = getter.invoke(bean);
-
-                boolean accessFlag = field.isAccessible();
-                field.setAccessible(true);
-                obj = field.get(bean);
-                field.setAccessible(accessFlag);
-
-                break;
-            }
-        }
+        boolean accessFlag = field.isAccessible();
+        field.setAccessible(true);
+        obj = field.get(bean);
+        field.setAccessible(accessFlag);
         // 再从配置文件中匹配
         if (obj == null && !AutoValue.isNull(key)) {
             obj = AutoValue.getPropertiesValue(key, parameterType);
@@ -66,7 +58,7 @@ public class ObjectValue {
     public static boolean setObjectValue(Object bean, Field field, Object value, boolean falSetAccessible) {
         try {
             // 这里对值做一个转换
-            if (!value.getClass().equals(field.getType())){
+            if (value != null && !value.getClass().equals(field.getType())){
                 value = ConvertUtils.convert(value, field.getType());
             }
 

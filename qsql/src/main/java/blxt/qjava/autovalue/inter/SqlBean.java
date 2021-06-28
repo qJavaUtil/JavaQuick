@@ -1,5 +1,7 @@
 package blxt.qjava.autovalue.inter;
 
+import blxt.qjava.autovalue.bean.SymbolEnum;
+
 import java.lang.annotation.*;
 
 /**
@@ -14,4 +16,9 @@ public @interface SqlBean {
     String value() default "";
     /** 主键字段 */
     String keyId();
+    /** 忽略字段 */
+    String[] ignores() default "";
+
+    /** 条件符号 */
+    SymbolEnum symbol() default SymbolEnum.equal;
 }
