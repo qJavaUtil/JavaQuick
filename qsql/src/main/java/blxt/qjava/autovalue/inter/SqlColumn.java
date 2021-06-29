@@ -33,11 +33,13 @@ public @interface SqlColumn {
 
 
     /** 连表, B表名 */
-    String joinTable() default "";
+    String joinTableB() default "";
     /** 连表, B表字段 */
-    String joinField() default "";
+    String joinColumB() default "";
+    /** 连表, A表关联键 */
+    String joinKeyA() default "";
     /** 连表, B表关联键 */
-    String joinKey() default "";
+    String joinKeyB() default "";
     /** 关联查询
      * 方式: JOIN, ()LEFT OUTER JOIN,  RIGHT OUT JOIN,  (外连接)FULL OUTER JOIN
      * */
