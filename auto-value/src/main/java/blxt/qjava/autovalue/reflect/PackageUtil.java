@@ -84,9 +84,10 @@ public class PackageUtil {
      * 查找 Field
      * @param classes
      * @param fieldName
+     * @param toLowerCase    忽略大小写
      * @return
      */
-    public static Field findField(Class classes, String fieldName){
+    public static Field findField(Class classes, String fieldName, Boolean ...toLowerCase){
         Class tempClass = classes;
         //当父类为null的时候说明到达了最上层的父类(Object类).
         while (tempClass !=null && !tempClass.equals(Object.class)) {

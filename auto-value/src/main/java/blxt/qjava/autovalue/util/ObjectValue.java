@@ -10,17 +10,17 @@ import java.lang.reflect.Method;
 
 public class ObjectValue {
 
-
     /**
      * 获取
      *
      * @param bean
      * @param key
      * @param parameterType
+     * @param toLowerCase      忽略大小写
      * @return
      * @throws Exception
      */
-    public static  <T> T  getObjectValue(Object bean, String key, Class<?> parameterType) throws Exception {
+    public static  <T> T  getObjectValue(Object bean, String key, Class<?> parameterType, Boolean ...toLowerCase) throws Exception {
         Object obj = null;
         if(key.startsWith("$")) {
             key = key.substring(1);
