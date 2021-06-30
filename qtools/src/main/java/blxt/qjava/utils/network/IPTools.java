@@ -1,5 +1,7 @@
 package blxt.qjava.utils.network;
 
+import blxt.qjava.utils.check.CheckUtils;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
@@ -23,8 +25,10 @@ public class IPTools {
     public static String getLocalHostIp(){
         InetAddress ia=null;
         try {
-            ia= InetAddress.getLocalHost();
-
+            List<String> ips = getLocalHostIpsIPv4();
+            if(CheckUtils.isNotEmpty(ips)){
+                return ips.get(0);
+            }
             return ia.getHostAddress();
         } catch (Exception e) {
 
@@ -39,12 +43,9 @@ public class IPTools {
      * @return 主机名
      */
     public static String getLocalHostName(){
-        InetAddress ia=null;
         try {
-            ia= InetAddress.getLocalHost();
-            return ia.getHostName();
+            return InetAddress.getLocalHost().getHostName();
         } catch (Exception e) {
-
             e.printStackTrace();
         }
 
@@ -86,17 +87,28 @@ public class IPTools {
             NetworkInterface networkInterface;
             Enumeration<InetAddress> inetAddresses;
             InetAddress inetAddress;
-            String ip = null;
             while (networkInterfaces.hasMoreElements()) {
                 networkInterface = networkInterfaces.nextElement();
                 inetAddresses = networkInterface.getInetAddresses();
+                // 去除回环接口，子接口，未运行和接口
+                if( networkInterface.isLoopback()
+                        ||  networkInterface.isVirtual()
+                        || !networkInterface.isUp()){
+                    continue;
+                }
+                // 排除虚拟机
+                String name = networkInterface.getDisplayName();
+                if (name.contains("VMware") || name.contains("VirtualBox")) {
+                    continue;
+                }
+
                 while (inetAddresses.hasMoreElements()) {
                     inetAddress = inetAddresses.nextElement();
                     if(inetAddress == null){
                         break;
                     }
 
-                    ip = null;
+                    String ip = null;
                     if(IP_TYPE_V4 == type){
                         if (inetAddress instanceof Inet4Address) {
                             ip = inetAddress.getHostAddress();
@@ -112,13 +124,10 @@ public class IPTools {
                             ip = inetAddress.getHostAddress();
                         }
                     }
-
-                    if(ip == null || "127.0.0.1".equals(ip)){
-                        break;
+                    if(ip == null){
+                        continue;
                     }
-
                     ipList.add(ip);
-
                 }
             }
         } catch (SocketException e) {
@@ -162,6 +171,13 @@ public class IPTools {
             }
         }
         return true;
+    }
+
+    public static void main(String[] args) {
+        List<String> ips = getLocalHostIpsIPv4();
+        for (String s : ips){
+            System.out.println(s);
+        }
     }
 
 
