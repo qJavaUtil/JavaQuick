@@ -5,6 +5,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.nio.charset.StandardCharsets;
+import java.text.Collator;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -429,7 +430,8 @@ public class QFile {
                     if (o1.isFile() && o2.isDirectory()) {
                         return 1;
                     }
-                    return o1.getName().compareTo(o2.getName());
+                    Comparator<Object> com = Collator.getInstance(java.util.Locale.CHINA);
+                    return com.compare(o1.getName(), o2.getName());
                 }
             });
             return fileList;

@@ -100,11 +100,11 @@ public class FileTreeBean {
 
 
     public static void main(String[] args) {
-        File file = new File("E:/ZhangJieLei/Documents/workspace/workProject/IotDoc/IDEH_HOME/workspace/test1");
+        File file = new File("E:\\ShiTou\\Desktop\\演示地址\\测试");
         FileTreeBean fileTreeBean = new FileTreeBean(file, file.getAbsolutePath().length());
         fileTreeBean.buile();
 
-        System.out.println(fileTreeBean.toString());
+        System.out.println(JSON.toJSONString(fileTreeBean));
     }
 
 }

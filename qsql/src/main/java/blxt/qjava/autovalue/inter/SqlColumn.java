@@ -12,26 +12,32 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface SqlColumn {
-    /** 描述 */
+    /** 字段值 */
     String value() default "";
     /** 类型 */
     String method() default "";
     /** 是否可以是null */
     boolean isNull() default true;
     /** 默认值 */
-    String dafaultValue() default "";
+    String defaultValue() default "";
     /** 字段描述 */
     String comment() default "";
+
+    /** 函数 */
+    String function() default "";
+
+    /** 模糊查询 */
+    boolean selectLike() default false;
 
     /** select 中可见 */
     boolean selectEnable() default true;
     /** 自增序列*/
     boolean sequence() default false;
-
     /** 自动更新触发 */
     boolean autoupdate() default false;
 
-
+    /** 连表, A表名 */
+    String joinTableA() default "";
     /** 连表, B表名 */
     String joinTableB() default "";
     /** 连表, B表字段 */
