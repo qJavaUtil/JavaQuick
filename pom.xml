@@ -29,6 +29,8 @@
         <module>qsql</module>
         <module>qtelnet</module>
         <module>qExecute</module>
+        <module>qimage</module>
+        <module>qexcel</module>
     </modules>
 
     <properties>
