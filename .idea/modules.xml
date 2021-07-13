@@ -6,9 +6,11 @@
       <module fileurl="file://$PROJECT_DIR$/auto-value/auto-value.iml" filepath="$PROJECT_DIR$/auto-value/auto-value.iml" />
       <module fileurl="file://$PROJECT_DIR$/qExecute/qExecute.iml" filepath="$PROJECT_DIR$/qExecute/qExecute.iml" />
       <module fileurl="file://$PROJECT_DIR$/qFrame/qFrame.iml" filepath="$PROJECT_DIR$/qFrame/qFrame.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qexcel/qexcel.iml" filepath="$PROJECT_DIR$/qexcel/qexcel.iml" />
       <module fileurl="file://$PROJECT_DIR$/qfile4J/qfile4J.iml" filepath="$PROJECT_DIR$/qfile4J/qfile4J.iml" />
       <module fileurl="file://$PROJECT_DIR$/qftp/qftp.iml" filepath="$PROJECT_DIR$/qftp/qftp.iml" />
       <module fileurl="file://$PROJECT_DIR$/qhttpserver/qhttpserver.iml" filepath="$PROJECT_DIR$/qhttpserver/qhttpserver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qimage/qimage.iml" filepath="$PROJECT_DIR$/qimage/qimage.iml" />
       <module fileurl="file://$PROJECT_DIR$/qjava.iml" filepath="$PROJECT_DIR$/qjava.iml" />
       <module fileurl="file://$PROJECT_DIR$/JavaQuickDemo/qjava-demo.iml" filepath="$PROJECT_DIR$/JavaQuickDemo/qjava-demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/qliveness/qliveness.iml" filepath="$PROJECT_DIR$/qliveness/qliveness.iml" />

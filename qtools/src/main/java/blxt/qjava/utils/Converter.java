@@ -471,43 +471,6 @@ public class Converter {
             }
         }
 
-//        else if(parametertype == Integer[].class || parametertype == int[].class ){
-//            value = new Integer[valueArreys.length];
-//            for(int i = 0; i < valueArreys.length; i++){
-//                value[i] = Integer.parseInt(valueArreys[i]);
-//            }
-//        }
-//        else if(parametertype == Float[].class || parametertype == float[].class){
-//            value = new Float[valueArreys.length];
-//            for(int i = 0; i < valueArreys.length; i++){
-//                value[i] = Float.parseFloat(valueArreys[i]);
-//            }
-//        }
-//        else if(parametertype == Boolean[].class || parametertype == boolean[].class){
-//            value = new Boolean[valueArreys.length];
-//            for(int i = 0; i < valueArreys.length; i++){
-//                value[i] = Boolean.parseBoolean(valueArreys[i]);
-//            }
-//        }
-//        else if(parametertype == Long[].class || parametertype == long[].class){
-//            value = new Long[valueArreys.length];
-//            for(int i = 0; i < valueArreys.length; i++){
-//                value[i] = Long.parseLong(valueArreys[i]);
-//            }
-//        }
-//        else if(parametertype == Short[].class || parametertype == short[].class){
-//            value = new Short[valueArreys.length];
-//            for(int i = 0; i < valueArreys.length; i++){
-//                value[i] = Short.parseShort(valueArreys[i]);
-//            }
-//        }
-//        else if(parametertype == Double[].class || parametertype == double[].class){
-//            value = new Double[valueArreys.length];
-//            for(int i = 0; i < valueArreys.length; i++){
-//                value[i] = Double.parseDouble(valueArreys[i]);
-//            }
-//        }
-
         return value;
     }
 

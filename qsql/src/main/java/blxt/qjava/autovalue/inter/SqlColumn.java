@@ -27,6 +27,7 @@ public @interface SqlColumn {
     String function() default "";
 
     /** 模糊查询 */
+    @Deprecated
     boolean selectLike() default false;
 
     /** select 中可见 */

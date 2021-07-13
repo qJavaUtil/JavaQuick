@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="qtools" />
         <module name="qproperties" />
+        <module name="qimage" />
         <module name="qudp" />
         <module name="qftp" />
         <module name="qtcp" />
@@ -24,6 +25,7 @@
         <module name="qxml" />
         <module name="qliveness" />
         <module name="qthread" />
+        <module name="qexcel" />
         <module name="qmqtt" />
         <module name="auto-value" />
         <module name="qliveness-mqtt" />
@@ -32,11 +34,13 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="auto-value" target="1.8" />
+      <module name="qexcel" target="8" />
       <module name="qExecute" target="8" />
       <module name="qfile4J" target="1.8" />
       <module name="qFrame" target="1.8" />
       <module name="qftp" target="8" />
       <module name="qhttpserver" target="1.8" />
+      <module name="qimage" target="8" />
       <module name="qjava" target="1.8" />
       <module name="qjava-demo" target="1.8" />
       <module name="qliveness" target="8" />

@@ -45,6 +45,7 @@ public class InputStreamThread implements Runnable{
                 {
                     logger.debug("tag:\r\n{}", msg);
                 }
+                b = new byte[cacheSize];
             }
         } catch (IOException e) {
             e.printStackTrace();
