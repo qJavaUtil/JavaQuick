@@ -24,7 +24,7 @@ public class MQTelnetClient extends QTelnetClient implements QTelnetClient.OnTel
     }
 
     @Override
-    public void onGetDate(final String tag, final String data) {
+    public void onReceiver(final String tag, final String data) {
         System.out.println("收到数据: " + data);
     }
 

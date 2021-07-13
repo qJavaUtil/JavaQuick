@@ -1,5 +1,6 @@
 package blxt.qjava.qtelnet;
 
+import blxt.qjava.autovalue.util.QThreadpool;
 import lombok.Data;
 import org.apache.commons.net.telnet.TelnetClient;
 
@@ -10,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * telnet客户端
+ * @author ZhangJieLei
  */
 @Data
 public class QTelnetClient extends TelnetClient {
@@ -25,13 +27,18 @@ public class QTelnetClient extends TelnetClient {
     String password;
     boolean isLogin = false;
 
-    private String prompt = "]$";    //结束标识字符串,Windows中是>,Linux中是#
-    private char promptChar = '$';    //结束标识字符
-    private InputStream in;        // 输入流,接收返回信息
-    private PrintStream out;    // 向服务器写入 命令
-    String termtype = "VT100"; // 协议类型 .VT100、VT52、VT220、VTNT、ANSI
+    /** 结束标识字符串,Windows中是>,Linux中是# */
+    private String prompt = "]$";
+    /** 结束标识字符 */
+    private char promptChar = '$';
+    /** 输入流,接收返回信息 */
+    private InputStream in;
+    /** 向服务器写入 命令 */
+    private PrintStream out;
+    /**  协议类型 .VT100、VT52、VT220、VTNT、ANSI */
+    String termtype = "VT100";
 
-    // 编码转换
+    /** 编码转换 */
     private String ORIG_CODEC = "UTF-8";
     private String TRANSLATE_CODEC = "UTF-8";
     boolean isChangeCode = false;
@@ -141,6 +148,7 @@ public class QTelnetClient extends TelnetClient {
         return null;
     }
 
+
     /**
      * 发送命令, 线程
      * @param command
@@ -152,7 +160,7 @@ public class QTelnetClient extends TelnetClient {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                sendCommand(command);
+                write(command);
                 ReadThread readThread = new ReadThread();
                 readThread.start();
                 try {
@@ -167,7 +175,7 @@ public class QTelnetClient extends TelnetClient {
 
 
     /**
-     * 发送命令
+     * 发送命令, 没有读数据
      *
      * @param value
      */
@@ -181,7 +189,7 @@ public class QTelnetClient extends TelnetClient {
     }
 
     /**
-     * 发送命令
+     * 发送命令, 没有读数据
      * @param value
      */
     public void write(byte[] value) {
@@ -204,8 +212,9 @@ public class QTelnetClient extends TelnetClient {
         try {
             char lastChar = (char) -1;
             boolean flag = pattern != null && pattern.length() > 0;
-            if (flag)
+            if (flag) {
                 lastChar = pattern.charAt(pattern.length() - 1);
+            }
             char ch;
             int code = -1;
             while ((code = in.read()) != -1) {
@@ -218,8 +227,9 @@ public class QTelnetClient extends TelnetClient {
                     }
                 } else {
                     //如果没指定结束标识,匹配到默认结束标识字符时返回结果
-                    if (ch == promptChar)
+                    if (ch == promptChar) {
                         break;
+                    }
                 }
                 //登录失败时返回结果
                 if (!isLogin && sb.toString().contains(LoginFailedMark)) {
@@ -229,31 +239,56 @@ public class QTelnetClient extends TelnetClient {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        // 回复数据
+        revertDate(sb);
+        return sb.toString();
+    }
+
+    /**
+     * 回复数据
+     * @param stringBuilder
+     */
+    private void revertDate(StringBuilder stringBuilder){
         if (onTelnetClientListener != null) {
             if (isChangeCode) {
                 try {
-                    onTelnetClientListener.onGetDate(tag, new String(sb.toString().getBytes(ORIG_CODEC), TRANSLATE_CODEC));
+                    onTelnetClientListener.onReceiver(tag, new String(stringBuilder.toString()
+                            .getBytes(ORIG_CODEC), TRANSLATE_CODEC));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
             } else {
-                onTelnetClientListener.onGetDate(tag, sb.toString());
+                onTelnetClientListener.onReceiver(tag, stringBuilder.toString());
             }
         }
-        return sb.toString();
+    }
+
+    private void revertDate(String stringBuilder){
+        if (onTelnetClientListener != null) {
+            onTelnetClientListener.onReceiver(tag, stringBuilder.toString());
+        }
+    }
+
+    /**
+     * 设置监听器
+     * @param onTelnetClientListener
+     */
+    public void setOnTelnetClientListener(OnTelnetClientListener onTelnetClientListener) {
+        this.onTelnetClientListener = onTelnetClientListener;
+        // 线程监听
+        OutStreamThread insR = new OutStreamThread(in, onTelnetClientListener);
+        QThreadpool.getInstance().execute(insR);
     }
 
     /**
      * Telnet监听
      */
-    public interface OnTelnetClientListener {
+    public interface OnTelnetClientListener extends OutStreamThread.CallBack {
         void onConnect(final String tag, final boolean isconnect);
 
         void onDisConnect(final String tag, final boolean isconnect);
 
         void onLogin(final String tag, final boolean isLogin);
-
-        void onGetDate(final String tag, final String data);
 
         void onGetDate(final String tag, final byte[] data);
     }
@@ -266,6 +301,7 @@ public class QTelnetClient extends TelnetClient {
      *
      */
     class ReadThread extends Thread {
+        @Override
         public void run() {
             synchronized (lock) {//只能一个读取
                 SubReadThread sub = new SubReadThread();
@@ -283,13 +319,8 @@ public class QTelnetClient extends TelnetClient {
                         last = sub.count;
                     }
                 }
-                String s = sub.sb.toString();
-                try {
-                    System.out.println("结果2:" + new String(s.getBytes(ORIG_CODEC),
-                            TRANSLATE_CODEC));
-                } catch (UnsupportedEncodingException e) {
-                    System.out.println(s);
-                }
+                // 回复数据
+                revertDate(sub.sb.toString());
                 sub = null;
             }
         }
@@ -326,12 +357,12 @@ public class QTelnetClient extends TelnetClient {
                         if (c == '\r') {
                             String olds = new String(sb.toString().getBytes(
                                     ORIG_CODEC), TRANSLATE_CODEC);
-                            System.out.println(olds);
                             sb.delete(0, sb.length());
-                        } else if (c == '\n')
-                            ;
-                        else
+                        } else if (c == '\n') {
+                        }
+                        else {
                             sb.append(c);
+                        }
                     }
 
                     if (ansiControl) {
@@ -345,6 +376,7 @@ public class QTelnetClient extends TelnetClient {
             }
         }
 
+        @Override
         public void run() {
             read();
         }
