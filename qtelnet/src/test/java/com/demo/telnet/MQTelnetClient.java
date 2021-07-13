@@ -19,8 +19,8 @@ public class MQTelnetClient extends QTelnetClient implements QTelnetClient.OnTel
     @Override
     public void onLogin(final String tag, final boolean isLogin) {
         System.out.println("登录: " + isLogin);
-        System.out.println("结果:" + sendCommand("mkdir test"));
-        sendCommandThread("ls");
+        System.out.println("结果:" + sendCommandWithReply("mkdir test"));
+
     }
 
     @Override
