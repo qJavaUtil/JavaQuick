@@ -10,6 +10,9 @@ import java.lang.reflect.Method;
 
 public class ObjectValue {
 
+    public static  <T> T  getObjectValue(Object bean, String key, Class<?> parameterType) throws Exception {
+        return getObjectValue(bean, key, parameterType, false);
+    }
     /**
      * 获取
      *
@@ -20,7 +23,8 @@ public class ObjectValue {
      * @return
      * @throws Exception
      */
-    public static  <T> T  getObjectValue(Object bean, String key, Class<?> parameterType, Boolean ...toLowerCase) throws Exception {
+    public static  <T> T  getObjectValue(Object bean, String key, Class<?> parameterType, Boolean ...toLowerCase)
+            throws Exception {
         Object obj = null;
         if(key.startsWith("$")) {
             key = key.substring(1);

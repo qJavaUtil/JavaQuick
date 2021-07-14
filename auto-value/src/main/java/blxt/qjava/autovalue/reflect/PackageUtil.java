@@ -80,6 +80,9 @@ public class PackageUtil {
         return fieldList;
     }
 
+    public static Field findField(Class classes, String fieldName){
+        return findField(classes, fieldName, false);
+    }
     /**
      * 查找 Field
      * @param classes
