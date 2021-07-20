@@ -1,8 +1,5 @@
 package blxt.qjava.autovalue.inter;
 
-import blxt.qjava.autovalue.bean.JoinEnum;
-import lombok.Data;
-
 import java.lang.annotation.*;
 
 /**
@@ -26,10 +23,6 @@ public @interface SqlColumn {
 
     /** 函数 */
     String function() default "";
-
-    /** 模糊查询 */
-    @Deprecated
-    boolean selectLike() default false;
 
     /** select 中可见 */
     boolean selectEnable() default true;
