@@ -393,9 +393,6 @@ public class Converter {
         else if(parametertype == Float.class || parametertype == float.class){
             value = Float.parseFloat(str);
         }
-        else if(parametertype == Boolean.class || parametertype == boolean.class){
-            value = Boolean.parseBoolean(str);
-        }
         else if(parametertype == Long.class || parametertype == long.class){
             value = Long.parseLong(str);
         }
@@ -404,6 +401,19 @@ public class Converter {
         }
         else if(parametertype == Double.class || parametertype == double.class){
             value = Double.parseDouble(str);
+        }
+        else if(parametertype == Byte.class || parametertype == byte.class){
+            value = Byte.parseByte(str);
+        }
+        else if(parametertype == Boolean.class || parametertype == boolean.class){
+            value = Boolean.parseBoolean(str);
+        }
+        else if (parametertype == Character.class) {
+            value = str.charAt(0);
+        }
+        // 其他复杂对象
+        else{
+            value = JSON.parseObject(str, parametertype);
         }
 
         return value;

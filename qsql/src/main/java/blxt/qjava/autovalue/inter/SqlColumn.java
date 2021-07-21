@@ -12,6 +12,8 @@ import java.lang.annotation.*;
 public @interface SqlColumn {
     /** 字段值 */
     String value() default "";
+    /** 表名 */
+    String table() default "";
     /** 类型 */
     String method() default "";
     /** 是否可以是null */
@@ -26,6 +28,10 @@ public @interface SqlColumn {
 
     /** select 中可见 */
     boolean selectEnable() default true;
+
+    /** install 中可见 */
+    boolean installEnable() default true;
+
     /** 自增序列*/
     boolean sequence() default false;
     /** 自动更新触发 */

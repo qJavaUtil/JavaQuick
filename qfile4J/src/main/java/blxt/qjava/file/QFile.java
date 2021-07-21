@@ -641,6 +641,21 @@ public class QFile {
             return null;
         }
 
+        public static byte[] readBytes(InputStream is){
+            byte[] data = null;
+            List<Byte> list = new ArrayList<>();
+            try {
+                //严谨起见,一定要加上这个判断,不要返回data[]长度为0的数组指针
+                if(is.available()==0){
+                    return data;
+                }
+                data = new byte[is.available()];
+                is.read(data);
+                return data;
+            } catch (IOException e) {
+                return data;
+            }
+        }
 
         @SuppressWarnings("resource")
         public static byte[] getBytes4Access(String filePath) {
