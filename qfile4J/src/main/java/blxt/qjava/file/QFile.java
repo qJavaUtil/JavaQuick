@@ -156,41 +156,12 @@ public class QFile {
         }
 
         public static boolean copyFolder(File oldFile, File newPath) {
-            if (oldFile.isFile()) {
-                return MFile.copyFile(oldFile, new File(newPath, oldFile.getName()));
-            } else {
-                try {
-                    newPath.mkdirs();
-                    File[] temps = oldFile.listFiles();
-                    boolean flag = true;
-                    QFile.length = temps.length;
-
-                    for (int i = 0; i < QFile.length; ++i) {
-                        File temp = temps[i];
-                        if (temp.isFile()) {
-                            File path = new File(newPath, oldFile.getName());
-                            path.mkdirs();
-                            File file = new File(path, temp.getName());
-                            flag = MFile.copyFile(temp, file);
-                        } else if (temp.isDirectory()) {
-                            flag = copyFolder(temp, new File(newPath + File.separator + oldFile.getName()));
-                        }
-
-                        if (!flag) {
-                            break;
-                        }
-                    }
-
-                    return flag;
-                } catch (Exception var8) {
-                    var8.printStackTrace();
-                    return false;
-                }
-            }
+            return copyFolder(oldFile.getAbsolutePath(), newPath.getAbsolutePath());
         }
 
         public static boolean copyFolder(String oldPath, String newPath) {
-            return copyFolder(new File(oldPath), new File(newPath));
+            DirClone dirClone = new DirClone(oldPath, newPath);
+            return dirClone.onClone();
         }
 
         public static boolean moveFolder(File oldFile, File newPath) {
@@ -846,6 +817,46 @@ public class QFile {
         }
     }
 
+    /**
+     * 替换后复制
+     * @param strSrcFilePath  源文件路径
+     * @param strDstFilePath  模板文件路径
+     * @param mapVars         替换的键值对
+     * @return
+     */
+    public static boolean copyAndReplace(String strSrcFilePath, String strDstFilePath,
+                                         Map<String, String> mapVars) {
+
+        StringBuilder strFileContent = new StringBuilder();
+        String strLineAll;
+
+        try {
+            File f = new File(strSrcFilePath);
+            File f2 = new File(strDstFilePath);
+
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(f));
+            while ((strLineAll = bufferedReader.readLine()) != null) {
+                for (Map.Entry<String, String> entry : mapVars.entrySet()) {
+                    strLineAll = strLineAll.replace(entry.getKey(), entry.getValue());
+                }
+                strFileContent.append(strLineAll).append("\r\n");
+            }
+            bufferedReader.close();
+
+            if(f2.exists()){
+                f2.delete();
+            }
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(f2, false));
+            bufferedWriter.write(strFileContent.toString());
+            bufferedWriter.flush();
+            bufferedWriter.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
 
     /**
      * qingxi mulu
@@ -853,16 +864,19 @@ public class QFile {
      * @return
      */
     public static String cleanPath(String path){
-        int index = path.indexOf(".." + File.separator);
+        File file = new File(path);
+        path = file.getAbsolutePath();
+
+        int index = path.indexOf(File.separator + "..");
         while(index >= 0){
-            int indexI = path.lastIndexOf(".." + File.separator, index);
+            int indexI = path.lastIndexOf(File.separator + "..", index);
             indexI = path.lastIndexOf(File.separator, indexI - 4);
             path = path.substring(0, indexI + 1) +
                     path.substring(index + 3);
-            index = path.indexOf(".." + File.separator);
+            index = path.indexOf(File.separator + "..");
         }
-        path = path.replace("." + File.separator, "");
-        return path;
+        file = new File(path.replace(File.separator + ".", ""));
+        return file.getAbsolutePath();
     }
 
     /**

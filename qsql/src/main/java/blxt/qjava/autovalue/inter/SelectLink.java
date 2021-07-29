@@ -26,6 +26,8 @@ public @interface SelectLink {
     String joinTableBrname() default "";
     /** 连表, B表字段 */
     String joinColumB() default "";
+    /** 连表, B表 函数 */
+    String functionB() default "";
     /** 连表, A表关联键 */
     String joinKeyA() default "";
     /** 连表, B表关联键 */
