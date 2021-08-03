@@ -1,3 +1,4 @@
+import blxt.qjava.file.QFile;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.File;
@@ -141,14 +142,42 @@ public class QFileTreeHelp {
     }
 
     public static void main(String[] args) throws Exception {
-        FileTreeBean fileTreeBean =  getFileTree(new File("E:\\ZhangJieLei\\Documents\\workspace\\workSudy\\笔记"), -1);
-        JSONObject jsonObject = (JSONObject) JSONObject.toJSON(fileTreeBean);
-        System.out.println(jsonObject);
+        String nameR = getFileName("/apps/test124/test124");
+        String pathR = getFilePath("/apps/test124/test124");
+
+//        FileTreeBean fileTreeBean =  getFileTree(new File("E:\\ZhangJieLei\\Documents\\workspace\\workSudy\\笔记"), -1);
+//        JSONObject jsonObject = (JSONObject) JSONObject.toJSON(fileTreeBean);
+//        System.out.println(jsonObject);
         int fileCount = 1000;
 //        File fileRoot = new File("E:\\ZhangJieLei\\Documents\\workspace\\workSudy\\笔记");
 //        File[] files = fileRoot.listFiles();
 
 
         //System.out.println(fileTreeBean.toString());
+    }
+
+    public static String getFilePath(String filePath) {
+        int i = filePath.lastIndexOf("/");
+        if(i > 0){
+            i = filePath.lastIndexOf("/", i);
+        }
+        else{
+            return "/";
+        }
+        filePath = filePath.substring(0, i);
+        return filePath;
+    }
+
+
+    public static String getFileName(String filePath) {
+        int i = filePath.lastIndexOf("/");
+        i = Math.max(i, 0);
+        int l = filePath.lastIndexOf(".");
+        if(l <= 0){
+            i++;
+            l = filePath.length();
+        }
+        filePath = filePath.substring(i, l);
+        return filePath;
     }
 }

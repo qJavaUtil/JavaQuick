@@ -215,10 +215,31 @@ public class QFile {
             int i = filePath.lastIndexOf(File.separator);
             i = Math.max(i, 0);
             int l = filePath.lastIndexOf(".");
-            l = l < 0 ? filePath.length() : l;
+            if(l <= 0){
+                i = filePath.lastIndexOf(File.separator, i);
+                l = filePath.lastIndexOf(File.separator);
+            }
             filePath = filePath.substring(i, l);
             return filePath;
         }
+
+        /***
+         * 获取文件父路径
+         * @param filePath
+         * @return
+         */
+        public static String getFilePath(String filePath) {
+            int i = filePath.lastIndexOf(File.separator);
+            if(i > 0){
+                i = filePath.lastIndexOf(File.separator, i);
+            }
+            else{
+                return File.separator;
+            }
+            filePath = filePath.substring(0, i);
+            return filePath;
+        }
+
 
         /**
          * 获取文件后缀

@@ -37,6 +37,8 @@ public class QTelnetClient extends TelnetClient {
     private PrintStream out;
     /**  协议类型 .VT100、VT52、VT220、VTNT、ANSI */
     String termtype = "VT100";
+    /** 隐藏控制台颜色 */
+    boolean hideColor = false;
 
     /** 编码转换 */
     private String ORIG_CODEC = "UTF-8";
@@ -65,7 +67,6 @@ public class QTelnetClient extends TelnetClient {
             super.connect(hostIp, port);
         } catch (IOException e) {
             isLogin = false;
-            e.printStackTrace();
             return false;
         }
         if (onTelnetClientListener != null) {
@@ -256,6 +257,13 @@ public class QTelnetClient extends TelnetClient {
      */
     public void setOnTelnetClientListener(OnTelnetClientListener onTelnetClientListener) {
         this.onTelnetClientListener = onTelnetClientListener;
+
+    }
+
+    /**
+     * 启动读取线程
+     */
+    public void onReadThread(){
         if(readThread2 == null){
             readThread2 = new ReadThread2();
             QThreadpool.getInstance().execute(readThread2);
@@ -324,7 +332,7 @@ public class QTelnetClient extends TelnetClient {
                     count++;
                     c = (char) code;
                     // 颜色
-                    if (c == '\033') {
+                    if (hideColor && c == '\033') {
                         int code2 = in.read();
                         char cc = (char) code2;
                         count++;

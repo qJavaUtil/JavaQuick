@@ -20,6 +20,7 @@ import java.util.List;
 
 /**
  * ftp客户端
+ * @author ZhangJieLei
  */
 @Data
 public class QFTPClient extends FTPClient {
@@ -137,6 +138,7 @@ public class QFTPClient extends FTPClient {
      * @return
      * @throws IOException
      */
+    @Override
     public boolean changeWorkingDirectory(String pathname) {
         if(!pathname.endsWith(File.separator)){
             pathname += File.separator;
@@ -163,6 +165,7 @@ public class QFTPClient extends FTPClient {
      * @return
      * @throws IOException
      */
+    @Override
     public boolean makeDirectory(String pathname){
         if(!pathname.endsWith(File.separator)){
             pathname += File.separator;
@@ -308,8 +311,9 @@ public class QFTPClient extends FTPClient {
                 String[] dirs = filePath.split("/");
                 String tempPath = "";
                 for (String dir : dirs) {
-                    if (null == dir || "".equals(dir))
+                    if (null == dir || "".equals(dir)) {
                         continue;
+                    }
                     tempPath += "/" + dir;
                     if (!changeWorkingDirectory(tempPath)) {
                         if (!makeDirectory(tempPath)) {
@@ -320,9 +324,10 @@ public class QFTPClient extends FTPClient {
                     }
                 }
             }
-
-            enterLocalPassiveMode();// 设置被动模式
-            setFileType(FTP.BINARY_FILE_TYPE);// 设置传输的模式
+            // 设置传输的模式 : 设置文件类型为二进制文件
+            setFileType(FTP.BINARY_FILE_TYPE);
+            // 设置被动模式
+            enterLocalPassiveMode();
             // 上传文件
             filename = new String(filename.getBytes(localCharset), serverCharset);
             if (!storeFile(filename, input)) {

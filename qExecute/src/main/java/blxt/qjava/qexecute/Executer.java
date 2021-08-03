@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 /**
  * cmd 命令执行工具
  * 需要先初始化
+ * @author ZhangJieLei
  */
 @Data
 public class Executer {
@@ -18,6 +19,7 @@ public class Executer {
     PrintWriter writer = null;
     String CODE = "gbk";
     int cacheSize = 1024;
+    String basepath;
 
     /**
      * 初始化工作目录
@@ -25,6 +27,7 @@ public class Executer {
      * @return
      */
     public boolean init(String basePath){
+        this.basepath = basePath;
         try {
             process = Runtime.getRuntime().exec("cmd", null, new File(basePath));
         } catch (IOException e) {

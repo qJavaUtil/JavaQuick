@@ -12,6 +12,9 @@ import java.util.Map;
 public class InfluxConnectionPool {
     static InfluxConnectionPool instance = null;
 
+    /*** 数据库不存在时,是否创建 */
+    public static boolean CreateDatabaseIfNotExit = false;
+
     /**
      * 连接池
      * String            用户名
@@ -112,7 +115,7 @@ public class InfluxConnectionPool {
      * @return
      */
     public InfluxConnection getInfluxConnection(String name){
-        InfluxConnection  connection = getInfluxConnection(name, false);
+        InfluxConnection  connection = getInfluxConnection(name, CreateDatabaseIfNotExit);
 
         return connection;
     }

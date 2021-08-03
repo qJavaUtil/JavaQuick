@@ -2,10 +2,12 @@ package blxt.qjava.utils;
 
 import blxt.qjava.utils.check.CheckUtils;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -419,6 +421,8 @@ public class Converter {
         return value;
     }
 
+
+
     /**
      * 从字符串转换成List集合
      * @param str
@@ -433,30 +437,51 @@ public class Converter {
 
         // 判断泛型类的类型
         if (pt.getActualTypeArguments()[0].equals(String.class)) {
-            return new ArrayList(Arrays.asList(toObjects(str, String[].class)));
+            return Arrays.asList(toObjects(str, String[].class));
         } else if (pt.getActualTypeArguments()[0].equals(int.class)
                 || pt.getActualTypeArguments()[0].equals(Integer[].class)) {
-            return new ArrayList(Arrays.asList(toObjects(str, Integer[].class)));
+            return Arrays.asList(toObjects(str, Integer[].class));
         } else if (pt.getActualTypeArguments()[0].equals(float.class)
                 || pt.getActualTypeArguments()[0].equals(Float.class)) {
-            return new ArrayList(Arrays.asList(toObjects(str, Float[].class)));
+            return Arrays.asList(toObjects(str, Float[].class));
         }else if (pt.getActualTypeArguments()[0].equals(boolean.class)
                 || pt.getActualTypeArguments()[0].equals(Boolean.class)) {
-            return new ArrayList(Arrays.asList(toObjects(str, Boolean[].class)));
+            return Arrays.asList(toObjects(str, Boolean[].class));
         }else if (pt.getActualTypeArguments()[0].equals(long.class)
                 || pt.getActualTypeArguments()[0].equals(Long.class)) {
-            return new ArrayList(Arrays.asList(toObjects(str, Long[].class)));
+            return Arrays.asList(toObjects(str, Long[].class));
         }else if (pt.getActualTypeArguments()[0].equals(short.class)
                 || pt.getActualTypeArguments()[0].equals(Short.class)) {
-            return new ArrayList(Arrays.asList(toObjects(str, Short[].class)));
+            return Arrays.asList(toObjects(str, Short[].class));
         }else if (pt.getActualTypeArguments()[0].equals(double.class)
                 || pt.getActualTypeArguments()[0].equals(Double.class)) {
-            return new ArrayList(Arrays.asList(toObjects(str, Double[].class)));
+            return Arrays.asList(toObjects(str, Double[].class));
         }
         else{
             throw new Exception(pt + "不支持的List<T>类型:" + pt);
         }
     }
+
+    /**
+     * 从字符串转换成List集合
+     * @param str      json
+     * @param classes  集合 泛型
+     * @return
+     */
+    public static List toObjectList(String str, Class classes)  {
+        return JSONArray.parseArray(str, classes);
+    }
+
+    /**
+     * 从字符串转换成数组
+     * @param str        json
+     * @param classes   数组类型
+     * @return
+     */
+    public static Object[] toObjects2(String str, Class classes)  {
+        return JSONArray.parseArray(str, classes).toArray();
+    }
+
 
     /**
      * 从字符串转换成数组
@@ -483,6 +508,17 @@ public class Converter {
 
         return value;
     }
+
+    // [{"uid":"1627466546679test3","type":1,"projectName":"test5555","projectid":18}]
+
+    public static void main(String[] args) {
+        String json = "[{\"uid\":\"1627466546679test3\",\"type\":1,\"projectName\":\"test5555\",\"projectid\":18}]";
+        List list = new ArrayList();
+
+        Object value = JSONObject.parseArray(json, String.class);
+
+    }
+
 
 }
  
