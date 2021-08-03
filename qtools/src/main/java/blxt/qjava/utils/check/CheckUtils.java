@@ -178,60 +178,19 @@ public class CheckUtils {
         if (o == null) {
             return true;
         }
+        // 特殊判断, 按照经验使用频率排序
         if (o instanceof String) {
-            if (o.toString().trim().equals("")) {
-                return true;
-            }
-        } else if (o instanceof List) {
-            if (((List) o).size() == 0) {
-                return true;
-            }
+            return ((String) o).isEmpty();
+        }else if (o instanceof List) {
+            return ((List) o).isEmpty();
+        } else if (o.getClass().isArray()) {
+            return ((Object[]) o).length == 0;
         } else if (o instanceof Map) {
-            if (((Map) o).size() == 0) {
-                return true;
-            }
-        } else if (o instanceof Set) {
-            if (((Set) o).size() == 0) {
-                return true;
-            }
+            return ((Map) o).isEmpty();
+        }else if (o instanceof Set) {
+            return ((Set) o).isEmpty();
         } else if(o instanceof File){
-            if (!((File) o).exists()) {
-                return true;
-            }
-        } else if (o instanceof Object[]) {
-            if (((Object[]) o).length == 0) {
-                return true;
-            }
-        }
-        if (o instanceof String[]) {
-            if (((String[]) o).length <= 0) {
-                return true;
-            }
-        }
-        else if (o instanceof int[]) {
-            if (((int[]) o).length == 0) {
-                return true;
-            }
-        } else if (o instanceof long[]) {
-            if (((long[]) o).length == 0) {
-                return true;
-            }
-        } else if (o instanceof byte[]) {
-            if (((byte[]) o).length == 0) {
-                return true;
-            }
-        } else if (o instanceof float[]) {
-            if (((float[]) o).length == 0) {
-                return true;
-            }
-        }else if(o instanceof List){
-            if(((List<?>) o).size() <= 0){
-                return true;
-            }
-        }else if(o instanceof Map){
-            if(((Map) o).size() <= 0){
-                return true;
-            }
+            return ((File) o).exists();
         }
         return false;
     }
