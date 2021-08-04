@@ -12,11 +12,14 @@ public enum JoinEnum {
     PG_JOIN("JOIN") ,
     /** 内连接 */
     PG_INNER_JOIN("INNER JOIN") ,
+    /** 左连接 */
+    PG_LEFT_JOIN("LEFT JOIN") ,
     /** 左外连接 */
     PG_LEFT_OUTER_JOIN("LEFT OUTER JOIN") ,
+    /** 右连接 */
+    PG_RIGHT_JOIN("RIGHT JOIN") ,
     /** 右外连接 */
     PG_RIGHT_OUT_JOIN("RIGHT OUT JOIN") ,
-
     /** 外连接 */
     PG_FULL_OUTER_JOIN("FULL OUTER JOIN") ,
 
