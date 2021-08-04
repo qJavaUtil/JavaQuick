@@ -29,6 +29,9 @@ public @interface SqlColumn {
     /** select 中可见 */
     boolean selectEnable() default true;
 
+    /** 查询条件 中使用 */
+    boolean whereEnable() default true;
+
     /** install 中可见 */
     boolean installEnable() default true;
 
