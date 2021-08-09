@@ -21,6 +21,15 @@ public class Executer {
     int cacheSize = 1024;
     String basepath;
 
+    InputStreamThread insR;
+    InputStreamThread onsR;
+
+    /** 长时间没有数据交互时, 自动断开链接 */
+    boolean autoClose = false;
+    /** 交互超时 30 s */
+    long timeFreeMax = 30000 * 1000;
+
+
     /**
      * 初始化工作目录
      * @param basePath  处室目录
@@ -55,6 +64,9 @@ public class Executer {
         onsR.setCacheSize(cacheSize);
         onsR.setCODE(CODE);
 
+        insR.setAutoClose(autoClose);
+        insR.setTimeFreeMax(timeFreeMax);
+
         QThreadpool.getInstance().execute(insR);
         QThreadpool.getInstance().execute(onsR);
     }
@@ -88,6 +100,12 @@ public class Executer {
 
         process.destroy();
         writer.close();
+        if(insR != null){
+            insR.run = false;
+        }
+        if(onsR != null){
+            onsR.run = false;
+        }
         return true;
     }
 

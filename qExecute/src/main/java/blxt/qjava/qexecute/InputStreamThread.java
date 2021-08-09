@@ -21,6 +21,16 @@ public class InputStreamThread implements Runnable{
     private InputStream ins = null;
     /** websocket */
     CallBack callBack;
+    /** 输出空闲时间 */
+    long timeFree = 0;
+
+    /** 长时间没有数据交互时, 自动断开链接 */
+    boolean autoClose = false;
+    /** 交互超时 30 s */
+    long timeFreeMax = 30000 * 1000;
+
+    /** 主线程运行标记 */
+    boolean run = true;
 
     public InputStreamThread(InputStream ins, CallBack callBack){
         this.ins = ins;
@@ -35,9 +45,21 @@ public class InputStreamThread implements Runnable{
         String line = null;
         byte[] b = new byte[cacheSize];
         int num = 0;
+        timeFree = System.currentTimeMillis();
         try {
-            while((num=ins.read(b))!=-1){
+            while(run && (num=ins.read(b))!=-1){
                 String msg = new String(b, CODE);
+                // 超时停止
+                if(autoClose && timeFreeMax > System.currentTimeMillis() - timeFree){
+                    run = false;
+                    if(callBack != null){
+                        callBack.onOvertime(tag);
+                    }
+                    else{
+                        return;
+                    }
+                }
+                timeFree = System.currentTimeMillis();
                 if(callBack != null){
                     callBack.onReceiver(tag, msg.trim());
                 }
@@ -54,8 +76,8 @@ public class InputStreamThread implements Runnable{
 
     public interface CallBack{
         void onReceiver(String tag, String msg);
+        void onOvertime(String tag);
     }
-
 
 
 }

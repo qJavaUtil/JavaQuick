@@ -21,6 +21,11 @@ public class CmdTest {
             public void onReceiver(String tag, String msg) {
                // System.out.println(msg);
             }
+
+            @Override
+            public void onOvertime(String tag) {
+
+            }
         });
 
         Scanner sc = new Scanner(System.in);
