@@ -190,7 +190,7 @@ public class CheckUtils {
         }else if (o instanceof Set) {
             return ((Set) o).isEmpty();
         } else if(o instanceof File){
-            return ((File) o).exists();
+            return !((File) o).exists();
         }
         return false;
     }

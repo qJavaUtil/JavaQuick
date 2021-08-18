@@ -97,7 +97,6 @@ public class ObjectValue {
             PropertyDescriptor pd = new PropertyDescriptor(field.getName(), bean.getClass());
             //获得写方法 
             Method wM = pd.getWriteMethod();
-            // Method getter = property.getReadMethod();
             wM.invoke(bean, value);
             return true;
         } catch (Exception e) {
@@ -118,6 +117,7 @@ public class ObjectValue {
             Method getter = pd.getReadMethod();
             return getter.invoke(bean);
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
