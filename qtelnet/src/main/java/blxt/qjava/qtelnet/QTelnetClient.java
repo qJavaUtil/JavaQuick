@@ -83,6 +83,8 @@ public class QTelnetClient extends TelnetClient {
      * 关闭连接
      */
     public boolean distinct() {
+        // 退出指令
+        write("exit");
         if(readThread2 != null){
             readThreadRun = false;
             readThread2.stop();
