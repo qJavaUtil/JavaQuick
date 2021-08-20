@@ -2,6 +2,7 @@ package blxt.qjava.qtelnet;
 
 import blxt.qjava.autovalue.util.QThreadpool;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.telnet.TelnetClient;
 
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.io.UnsupportedEncodingException;
  * telnet客户端
  * @author ZhangJieLei
  */
+@Slf4j
 @Data
 public class QTelnetClient extends TelnetClient {
     public static String LoginMark = "login:";
@@ -47,6 +49,7 @@ public class QTelnetClient extends TelnetClient {
 
     /** 异步读取线程 */
     ReadThread2 readThread2 = null;
+    boolean readThreadRun = true;
     OnTelnetClientListener onTelnetClientListener = null;
 
     public QTelnetClient() {
@@ -80,20 +83,23 @@ public class QTelnetClient extends TelnetClient {
      * 关闭连接
      */
     public boolean distinct() {
+        if(readThread2 != null){
+            readThreadRun = false;
+            readThread2.stop();
+            readThread2 = null;
+        }
         try {
             if (isConnected()) {
+                in.close();
+                out.close();
                 disconnect();
                 isLogin = false;
             }
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
         if (onTelnetClientListener != null) {
             onTelnetClientListener.onDisConnect(tag, true);
-        }
-        if(readThread2 != null){
-            readThread2.stop();
         }
         return true;
     }
@@ -231,6 +237,9 @@ public class QTelnetClient extends TelnetClient {
      * @param stringBuilder
      */
     private void revertDate(StringBuilder stringBuilder){
+        if(stringBuilder.length() == 0){
+            return;
+        }
         if (onTelnetClientListener != null) {
             if (isChangeCode) {
                 try {
@@ -242,6 +251,9 @@ public class QTelnetClient extends TelnetClient {
             } else {
                 onTelnetClientListener.onReceiver(tag, stringBuilder.toString());
             }
+        }
+        else{
+            log.debug("{} \n {}", tag, stringBuilder.toString());
         }
     }
 
@@ -265,6 +277,7 @@ public class QTelnetClient extends TelnetClient {
      */
     public void onReadThread(){
         if(readThread2 == null){
+            readThreadRun = true;
             readThread2 = new ReadThread2();
             QThreadpool.getInstance().execute(readThread2);
         }
@@ -293,7 +306,7 @@ public class QTelnetClient extends TelnetClient {
                 SubReadThread sub = new SubReadThread();
                 sub.start();
                 int last = sub.count;
-                while (true) {
+                while (readThreadRun) {
                     sub.sleep(100);
                     if (last == sub.count) {
                         // 回复数据
@@ -355,7 +368,9 @@ public class QTelnetClient extends TelnetClient {
 
         @Override
         public void run() {
-            read();
+            while(readThreadRun){
+                read();
+            }
         }
 
         /** 读取缓存, 要做锁 */
