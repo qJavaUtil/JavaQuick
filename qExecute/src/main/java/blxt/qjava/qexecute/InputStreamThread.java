@@ -9,6 +9,7 @@ import java.io.InputStream;
 
 /**
  * cmd信息反馈线程
+ * @author ZhangJieLei
  */
 @Data
 public class InputStreamThread implements Runnable{
@@ -73,6 +74,16 @@ public class InputStreamThread implements Runnable{
             e.printStackTrace();
         }
     }
+
+    public void close(){
+        run = false;
+        try {
+            ins.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public interface CallBack{
         void onReceiver(String tag, String msg);

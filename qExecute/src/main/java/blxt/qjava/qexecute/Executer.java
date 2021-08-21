@@ -94,18 +94,20 @@ public class Executer {
      * @return
      */
     public boolean close(){
-        if(process == null) {
-            return false;
-        }
 
-        process.destroy();
-        writer.close();
         if(insR != null){
-            insR.run = false;
+            insR.close();
         }
         if(onsR != null){
-            onsR.run = false;
+            onsR.close();;
         }
+        if(process != null) {
+            process.destroy();
+        }
+        if(writer != null) {
+            writer.close();
+        }
+
         return true;
     }
 
