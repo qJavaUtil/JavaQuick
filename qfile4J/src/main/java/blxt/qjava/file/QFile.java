@@ -738,36 +738,16 @@ public class QFile {
         }
 
         public static boolean save(File file, String filecontent) {
-            FileOutputStream fos = null;
-            OutputStreamWriter osw = null;
-
-            boolean var5;
             try {
                 if (!file.exists()) {
                     file.createNewFile();
                 }
-
-                fos = new FileOutputStream(file);
-                osw = new OutputStreamWriter(fos, CODE_DEFAULT);
-                osw.write(filecontent);
-                osw.close();
-                return true;
+                return save(new FileOutputStream(file), filecontent);
             } catch (Exception var15) {
-                var5 = false;
-            } finally {
-                if (fos != null) {
-                    try {
-                        fos.close();
-                        osw.close();
-                    } catch (IOException var14) {
-                        var14.printStackTrace();
-                    }
-                }
-
+                return false;
             }
-
-            return var5;
         }
+
 
         public static boolean add(File fileName, byte[] datas) {
             if (!fileName.exists()) {
@@ -801,6 +781,30 @@ public class QFile {
             }
 
             return var4;
+        }
+
+
+        public static boolean save(FileOutputStream fos, String filecontent) {
+            OutputStreamWriter osw = null;
+            boolean var5;
+            try {
+                osw = new OutputStreamWriter(fos, CODE_DEFAULT);
+                osw.write(filecontent);
+                osw.close();
+                return true;
+            } catch (Exception var15) {
+                var5 = false;
+            } finally {
+                if (fos != null) {
+                    try {
+                        fos.close();
+                        osw.close();
+                    } catch (IOException var14) {
+                        var14.printStackTrace();
+                    }
+                }
+            }
+            return var5;
         }
 
         public static boolean add(File fileName, String content) {
