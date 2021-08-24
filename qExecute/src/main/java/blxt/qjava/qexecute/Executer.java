@@ -67,8 +67,8 @@ public class Executer {
         insR.setAutoClose(autoClose);
         insR.setTimeFreeMax(timeFreeMax);
 
-        QThreadpool.getInstance().execute(insR);
-        QThreadpool.getInstance().execute(onsR);
+        new Thread(insR).start();
+        new Thread(onsR).start(); 
     }
 
 
