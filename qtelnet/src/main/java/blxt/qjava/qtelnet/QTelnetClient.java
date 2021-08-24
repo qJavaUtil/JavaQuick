@@ -84,7 +84,9 @@ public class QTelnetClient extends TelnetClient {
      */
     public boolean distinct() {
         // 退出指令
-        write("exit");
+        if(isConnected()){
+            write("exit");
+        }
         if(readThread2 != null){
             readThreadRun = false;
             readThread2.stop();
@@ -281,7 +283,8 @@ public class QTelnetClient extends TelnetClient {
         if(readThread2 == null){
             readThreadRun = true;
             readThread2 = new ReadThread2();
-            QThreadpool.getInstance().execute(readThread2);
+            Thread thread = new Thread(readThread2);
+            thread.start();
         }
     }
 
