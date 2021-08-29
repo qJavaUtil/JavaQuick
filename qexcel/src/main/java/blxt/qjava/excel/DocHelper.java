@@ -1,7 +1,8 @@
 package blxt.qjava.excel;
 
+import fr.opensagres.poi.xwpf.converter.pdf.PdfConverter;
+import fr.opensagres.poi.xwpf.converter.pdf.PdfOptions;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.util.Units;
@@ -12,7 +13,6 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +40,7 @@ public class DocHelper {
     /**
      * 替换文档中的段落
      * 注意: 模板中替换的key, 需要按照指定格式: 文字替换: ${key}, 图片替换 @{key}
+     * 注意: 模板中的key, 需要是段落格式完全一致的,建议中记事本中复制. 如果key是中英文的, 需要格式刷统一一下
      * @param params    键值对 map
      * @throws IOException
      * @throws InvalidFormatException
@@ -51,16 +52,17 @@ public class DocHelper {
             return false;
         }
 
+        // 遍历所有段落
         for (XWPFParagraph paragraph : paragraphs) {
             List<XWPFRun> runs = paragraph.getRuns();
+            // 遍历段落里面的小段
             for (XWPFRun run : runs) {
-                System.out.println(run.text());
+                log.debug("段落:{}", run.text());
                 if(strMatcher(run.text()).find()){
                     replaceInStr(run, params);
                 }
             }
         }
-
 
         return true;
     }
@@ -111,11 +113,51 @@ public class DocHelper {
         return true;
     }
 
+    /**
+     * 指定表格, 追加行
+     * @param tableIndex   第几个表格
+     * @param row          开始行号
+     * @param datas        数据行(注意数据数组长度要和单元格一样)
+     * @return
+     */
+    public boolean addTable(int tableIndex, int row, List<String[]> datas){
+        List<XWPFTable> tables=document.getTables();
+        if(tables == null || tables.isEmpty() || tables.size() < tableIndex){
+            return false;
+        }
+        XWPFTable table = tables.get(tableIndex);
+        if(table == null){
+            return false;
+        }
+        // 表格行
+        List<XWPFTableRow> rows=table.getRows();
+        // 表格列
+        List<XWPFTableCell> cells = null;
 
-    // TODO 指定表格, 追加行
+        int idata = 0;
+        int dataLeng = datas.size();
+        while(idata < dataLeng){
+            // 如果原表格的行不够, 就新建
+            XWPFTableRow rowN = null;
+            if(row + idata >= rows.size()){
+                rowN = table.createRow();
+                log.debug("新建行");
+            }
+            else{
+                rowN = table.getRow(row + idata);
+                log.debug("写入行");
+            }
+            // 单元格
+            cells=rowN.getTableCells();
+            for(int i= 0,  leng =  cells.size(); i < leng; i++){
+                cells.get(i).setText(datas.get(idata)[i++]);
+            }
 
-    // TODO 替换文段
+            idata++;
+        }
 
+        return true;
+    }
     // TODO 替换标题
 
 
@@ -152,8 +194,11 @@ public class DocHelper {
 
         for(Map.Entry<String, Object> entry : params.entrySet()){
             String key = String.format("${%s}", entry.getKey());
-            value = value.replaceAll(key, entry.getValue().toString());
-            cell.setText(value,0);
+            if(value.contains(key)){
+                key = String.format("\\$\\{%s}", entry.getKey());
+                value = value.replaceAll(key, entry.getValue().toString());
+                cell.setText(value,0);
+            }
         }
     }
 
@@ -464,6 +509,36 @@ public class DocHelper {
             e.printStackTrace();
             return false;
         }
+        return true;
+    }
+
+    public boolean write2Pdf(File file){
+        // 创建文件流
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(file);
+            // 输出
+            write(fileOutputStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        PdfOptions pdfOptions = PdfOptions.create();
+        try {
+            PdfConverter.getInstance().convert(document,fileOutputStream,pdfOptions);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }finally {
+            try {
+                fileOutputStream.flush();
+                fileOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         return true;
     }
 

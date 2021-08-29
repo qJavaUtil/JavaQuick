@@ -29,6 +29,11 @@ public class DocHelperTest {
         params.put("auth","张三");
         params.put("data","2021/01/01");
 
+
+        params.put("单位","和能银行");
+        params.put("称呼","马总");
+        params.put("说明","这是一个测试理由");
+
         //一个单元格内多行字
         List<String> hobby=new ArrayList<>();
         hobby.add("1、打篮球");
@@ -36,17 +41,22 @@ public class DocHelperTest {
         hobby.add("3、游泳");
         params.put("docabout", hobby);
 
+        List<String[]> tableNewData = new ArrayList<>();
+        tableNewData.add(new String[]{"1", "2", "3", "4"});
+        tableNewData.add(new String[]{"1", "2", "3", "4"});
+
         try {
             // 普通段落内容替换
             docHelper.replaceWord(params);
             // 表格内容替换
             docHelper.replaceTable(params);
+            docHelper.addTable(0, 2, tableNewData);
         } catch (IOException | InvalidFormatException e) {
             e.printStackTrace();
         }
 
         docHelper.write(new File("./test1.docx"));
-
+        //  docHelper.write2Pdf(new File("./test1.pdf"));
     }
 
 
