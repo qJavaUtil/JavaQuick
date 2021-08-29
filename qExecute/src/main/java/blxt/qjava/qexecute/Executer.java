@@ -1,6 +1,5 @@
 package blxt.qjava.qexecute;
 
-import blxt.qjava.autovalue.util.QThreadpool;
 import lombok.Data;
 
 import java.io.File;
@@ -68,7 +67,7 @@ public class Executer {
         insR.setTimeFreeMax(timeFreeMax);
 
         new Thread(insR).start();
-        new Thread(onsR).start(); 
+        new Thread(onsR).start();
     }
 
 
