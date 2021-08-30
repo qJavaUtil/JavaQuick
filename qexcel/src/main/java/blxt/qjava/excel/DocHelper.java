@@ -150,7 +150,8 @@ public class DocHelper {
             // 单元格
             cells=rowN.getTableCells();
             for(int i= 0,  leng =  cells.size(); i < leng; i++){
-                cells.get(i).setText(datas.get(idata)[i++]);
+                String value = datas.get(idata)[i];
+                cells.get(i).setText(value);
             }
 
             idata++;
@@ -304,7 +305,8 @@ public class DocHelper {
         Integer heigh=bi.getHeight();
         Double much=80.0/width;
         //图片按宽80 比例缩放
-        run.addPicture(is,getPictureType(picpath.substring(picpath.lastIndexOf(".")+1)),"", Units.toEMU(80),Units.toEMU(heigh*much));
+        run.addPicture(is,getPictureType(picpath.substring(picpath.lastIndexOf(".")+1)),"",
+                                                           Units.toEMU(80),Units.toEMU(heigh*much));
         //图片原长宽
 //        run.addPicture(is,getPictureType(pic.get("picType").toString()),"",Units.toEMU(width),Units.toEMU(heigh));
         close(is);
@@ -329,12 +331,13 @@ public class DocHelper {
 
     //从params参数中找到模板中key对应的value值
     private  Integer getMapImgDataType(Map<String,Object> params,String key){
-        if(params.get(key)==null){
+        Object valve = params.get(key);
+        if(valve==null){
             return 0;
         }
-        else if(params.get(key) instanceof  Map){
+        else if(valve instanceof  Map){
             return 1;
-        }else if(params.get(key) instanceof List){
+        }else if(valve instanceof List){
             return 2;
         }else {
             throw  new RuntimeException("image data type error!");
