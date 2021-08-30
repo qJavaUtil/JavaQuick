@@ -1,6 +1,5 @@
 package blxt.qjava.qtelnet;
 
-import blxt.qjava.autovalue.util.QThreadpool;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.telnet.TelnetClient;
@@ -273,7 +272,6 @@ public class QTelnetClient extends TelnetClient {
      */
     public void setOnTelnetClientListener(OnTelnetClientListener onTelnetClientListener) {
         this.onTelnetClientListener = onTelnetClientListener;
-
     }
 
     /**
