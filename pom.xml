@@ -31,6 +31,7 @@
         <module>qExecute</module>
         <module>qimage</module>
         <module>qexcel</module>
+        <module>qNettyWebsocket</module>
     </modules>
 
     <properties>

@@ -1,6 +1,5 @@
 package blxt.qjava.file.search;
 
-import blxt.qjava.file.search.SearchRes;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -117,7 +116,12 @@ public class QFileScaner {
         return pathlist;
     }
 
-    // KMP算法 字符串匹配
+    /**
+     * KMP算法 字符串匹配
+     * @param s1
+     * @param s2
+     * @return
+     */
     public static int getIndexOf(String s1, String s2) {
         if (s1 == null || s2 == null || s2.length() < 1 || s1.length() < s2.length()) {
             return -1;
@@ -133,7 +137,8 @@ public class QFileScaner {
             if (str1[x] == str2[y]) {
                 x++;
                 y++;
-            } else if (next[y] == -1) { // y == 0
+                // y == 0
+            } else if (next[y] == -1) {
                 x++;
             } else {
                 y = next[y];
@@ -149,10 +154,13 @@ public class QFileScaner {
         int[] next = new int[str2.length];
         next[0] = -1;
         next[1] = 0;
-        int i = 2; // 目前在哪个位置上求next数组的值
-        int cn = 0; // 当前是哪个位置的值再和i-1位置的字符比较
+        // 目前在哪个位置上求next数组的值
+        int i = 2;
+        // 当前是哪个位置的值再和i-1位置的字符比较
+        int cn = 0;
         while (i < next.length) {
-            if (str2[i - 1] == str2[cn]) { // 配成功的时候
+            // 配成功的时候
+            if (str2[i - 1] == str2[cn]) {
                 next[i++] = ++cn;
             } else if (cn > 0) {
                 cn = next[cn];

@@ -858,19 +858,23 @@ public class QFile {
         try {
             File f = new File(strSrcFilePath);
             File f2 = new File(strDstFilePath);
-
+            if(f2.exists()){
+                f2.delete();
+            }
+            if(!f2.getParentFile().exists()){
+                f2.getParentFile().mkdirs();
+            }
             BufferedReader bufferedReader = new BufferedReader(new FileReader(f));
             while ((strLineAll = bufferedReader.readLine()) != null) {
-                for (Map.Entry<String, String> entry : mapVars.entrySet()) {
-                    strLineAll = strLineAll.replace(entry.getKey(), entry.getValue());
+                if(mapVars != null){
+                    for (Map.Entry<String, String> entry : mapVars.entrySet()) {
+                        strLineAll = strLineAll.replace(entry.getKey(), entry.getValue());
+                    }
                 }
                 strFileContent.append(strLineAll).append("\r\n");
             }
             bufferedReader.close();
 
-            if(f2.exists()){
-                f2.delete();
-            }
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(f2, false));
             bufferedWriter.write(strFileContent.toString());
             bufferedWriter.flush();

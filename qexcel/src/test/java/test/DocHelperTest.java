@@ -24,16 +24,6 @@ public class DocHelperTest {
         //传入模板的参数
         Map<String,Object> params=new HashMap<>();
 
-        // 一个单元格内一行字, key可是中文
-        params.put("版本","V2.0");
-        params.put("auth","张三");
-        params.put("data","2021/01/01");
-
-
-        params.put("单位","和能银行");
-        params.put("称呼","马总");
-        params.put("说明","这是一个测试理由");
-
         //一个单元格内多行字
         List<String> hobby=new ArrayList<>();
         hobby.add("1、打篮球");
@@ -41,9 +31,27 @@ public class DocHelperTest {
         hobby.add("3、游泳");
         params.put("docabout", hobby);
 
+        // 图片
+        Map<String, Object> imageMap = new HashMap<>();
+        imageMap.put("imgpath", "E:\\ZhangJieLei\\Pictures\\Saved Pictures\\log\\henenglog.png");
+            
+
+        // 一个单元格内一行字, key可是中文
+        params.put("版本","V2.0");
+        params.put("auth","张三");
+        params.put("data","2021/01/01");
+        params.put("图片",imageMap);
+
+
+        params.put("单位","和能银行");
+        params.put("称呼","马总");
+        params.put("说明","这是一个测试理由");
+
+    
+
         List<String[]> tableNewData = new ArrayList<>();
         tableNewData.add(new String[]{"1", "2", "3", "4"});
-        tableNewData.add(new String[]{"1", "2", "3", "4"});
+        tableNewData.add(new String[]{"1", "21234", "3", "4123"});
 
         try {
             // 普通段落内容替换
