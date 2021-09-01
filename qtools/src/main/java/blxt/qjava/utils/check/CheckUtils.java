@@ -194,4 +194,24 @@ public class CheckUtils {
         }
         return false;
     }
+
+
+    /**
+     * 判断是否是基础类型
+     * @param classes
+     * @return
+     */
+    public static boolean isPrimitive(Class<?> classes) {
+        if(classes.isPrimitive()){
+            return true;
+        }
+        if(classes.equals(String.class)){
+            return true;
+        }
+        try {
+            return ((Class<?>)classes.getField("TYPE").get(null)).isPrimitive();
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

@@ -40,4 +40,7 @@ public @interface SqlColumn {
     /** 自动更新触发 */
     boolean autoupdate() default false;
 
+    /** 长度 */
+    int leng() default -1;
+
 }
