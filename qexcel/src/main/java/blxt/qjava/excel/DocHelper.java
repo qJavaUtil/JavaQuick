@@ -1,8 +1,10 @@
 package blxt.qjava.excel;
 
-import fr.opensagres.poi.xwpf.converter.pdf.PdfConverter;
-import fr.opensagres.poi.xwpf.converter.pdf.PdfOptions;
+import com.documents4j.api.DocumentType;
+import com.documents4j.api.IConverter;
+import com.documents4j.job.LocalConverter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.util.Units;
@@ -13,11 +15,13 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * 文档导出工具
@@ -517,7 +521,7 @@ public class DocHelper {
 
     public boolean write2Pdf(File file){
         // 创建文件流
-        FileOutputStream fileOutputStream = null;
+        FileOutputStream fileOutputStream;
         try {
             fileOutputStream = new FileOutputStream(file);
             // 输出
@@ -527,20 +531,16 @@ public class DocHelper {
             return false;
         }
 
-        PdfOptions pdfOptions = PdfOptions.create();
-        try {
-            PdfConverter.getInstance().convert(document,fileOutputStream,pdfOptions);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }finally {
-            try {
-                fileOutputStream.flush();
-                fileOutputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        FileOutputStream fos = null;
+//        InputStream is = new ByteArrayInputStream();
+//        InputStream total = new SequenceInputStream();
+//        try {
+//            IOUtils.copyLarge(is, fos);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        IConverter converter = LocalConverter.builder().build();
+//        converter.convert(is).as(DocumentType.DOCX).to(fileOutputStream).as(DocumentType.PDF).execute();
 
         return true;
     }
