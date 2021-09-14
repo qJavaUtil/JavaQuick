@@ -22,5 +22,5 @@ public class SearchRes{
     /** 本行内容 */
     String content;
     /** 相对路径,包名 */
-    String packageName;
+    String path;
 }

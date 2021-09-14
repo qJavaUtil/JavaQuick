@@ -32,6 +32,7 @@
         <module>qimage</module>
         <module>qexcel</module>
         <module>qNettyWebsocket</module>
+        <module>qInfluxHelp</module>
     </modules>
 
     <properties>
