@@ -519,29 +519,22 @@ public class DocHelper {
         return true;
     }
 
+    /**
+     * 保存文件到 pdf
+     * @param file  要保存的路径
+     * @return
+     */
     public boolean write2Pdf(File file){
-        // 创建文件流
-        FileOutputStream fileOutputStream;
-        try {
-            fileOutputStream = new FileOutputStream(file);
-            // 输出
-            write(fileOutputStream);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return false;
-        }
-
-//        FileOutputStream fos = null;
-//        InputStream is = new ByteArrayInputStream();
-//        InputStream total = new SequenceInputStream();
-//        try {
-//            IOUtils.copyLarge(is, fos);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        IConverter converter = LocalConverter.builder().build();
-//        converter.convert(is).as(DocumentType.DOCX).to(fileOutputStream).as(DocumentType.PDF).execute();
-
+        // 先保存word
+        File fileTmp = new File(String.format("./tmp%d.docx", System.currentTimeMillis()));
+        write(fileTmp);
+        // 再转换 pdf
+        DocConverter docConverter = new DocConverter();
+        docConverter.setInput(fileTmp);
+        docConverter.setOutput(file);
+        docConverter.docx2Pdf();
+        // 然后删除临时文件
+        fileTmp.delete();
         return true;
     }
 

@@ -74,33 +74,14 @@ public class DocHelperTest {
         //   docHelper.write(new File("./test1.docx"));
 
         // 保存到pdf
-       docHelper.write2Pdf(new File("./test1.pdf"));
+       docHelper.write2Pdf(new File("./test2.pdf"));
 
-    }
-
-    public void toPdf2(){
-        DocConverter docConverter = new DocConverter();
-        docConverter.setInput(new File("./test1.docx"));
-        docConverter.setOutput(new File("./test1.pdf"));
-        docConverter.docx2Pdf();
-    }
-
-    /**
-     * 没有授权, 有水印
-     */
-    public void toPdf(){
-        //加载word示例文档
-//        Document document = new Document();
-//        document.loadFromFile("./test1.docx");
-//        //保存结果文件
-//        document.saveToFile("./toPDF.pdf", FileFormat.PDF);
     }
 
 
 
     public static void main(String[] args) {
         DocHelperTest docHelperTest = new DocHelperTest();
-        //docHelperTest.test1();
-        docHelperTest.toPdf2();
+        docHelperTest.test1();
     }
 }
