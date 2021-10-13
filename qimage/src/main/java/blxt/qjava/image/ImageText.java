@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
+ * 图片文字工具
  * @author OpenJialei
  * @date 2021年07月01日 19:17
  */

@@ -1,13 +1,11 @@
 package blxt.qjava.excel;
 
-import com.documents4j.api.DocumentType;
-import com.documents4j.api.IConverter;
-import com.documents4j.job.LocalConverter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.util.Units;
+import org.apache.poi.xwpf.converter.pdf.PdfConverter;
+import org.apache.poi.xwpf.converter.pdf.PdfOptions;
 import org.apache.poi.xwpf.usermodel.*;
 
 import javax.imageio.ImageIO;
@@ -15,13 +13,11 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * 文档导出工具
@@ -46,8 +42,6 @@ public class DocHelper {
      * 注意: 模板中替换的key, 需要按照指定格式: 文字替换: ${key}, 图片替换 @{key}
      * 注意: 模板中的key, 需要是段落格式完全一致的,建议中记事本中复制. 如果key是中英文的, 需要格式刷统一一下
      * @param params    键值对 map
-     * @throws IOException
-     * @throws InvalidFormatException
      */
     public boolean replaceWord(Map<String,Object> params){
         List<XWPFParagraph> paragraphs = document.getParagraphs();
@@ -183,7 +177,7 @@ public class DocHelper {
      * @return
      */
     private  Matcher strMatcher(String str){
-        Pattern pattern=Pattern.compile("\\$\\{(.+?)\\}");
+        Pattern pattern = Pattern.compile("\\$\\{(.+?)\\}");
         Matcher matcher=pattern.matcher(str);
         return matcher;
     }
@@ -217,22 +211,27 @@ public class DocHelper {
         String key = cell.getText().substring(2, cell.getText().length() - 1);
 
         Integer datatype = getMapStrDataTypeValue(params, key);
-
         List<XWPFParagraph> parags = cell.getParagraphs();
-        //先清空单元格中所有的段落
-        for (int i = 0; i < parags.size(); i++) {
-            cell.removeParagraph(i);
+        //先清空单元格中所有的段落内容, 但保留段落格式
+        for (int i = 0, iL = parags.size(); i < iL; i++) {
+            XWPFParagraph paragraph = parags.get(i);
+            List<XWPFRun> runs =  paragraph.getRuns();
+            for(int j = 0, rL = runs.size(); j < rL; j++){
+                paragraph.removeRun(i);
+            }
         }
         if (datatype.equals(0)) {
             return;
         } else if (datatype.equals(2)) {
             //如果类型是2 说明数据类型是List<String>
             List<String> strs = (List<String>) params.get(key);
+            StringBuilder stringBuilder = new StringBuilder();
             Iterator<String> iterator = strs.iterator();
             while (iterator.hasNext()) {
                 XWPFParagraph para = cell.addParagraph();
                 XWPFRun run = para.createRun();
                 run.setText(iterator.next());
+                stringBuilder.append(iterator.next()).append("\r\n");
             }
         } else if (datatype.equals(3)) {
             String str = params.get(key).toString();
@@ -535,6 +534,22 @@ public class DocHelper {
         docConverter.docx2Pdf();
         // 然后删除临时文件
         fileTmp.delete();
+        return true;
+    }
+
+    /**
+     * linux下导出pdf
+     * @param file
+     * @return
+     */
+    public boolean toPdf(File file){
+        try {
+            PdfConverter.getInstance().convert(document, new FileOutputStream(file),
+                PdfOptions.create());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
         return true;
     }
 

@@ -33,6 +33,9 @@
         <module>qexcel</module>
         <module>qNettyWebsocket</module>
         <module>qInfluxHelp</module>
+        <module>app-qjava</module>
+        <module>qCipher</module>
+        <module>ocr-tesseract</module>
     </modules>
 
     <properties>

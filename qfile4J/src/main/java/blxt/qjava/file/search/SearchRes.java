@@ -2,6 +2,8 @@ package blxt.qjava.file.search;
 
 import lombok.Data;
 
+import java.io.File;
+
 /**
  * 搜索结果
  * @author OpenJialei
@@ -23,4 +25,15 @@ public class SearchRes{
     String content;
     /** 相对路径,包名 */
     String path;
+
+
+    public String getAbsolutePath(String parentFile) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(parentFile);
+        stringBuilder.append(File.separator);
+        stringBuilder.append(path);
+        stringBuilder.append(File.separator);
+        stringBuilder.append(fileName);
+        return stringBuilder.toString();
+    }
 }

@@ -35,17 +35,17 @@
             <version>5.4</version>
         </dependency>
         <!--        表格操作 -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>5.0.0</version>
-        </dependency>
-        <!--        word操作 -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>5.0.0</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>poi</artifactId>-->
+<!--            <version>5.0.0</version>-->
+<!--        </dependency>-->
+<!--        &lt;!&ndash;        word操作 &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.poi</groupId>-->
+<!--            <artifactId>poi-ooxml</artifactId>-->
+<!--            <version>5.0.0</version>-->
+<!--        </dependency>-->
         <!--        word - pdf 转换-->
         <dependency>
             <groupId>com.documents4j</groupId>
@@ -57,30 +57,69 @@
             <artifactId>documents4j-transformer-msoffice-word</artifactId>
             <version>1.0.3</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>fr.opensagres.xdocreport</groupId>-->
-<!--            <artifactId>fr.opensagres.poi.xwpf.converter.pdf-gae</artifactId>-->
-<!--            <version>2.0.2</version>-->
-<!--        </dependency>-->
 
-<!--        <dependency>-->
-<!--            <groupId>e-iceblue</groupId>-->
-<!--            <artifactId>spire.doc-free</artifactId>-->
-<!--            <version>3.9.0</version>-->
-<!--        </dependency>-->
+<!--      word - pdf 转换2   -->
 
-<!--        <dependency>-->
-<!--            <groupId>e-iceblue</groupId>-->
-<!--            <artifactId>spire.doc</artifactId>-->
-<!--            <version>4.8.0</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>args4j</groupId>
+            <artifactId>args4j</artifactId>
+            <version>2.32</version>
+        </dependency>
+        <dependency>
+            <groupId>org.docx4j</groupId>
+            <artifactId>docx4j</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>fr.opensagres.xdocreport</groupId>
+            <artifactId>org.apache.poi.xwpf.converter.pdf</artifactId>
+            <version>1.0.6</version>
+        </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>e-iceblue</groupId>-->
-<!--            <artifactId>spire.pdf</artifactId>-->
-<!--            <version>3.11.6</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>fr.opensagres.xdocreport</groupId>
+            <artifactId>org.odftoolkit.odfdom.converter.pdf</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.jaxb-namespaceprefixmapper-interfaces</groupId>
+            <artifactId>JAXBNamespacePrefixMapper</artifactId>
+            <version>2.2.4</version>
+        </dependency>
 
+
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.2.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>2.2.11</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.xmlbeans/xmlbeans -->
+        <dependency>
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.14</version><!--$NO-MVN-MAN-VER$-->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-scratchpad</artifactId>
+            <version>3.14</version><!--$NO-MVN-MAN-VER$-->
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.14</version><!--$NO-MVN-MAN-VER$-->
+        </dependency>
 
     </dependencies>
 

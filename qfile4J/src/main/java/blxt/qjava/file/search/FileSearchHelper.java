@@ -20,20 +20,21 @@ public class FileSearchHelper {
 
 
     public static void main(String[] args) {
-        File file = new File("E:\\ZhangJieLei\\Documents\\workspace\\workProject\\HWIIoTStudio\\src\\base\\HIWING_BASE_1.1.7_For_Intelligent");
+        File file = new File("E:\\ZhangJieLei\\Documents\\workspace\\workProject\\HWIIoTStudio\\src\\base");
         FileSearchHelper fileSearchHelper = new FileSearchHelper();
         fileSearchHelper.setCode(Charset.forName("gbk"));
         fileSearchHelper.ignoreMap.put(".", 1);
+
         //   fileSearchHelper.ignoreMap.put("Debug", 3);
 
         Map<String, String> replaceMap = new LinkedHashMap<>();
-//        replaceMap.put("   中国软件开源组织",
-//            "中国航天科工集团三院三部");
-//        replaceMap.put("       嵌入式实时操作系统",
-//            "海鹰工坊-海鹰工业物联网操作系统");
-//        replaceMap.put("SylixOS(TM)  LW : long wing", "");
-////        replaceMap.put("Copyright All Rights Reserved", "");
-//        replaceMap.put("RealEvo-IDE", "HWIIoT");
+        replaceMap.put("   中国软件开源组织",
+            "中国航天科工集团三院三部");
+        replaceMap.put("       嵌入式实时操作系统",
+            "海鹰工坊-海鹰工业物联网操作系统");
+        replaceMap.put("SylixOS(TM)  LW : long wing", "");
+//        replaceMap.put("Copyright All Rights Reserved", "");
+        replaceMap.put("RealEvo-IDE", "HWIIoT");
         replaceMap.put("SYLIXOS_BASE_PATH", "HWOS_BASE_PATH");
         replaceMap.put("SylixOSBaseProject", "HwOSBaseProject");
 //        replaceMap.put("海鹰高性能操作系统通用处理器版", "海鹰高可靠操作系统");
@@ -45,12 +46,15 @@ public class FileSearchHelper {
 
         // List<SearchRes> res = fileSearchHelper.search(file, null, "海鹰翼辉", false, false);
 
-        List<SearchRes> res = fileSearchHelper.replace(file, null, replaceMap, false, false);
+        //List<SearchRes> res = fileSearchHelper.replace(file, null, replaceMap, false, false);
+        List<SearchRes> res = fileSearchHelper.searchFileName(file, ".c");
 
-        System.out.println("替换完成:" +  res != null ? res.size() : 0);
         for (SearchRes searchRes : res){
-            System.out.println("匹配:"+ searchRes);
+            System.out.println("匹配:"+ searchRes.getAbsolutePath(file.getParent()));
+          //  File file1 = new File(searchRes.getAbsolutePath(file.getParent()));
+          //  file1.delete();
         }
+        System.out.println("替换完成:" +  res != null ? res.size() : 0);
     }
 
 
@@ -111,6 +115,31 @@ public class FileSearchHelper {
                 } catch (Exception e) {
                     System.err.println("搜索错误:" + e.getMessage());
                 }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 搜索文件名
+     * @param dir
+     * @param searchStr
+     * @return
+     */
+    public List<SearchRes> searchFileName(File dir, String searchStr) {
+        List<String> pathlist = getFileList(dir, null);
+        if(pathlist == null){
+            return new ArrayList<>(0);
+        }
+        int lengpath = dir.getParent().length() + 1;
+        List<SearchRes> result = new ArrayList<>(100);
+        for (int k = 0; k < pathlist.size(); k++) {
+            File file = new File(pathlist.get(k));
+            if(file.getName().contains(searchStr)){
+                SearchRes searchRes = new SearchRes();
+                searchRes.setFileName(file.getName());
+                searchRes.setPath(file.getParent().substring(lengpath));
+                result.add(searchRes);
             }
         }
         return result;

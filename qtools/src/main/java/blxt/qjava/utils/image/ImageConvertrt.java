@@ -1,12 +1,11 @@
 package blxt.qjava.utils.image;
 
-import sun.misc.BASE64Encoder;
-
+import javax.xml.bind.DatatypeConverter;
+import java.util.Base64;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 
 /**
  * 图片转换工具
@@ -27,19 +26,26 @@ public class ImageConvertrt {
             return null;
         }
         // 读取图片字节数组
+        InputStream in = null;
         try {
-            InputStream in = new FileInputStream(file);
+            in = new FileInputStream(file);
             data = new byte[in.available()];
             in.read(data);
-            in.close();
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }finally {
+            if(in != null){
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        // 对字节数组Base64编码
-        BASE64Encoder encoder = new BASE64Encoder();
         // 返回Base64编码过的字节数组字符串
-        return encoder.encode(Objects.requireNonNull(data));
+        String base64Str = DatatypeConverter.printBase64Binary(data);
+        return base64Str;
     }
 
 

@@ -113,8 +113,6 @@ public class ImageFiles {
             fileOutputStream.write(output.toByteArray());
             dataInputStream.close();
             fileOutputStream.close();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

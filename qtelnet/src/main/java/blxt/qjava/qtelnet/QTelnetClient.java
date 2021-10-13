@@ -126,11 +126,13 @@ public class QTelnetClient extends TelnetClient {
         in = getInputStream();
         out = new PrintStream(getOutputStream());
 
-        readUntil(LoginMark);
-        write(username);
-
-        readUntil(PasswdMark);
-        write(password);
+        // 登录
+        if(username != null){
+            readUntil(LoginMark);
+            write(username);
+            readUntil(PasswdMark);
+            write(password);
+        }
 
         String rs = readUntil(prompt);
         if (rs.contains(LoginFailedMark)) {
@@ -208,7 +210,7 @@ public class QTelnetClient extends TelnetClient {
             }
             char ch;
             int code = -1;
-            while ((code = in.read()) != -1) {
+            while (isConnected() && (code = in.read()) != -1) {
                 ch = (char) code;
                 sb.append(ch);
                 //匹配到结束标识时返回结果
@@ -228,7 +230,10 @@ public class QTelnetClient extends TelnetClient {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            // 断开连接后, 读取可能会报错
+            if(!isConnected()){
+                e.printStackTrace();
+            }
         }
         // 回复数据
         revertDate(sb);
@@ -309,7 +314,7 @@ public class QTelnetClient extends TelnetClient {
                 SubReadThread sub = new SubReadThread();
                 sub.start();
                 int last = sub.count;
-                while (readThreadRun) {
+                while (readThreadRun && isConnected()) {
                     sub.sleep(100);
                     if (last == sub.count) {
                         // 回复数据
