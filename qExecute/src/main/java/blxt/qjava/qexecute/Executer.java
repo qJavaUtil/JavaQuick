@@ -5,6 +5,7 @@ import lombok.Data;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 /**
  * cmd 命令执行工具
@@ -30,6 +31,27 @@ public class Executer {
 
 
     /**
+     * 设置工作目录 和启动指令
+     * 用于执行第三方程序, 关闭进程时, 子进程也会关闭
+     * @param directory
+     * @param commands
+     * @return
+     */
+    public boolean init(File directory, List<String> commands){
+        ProcessBuilder pb =new ProcessBuilder(commands);
+        pb.directory(directory);
+
+        try {
+            process = pb.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        writer = new PrintWriter(process.getOutputStream());
+        return true;
+
+    }
+    /**
      * 初始化工作目录
      * @param basePath  处室目录
      * @return
@@ -54,8 +76,8 @@ public class Executer {
      * @param callBack  控制台监听回调
      */
     public void addReaderStream(InputStreamThread.CallBack callBack){
-        InputStreamThread insR = new InputStreamThread(process.getInputStream(), callBack);
-        InputStreamThread onsR = new InputStreamThread(process.getErrorStream(), callBack);
+        insR = new InputStreamThread(process.getInputStream(), callBack);
+        onsR = new InputStreamThread(process.getErrorStream(), callBack);
         insR.setTag(tag);
         onsR.setTag(tag);
         insR.setCacheSize(cacheSize);
@@ -70,6 +92,15 @@ public class Executer {
         new Thread(onsR).start();
     }
 
+    /**
+     * 设置异常数据回调
+     * @param callBack
+     */
+    public void setErrorCallBack(InputStreamThread.CallBack callBack){
+        onsR.setCallBack(callBack);
+    }
+
+
 
     /**
      * 执行命令
@@ -83,30 +114,102 @@ public class Executer {
         writer = new PrintWriter(process.getOutputStream());
         writer.println(cmd);
         writer.flush();
-       // writer.close();
         return true;
     }
 
+
+    public boolean exec(byte[] cmd){
+        if(process == null) {
+            return false;
+        }
+        writer = new PrintWriter(process.getOutputStream());
+        writer.println(cmd);
+        writer.flush();
+        return true;
+    }
+
+    public boolean exec(int cmd){
+        if(process == null) {
+            return false;
+        }
+        writer = new PrintWriter(process.getOutputStream());
+        writer.println(cmd);
+        writer.flush();
+        return true;
+    }
+
+    public boolean exec(char cmd){
+        if(process == null) {
+            return false;
+        }
+        writer = new PrintWriter(process.getOutputStream());
+        writer.println(cmd);
+        writer.flush();
+        return true;
+    }
+
+    public boolean write(int cmd){
+        if(process == null) {
+            return false;
+        }
+        writer = new PrintWriter(process.getOutputStream());
+        writer.write(cmd);
+        writer.flush();
+        return true;
+    }
+
+    public boolean write(char cmd){
+        if(process == null) {
+            return false;
+        }
+        writer = new PrintWriter(process.getOutputStream());
+        writer.write(cmd);
+        writer.flush();
+        return true;
+    }
+
+    public boolean write(char[] cmd){
+        if(process == null) {
+            return false;
+        }
+        writer = new PrintWriter(process.getOutputStream());
+        writer.write(cmd);
+        writer.flush();
+        return true;
+    }
+
+    public boolean write(String cmd){
+        if(process == null) {
+            return false;
+        }
+        writer = new PrintWriter(process.getOutputStream());
+        writer.write(cmd);
+        writer.flush();
+        return true;
+    }
 
     /**
      * 关闭
      * @return
      */
     public boolean close(){
-
-        if(insR != null){
-            insR.close();
-        }
-        if(onsR != null){
-            onsR.close();;
-        }
-        if(process != null) {
+//
+//        if(insR != null){
+//            insR.close();
+//        }
+//        if(onsR != null){
+//            onsR.close();;
+//        }
+//        if(process != null) {
+//            process.destroy();
+//        }
+//        if(writer != null) {
+//            writer.close();
+//        }
+        if(process != null){
+            process.destroyForcibly();
             process.destroy();
         }
-        if(writer != null) {
-            writer.close();
-        }
-
         return true;
     }
 

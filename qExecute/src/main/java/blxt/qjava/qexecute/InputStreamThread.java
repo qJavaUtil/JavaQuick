@@ -4,8 +4,7 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * cmd信息反馈线程
@@ -44,12 +43,19 @@ public class InputStreamThread implements Runnable{
     @Override
     public void run() {
         String line = null;
-        byte[] b = new byte[cacheSize];
-        int num = 0;
+        run = true;
         timeFree = System.currentTimeMillis();
+        BufferedReader bReader = null;
         try {
-            while(run && (num=ins.read(b))!=-1){
-                String msg = new String(b, CODE);
+            bReader = new BufferedReader(new InputStreamReader(new BufferedInputStream(ins),CODE));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return;
+        }
+        try
+        {
+            while((line=bReader.readLine())!=null)
+            {
                 // 超时停止
                 if(autoClose && timeFreeMax > System.currentTimeMillis() - timeFree){
                     run = false;
@@ -60,19 +66,51 @@ public class InputStreamThread implements Runnable{
                         return;
                     }
                 }
-                timeFree = System.currentTimeMillis();
                 if(callBack != null){
-                    callBack.onReceiver(tag, msg.trim());
-                }
-                else
+                    callBack.onReceiver(tag, line);
+                }else
                 {
-                    logger.debug("tag:\r\n{}", msg);
+                    logger.debug("{}:\r\n{}", tag, line);
                 }
-                b = new byte[cacheSize];
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            bReader.close();
+        } catch(Exception ex)
+        {
+            if(run){
+                logger.error("命令行读取失败:{},{}", tag, ex.getMessage());
+                ex.printStackTrace();
+            }
         }
+        run = false;
+//        byte[] b = new byte[cacheSize];
+//        int num = 0;
+//        try {
+//            while(run && (num=ins.read(b))!=-1){
+//                String msg = new String(b, CODE);
+//                // 超时停止
+//                if(autoClose && timeFreeMax > System.currentTimeMillis() - timeFree){
+//                    run = false;
+//                    if(callBack != null){
+//                        callBack.onOvertime(tag);
+//                    }
+//                    else{
+//                        return;
+//                    }
+//                }
+//                timeFree = System.currentTimeMillis();
+//                if(callBack != null){
+//                    callBack.onReceiver(tag, msg.trim());
+//                }
+//                else
+//                {
+//                    logger.debug("tag:\r\n{}", msg);
+//                }
+//                b = new byte[cacheSize];
+//            }
+//            logger.debug("读取结束:{}", tag);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void close(){
