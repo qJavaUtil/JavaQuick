@@ -193,19 +193,7 @@ public class Executer {
      * @return
      */
     public boolean close(){
-//
-//        if(insR != null){
-//            insR.close();
-//        }
-//        if(onsR != null){
-//            onsR.close();;
-//        }
-//        if(process != null) {
-//            process.destroy();
-//        }
-//        if(writer != null) {
-//            writer.close();
-//        }
+
         if(process != null){
             process.destroyForcibly();
             process.destroy();

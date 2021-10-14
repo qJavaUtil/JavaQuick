@@ -1,19 +1,21 @@
 package blxt.qjava.utils.network;
 
 import blxt.qjava.utils.check.CheckUtils;
+import blxt.qjava.utils.network.bean.NetworkBasic;
 
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @Author: Zhang.Jialei
  * @Date: 2020/11/2 11:14
  */
 public class IPTools {
-
+    static Integer No= 0;
     final static int IP_TYPE_V4 = 1;
     final static int IP_TYPE_V6 = 2;
     final static int IP_TYPE_ALL = 3;
@@ -172,6 +174,48 @@ public class IPTools {
         }
         return true;
     }
+
+
+    /**
+     * 获取网络适配器信息, 仅用于 windows
+     * @return
+     */
+    public static NetworkBasic getNetworkBasic(){
+        WindowsNetworkAnalysis t = new WindowsNetworkAnalysis();
+        return t.build();
+    }
+
+
+    /**
+     * 获取空闲端口
+     * @param MinPort
+     * @param MAXPort
+     * @return
+     */
+    public static Integer getPort(Integer MinPort, Integer MAXPort){
+
+        Random random = new Random();
+        int tempPort = 0;
+        int port;
+        try{
+            while (true){
+                tempPort = random.nextInt(MAXPort)%(MAXPort-MinPort+1) + MinPort;
+                ServerSocket serverSocket =  new ServerSocket(tempPort);
+                port = serverSocket.getLocalPort();
+                serverSocket.close();
+                break;
+            }
+        }catch (Exception e){
+            if (No>200){
+                throw new RuntimeException("此服务器可开放端口暂时已满！");
+            }
+            No++;
+            port = getPort(MinPort,MAXPort);
+        }
+        No = 0;
+        return port;
+    }
+
 
     public static void main(String[] args) {
         List<String> ips = getLocalHostIpsIPv4();
