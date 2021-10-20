@@ -106,7 +106,7 @@ public class NetworkBean {
         name = name.replace("WLAN adapter", "");
         name = name.replace("隧道适配器", "");
         name = name.replace("Tunnel adapter", "");
-        this.name = name;
+        this.name = name.trim();
     }
 
     public String getPrimaryWINSServer() {

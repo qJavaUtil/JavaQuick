@@ -145,15 +145,12 @@ public class WindowsNetworkAnalysis {
      * @return 获取返回结果
      */
     public List<String> execReturnRet(String cmd) {
-        System.out.println("执行的DOS命令：" + cmd);
         try {
             Process process = Runtime.getRuntime().exec(cmd);
             BufferedReader normal = new BufferedReader(new InputStreamReader(process.getInputStream(), "GBK"));
             BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream(), "GBK"));
             List<String> normalList = getOutputReturnList(normal);
             List<String> errorList = getOutputReturnList(error);
-            System.out.println("正常结果：" + normalList);
-            System.out.println("错误结果：" + errorList);
             int exitVal = process.waitFor();
             if (exitVal != 0) {
                 System.out.println("执行的DOS命令，错误信息如下：");
