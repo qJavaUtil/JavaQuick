@@ -95,7 +95,7 @@ public class QTelnetClient extends TelnetClient {
             if (isConnected()) {
                 in.close();
                 out.close();
-                disconnect();
+               // disconnect();
                 isLogin = false;
             }
         } catch (IOException e) {

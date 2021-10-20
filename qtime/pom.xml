@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>qtime</artifactId>
-    <version>${qjava.version}</version>
 
     <properties>
         <c3p0.version>0.9.5.4</c3p0.version>
