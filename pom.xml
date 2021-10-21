@@ -35,6 +35,7 @@
         <module>qInfluxHelp</module>
         <module>qCipher</module>
         <module>ocr-tesseract</module>
+        <module>mapRegistry</module>
     </modules>
 
     <properties>
