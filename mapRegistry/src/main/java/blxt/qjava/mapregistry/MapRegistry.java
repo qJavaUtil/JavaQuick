@@ -48,4 +48,12 @@ public class MapRegistry<K, T> {
         registryMaps.put(key, nature);
     }
 
+    /**
+     * 移除
+     * @param key
+     */
+    public void remove(K key){
+        registryMaps.remove(key);
+    }
+
 }

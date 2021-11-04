@@ -36,6 +36,9 @@ public class FileTreeBean {
     @JsonIgnore
     int packageIndex;
 
+    /** 文件逆序 */
+    boolean reversed = false;
+
     FileScanCallback callback = null;
 
     /** 子文件 */
@@ -69,7 +72,7 @@ public class FileTreeBean {
             File[] files = file.listFiles();
             if (files != null){
                 // 按文件名排序
-                List<File>  fileList = QFile.MFile.orderByName(files);
+                List<File>  fileList = QFile.MFile.orderByName(files, reversed);
                 for (File file1 : fileList) {
                     // 接口回调
                     if(callback != null){

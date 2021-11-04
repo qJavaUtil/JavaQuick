@@ -407,13 +407,33 @@ public class QFile {
         }
 
         /**
-         * 更具文件名称排序
+         * 更具文件名称排序, 从第到高
          * @param files
          * @return
          */
         public static List<File> orderByName(File[] files) {
+            return orderByName(files, false);
+        }
+
+        /**
+         * 更具文件名称排序
+         * @param files
+         * @param reversed  是否逆序
+         * @return
+         */
+        public static List<File> orderByName(File[] files, boolean reversed) {
+            if(files == null){
+                return null;
+            }
             List<File> fileList = Arrays.asList(files);
             Collections.sort(fileList, new Comparator<File>() {
+
+                /**
+                 * 文件比较
+                 * @param o1
+                 * @param o2
+                 * @return
+                 */
                 @Override
                 public int compare(File o1, File o2) {
                     if (o1.isDirectory() && o2.isFile()) {
@@ -422,9 +442,95 @@ public class QFile {
                     if (o1.isFile() && o2.isDirectory()) {
                         return 1;
                     }
-                    Comparator<Object> com = Collator.getInstance(java.util.Locale.CHINA);
-                    return com.compare(o1.getName(), o2.getName());
+                    if(reversed){
+                        return compare2(o2.getName().toCharArray(),o1.getName().toCharArray());
+                    }
+                    return compare2(o1.getName().toCharArray(),o2.getName().toCharArray());
                 }
+
+                class Int{
+                    public int i;
+                }
+
+
+                /**
+                 * char[] 比较
+                 * */
+                public int compare2(char[] a, char[] b) {
+                    if(a != null || b != null){
+                        Int aNonzeroIndex = new Int();
+                        Int bNonzeroIndex = new Int();
+                        int aIndex = 0, bIndex = 0,
+                            aComparedUnitTailIndex, bComparedUnitTailIndex;
+
+                        while(aIndex < a.length && bIndex < b.length){
+                            //aIndex <
+                            aNonzeroIndex.i = aIndex;
+                            bNonzeroIndex.i = bIndex;
+                            aComparedUnitTailIndex = findDigitEnd(a, aNonzeroIndex);
+                            bComparedUnitTailIndex = findDigitEnd(b, bNonzeroIndex);
+                            //compare by number
+                            if (aComparedUnitTailIndex > aIndex && bComparedUnitTailIndex > bIndex)
+                            {
+                                int aDigitIndex = aNonzeroIndex.i;
+                                int bDigitIndex = bNonzeroIndex.i;
+                                int aDigit = aComparedUnitTailIndex - aDigitIndex;
+                                int bDigit = bComparedUnitTailIndex - bDigitIndex;
+                                //compare by digit
+                                if(aDigit != bDigit) {
+                                    return aDigit - bDigit;
+                                }
+                                //the number of their digit is same.
+                                while (aDigitIndex < aComparedUnitTailIndex){
+                                    if (a[aDigitIndex] != b[bDigitIndex]) {
+                                        return a[aDigitIndex] - b[bDigitIndex];
+                                    }
+                                    aDigitIndex++;
+                                    bDigitIndex++;
+                                }
+                                //if they are equal compared by number, compare the number of '0' when start with "0"
+                                //ps note: paNonZero and pbNonZero can be added the above loop "while", but it is changed meanwhile.
+                                //so, the following comparsion is ok.
+                                aDigit = aNonzeroIndex.i - aIndex;
+                                bDigit = bNonzeroIndex.i - bIndex;
+                                if (aDigit != bDigit) {
+                                    return aDigit - bDigit;
+                                }
+                                aIndex = aComparedUnitTailIndex;
+                                bIndex = bComparedUnitTailIndex;
+                            }else{
+                                if (a[aIndex] != b[bIndex]) {
+                                    return a[aIndex] - b[bIndex];
+                                }
+                                aIndex++;
+                                bIndex++;
+                            }
+
+                        }
+
+                    }
+                    return a.length - b.length;
+                }
+
+
+                public int findDigitEnd(char[] arrChar, Int at) {
+                    int k = at.i;
+                    char c = arrChar[k];
+                    boolean bFirstZero = (c == '0');
+                    while (k < arrChar.length) {
+                        c = arrChar[k];
+                        //first non-digit which is a high chance.
+                        if (c > '9' || c < '0') {
+                            break;
+                        }
+                        else if (bFirstZero && c == '0') {
+                            at.i++;
+                        }
+                        k++;
+                    }
+                    return k;
+                }
+
             });
             return fileList;
         }
@@ -448,11 +554,6 @@ public class QFile {
                     else {
                         return -1;//如果 if 中修改为 返回-1 同时此处修改为返回 1  排序就会是递减
                     }
-                }
-
-                @Override
-                public boolean equals(Object obj) {
-                    return true;
                 }
 
             });
