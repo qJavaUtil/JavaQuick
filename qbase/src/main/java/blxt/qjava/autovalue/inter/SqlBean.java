@@ -1,6 +1,7 @@
 package blxt.qjava.autovalue.inter;
 
-import blxt.qjava.autovalue.bean.SymbolEnum;
+
+import blxt.qjava.autovalue.enumbean.SymbolEnum;
 
 import java.lang.annotation.*;
 

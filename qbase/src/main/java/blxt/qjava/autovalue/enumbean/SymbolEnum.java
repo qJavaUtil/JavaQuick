@@ -1,4 +1,4 @@
-package blxt.qjava.autovalue.bean;
+package blxt.qjava.autovalue.enumbean;
 
 /**
  * 符号枚举

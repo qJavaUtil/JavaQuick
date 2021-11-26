@@ -1,6 +1,5 @@
-package blxt.qjava.autovalue.bean;
+package blxt.qjava.autovalue.enumbean;
 
-import lombok.Data;
 
 /**
  * 符号枚举

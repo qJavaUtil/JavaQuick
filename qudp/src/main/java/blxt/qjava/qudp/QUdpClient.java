@@ -110,7 +110,7 @@ public class QUdpClient {
         return send( address, port, data, length);
     }
 
-    public boolean send(String ip, int port, byte[] data, int length){
+    public static boolean send(String ip, int port, byte[] data, int length){
         InetAddress address = null;
         try {
             address = InetAddress.getByName(ip);
@@ -121,9 +121,10 @@ public class QUdpClient {
         return send(address, port, data, length);
     }
 
-    public boolean send(InetAddress address, int port, byte[] data, int length){
+    public static boolean send(InetAddress address, int port, byte[] data, int length){
         DatagramPacket datagramPacket = new DatagramPacket(data, length, address, port);
         try {
+            DatagramSocket socket = new DatagramSocket();
             socket.send(datagramPacket);
         } catch (IOException e) {
             e.printStackTrace();

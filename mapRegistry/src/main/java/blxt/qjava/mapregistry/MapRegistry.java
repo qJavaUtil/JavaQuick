@@ -1,9 +1,9 @@
 package blxt.qjava.mapregistry;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 注册表维护
@@ -12,7 +12,19 @@ import java.util.Map;
  */
 public class MapRegistry<K, T> {
     /** 注册表维护  */
-    Map<K, T> registryMaps = new HashMap<>(16);
+    Map<K, T> registryMaps = null;
+
+    public MapRegistry(){
+        registryMaps = new ConcurrentHashMap<>(16);
+    }
+
+    public MapRegistry(int mapSize){
+        registryMaps = new ConcurrentHashMap<>(mapSize);
+    }
+
+    public MapRegistry(Map<K, T> registryMaps){
+        this.registryMaps = registryMaps;
+    }
 
     /**
      * 获取 注册表值
@@ -52,8 +64,23 @@ public class MapRegistry<K, T> {
      * 移除
      * @param key
      */
-    public void remove(K key){
+    public boolean remove(K key){
         registryMaps.remove(key);
+        return true;
     }
 
+    /**
+     * 数量
+     * @return
+     */
+    public int size(){
+        return registryMaps.size();
+    }
+
+    /**
+     * 清理
+     */
+    public void clear(){
+        registryMaps.clear();
+    }
 }

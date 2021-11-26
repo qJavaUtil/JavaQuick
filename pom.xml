@@ -36,6 +36,7 @@
         <module>qCipher</module>
         <module>ocr-tesseract</module>
         <module>mapRegistry</module>
+        <module>qbase</module>
     </modules>
 
     <properties>

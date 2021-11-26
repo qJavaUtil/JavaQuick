@@ -5,7 +5,8 @@ package blxt.qjava.autovalue.inter;
  * @date 2021年07月20日 11:48
  */
 
-import blxt.qjava.autovalue.bean.JoinEnum;
+
+import blxt.qjava.autovalue.enumbean.JoinEnum;
 
 import java.lang.annotation.*;
 
