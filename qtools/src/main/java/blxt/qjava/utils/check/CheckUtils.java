@@ -1,7 +1,7 @@
 package blxt.qjava.utils.check;
 
 
-import blxt.qjava.utils.exception.DataException;
+import blxt.qjava.autovalue.exception.DataException;
 
 import java.io.File;
 import java.util.List;
@@ -45,19 +45,7 @@ public class CheckUtils {
      * 字符串校验
      */
     public static class STR{
-        /**
-         * 字符串非空校验
-         *
-         * @param filed   要校验的字段
-         * @param message message
-         * @param code    code
-         * @param data    data
-         */
-        public static void stringIsNullCheck(String filed, String message, Integer code, Object data) {
-            if (StringCheck.isBlank(filed)) {
-                throw new DataException(code, message, data);
-            }
-        }
+
 
         /**
          * 数字校验
@@ -67,7 +55,7 @@ public class CheckUtils {
          * @param code    code
          * @param data    data
          */
-        public static void isNumberCheck(String filed, String message, Integer code, Object data) {
+        public static void isNumber(String filed, String message, Integer code, Object data) {
             if (!StringCheck.isNumber(filed)) {
                 throw new DataException(code, message, data);
             }
@@ -83,7 +71,7 @@ public class CheckUtils {
          * @param code    code
          * @param data    data
          */
-        public static void isIntCheck(String filed, String message, Integer code, Object data) {
+        public static void isInt(String filed, String message, Integer code, Object data) {
             if (!StringCheck.isInteger(filed)) {
                 throw new DataException(code, message, data);
             }
@@ -97,7 +85,7 @@ public class CheckUtils {
          * @param code    code
          * @param data    data
          */
-        public static void isEmailCheck(String filed, String message, Integer code, Object data) {
+        public static void isEmail(String filed, String message, Integer code, Object data) {
             if (!StringCheck.isEmail(filed)) {
                 throw new DataException(code, message, data);
             }
@@ -111,7 +99,7 @@ public class CheckUtils {
          * @param code    code
          * @param data    data
          */
-        public static void isMobileCheck(String filed, String message, Integer code, Object data) {
+        public static void isMobile(String filed, String message, Integer code, Object data) {
             if (!StringCheck.isMobile(filed)) {
                 throw new DataException(code, message, data);
             }

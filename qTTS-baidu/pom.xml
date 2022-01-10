@@ -6,19 +6,28 @@
         <artifactId>qjava</artifactId>
         <groupId>org.blxt</groupId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>mapRegistry</artifactId>
-    <description>Hash注册表工具</description>
-
+    <artifactId>qTTS-baidu</artifactId>
     <dependencies>
         <dependency>
-            <artifactId>qtools</artifactId>
             <groupId>org.blxt</groupId>
-            <version>${project.version}</version>
+            <artifactId>qtools</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.blxt</groupId>
+            <artifactId>qbase</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
 
 </project>

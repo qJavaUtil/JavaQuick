@@ -167,6 +167,33 @@ public class QFile {
         public static boolean moveFolder(File oldFile, File newPath) {
             return copyFolder(oldFile, newPath) && delete(oldFile);
         }
+
+        /**
+         * 遍历
+         * @param file        目标文件夹
+         * @param fileSearch  遍历回调
+         */
+        public void traversal(File file, FileSearch fileSearch){
+            File[] fs = file.listFiles();
+            if(fs == null){
+                return;
+            }
+            for (File f : fs){
+                if(f.isDirectory()){
+                    if(fileSearch.onDirectory(f)){
+                        traversal(f, fileSearch);
+                    }
+                }else{
+                    fileSearch.onFile(f);
+                }
+            }
+        }
+
+        /** 遍历回调 */
+        interface FileSearch{
+            boolean onDirectory(File file);
+            boolean onFile(File file);
+        }
     }
 
     public static class MFile {
@@ -853,6 +880,7 @@ public class QFile {
         public static boolean add(File fileName, byte[] datas) {
             if (!fileName.exists()) {
                 try {
+                    fileName.getParentFile().mkdirs();
                     fileName.createNewFile();
                 } catch (IOException var10) {
                     var10.printStackTrace();
@@ -915,6 +943,7 @@ public class QFile {
             boolean var5;
             try {
                 if (!fileName.exists()) {
+                    fileName.getParentFile().mkdirs();
                     fileName.createNewFile();
                     fos = new FileOutputStream(fileName);
                 } else {
@@ -959,9 +988,10 @@ public class QFile {
         try {
             File f = new File(strSrcFilePath);
             File f2 = new File(strDstFilePath);
-            if(f2.exists()){
-                f2.delete();
-            }
+//            if(f2.getAbsolutePath())
+//            if(f2.exists()){
+//                f2.delete();
+//            }
             if(!f2.getParentFile().exists()){
                 f2.getParentFile().mkdirs();
             }

@@ -16,6 +16,10 @@
     <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.2" level="project" />
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.41" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.5.13" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.4.13" level="project" />
+    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.11" level="project" />
+    <orderEntry type="module" module-name="qbase" />
     <orderEntry type="module" module-name="auto-value" />
     <orderEntry type="module" module-name="qproperties" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.27.0-GA" level="project" />

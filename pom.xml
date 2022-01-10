@@ -37,6 +37,7 @@
         <module>ocr-tesseract</module>
         <module>mapRegistry</module>
         <module>qbase</module>
+        <module>qTTS-baidu</module>
     </modules>
 
     <properties>

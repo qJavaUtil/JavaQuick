@@ -1,5 +1,7 @@
 package blxt.qjava.mapregistry;
 
+import blxt.qjava.utils.SnowflakeIdUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +13,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2021年10月21日 14:19
  */
 public class MapRegistry<K, T> {
+    /** 雪花id生成器 */
+    SnowflakeIdUtils idWorker = new SnowflakeIdUtils(4, 1);
+
     /** 注册表维护  */
     Map<K, T> registryMaps = null;
 
@@ -82,5 +87,15 @@ public class MapRegistry<K, T> {
      */
     public void clear(){
         registryMaps.clear();
+    }
+
+    /** 获取id */
+    public long getId(){
+        return idWorker.nextId();
+    }
+
+    /** 获取id */
+    public String getStringId(){
+        return String.valueOf(idWorker.nextId());
     }
 }

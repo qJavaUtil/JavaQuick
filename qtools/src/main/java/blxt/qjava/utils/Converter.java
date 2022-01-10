@@ -1,13 +1,11 @@
 package blxt.qjava.utils;
 
-import blxt.qjava.utils.check.CheckUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -378,14 +376,16 @@ public class Converter {
      */
     public static Object toObject(String str, Class<?> parametertype){
         Object value = null;
-        if (CheckUtils.isEmpty(str)){
-            return null;
+        if (str != null){
+            str = str.trim();
         }
-        str = str.trim();
         if(parametertype == String.class){
             value = str;
         }
         else if(parametertype == Integer.class || parametertype == int.class ){
+            if(str == null || str.isEmpty()){
+                return 0;
+            }
             try {
                 value = Integer.parseInt(str);
             }catch (Exception e){
@@ -393,28 +393,52 @@ public class Converter {
             }
         }
         else if(parametertype == Float.class || parametertype == float.class){
+            if(str == null || str.isEmpty()){
+                return 0;
+            }
             value = Float.parseFloat(str);
         }
         else if(parametertype == Long.class || parametertype == long.class){
+            if(str == null || str.isEmpty()){
+                return 0;
+            }
             value = Long.parseLong(str);
         }
         else if(parametertype == Short.class || parametertype == short.class){
+            if(str == null || str.isEmpty()){
+                return 0;
+            }
             value = Short.parseShort(str);
         }
         else if(parametertype == Double.class || parametertype == double.class){
+            if(str == null || str.isEmpty()){
+                return 0;
+            }
             value = Double.parseDouble(str);
         }
         else if(parametertype == Byte.class || parametertype == byte.class){
+            if(str == null || str.isEmpty()){
+                return 0;
+            }
             value = Byte.parseByte(str);
         }
         else if(parametertype == Boolean.class || parametertype == boolean.class){
+            if(str == null || str.isEmpty()){
+                return false;
+            }
             value = Boolean.parseBoolean(str);
         }
         else if (parametertype == Character.class) {
+            if(str == null || str.isEmpty()){
+                return null;
+            }
             value = str.charAt(0);
         }
         // 其他复杂对象
         else{
+            if(str == null || str.isEmpty()){
+                return null;
+            }
             value = JSON.parseObject(str, parametertype);
         }
 
@@ -508,6 +532,7 @@ public class Converter {
 
         return value;
     }
+
 
     // [{"uid":"1627466546679test3","type":1,"projectName":"test5555","projectid":18}]
 
