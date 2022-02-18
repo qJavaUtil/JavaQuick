@@ -98,4 +98,13 @@ public class MapRegistry<K, T> {
     public String getStringId(){
         return String.valueOf(idWorker.nextId());
     }
+
+    /***
+     * 判断是否存在
+     * @param key
+     * @return
+     */
+    public boolean containsKey(K key){
+        return registryMaps.containsKey(key);
+    }
 }

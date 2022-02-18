@@ -2,6 +2,8 @@ package blxt.qjava.qudp;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author: Zhang.Jialei
@@ -13,7 +15,7 @@ public class QUdpServer implements Runnable{
     /** 连接scoket */
     protected DatagramSocket socket = null;
     /** 监听回调 */
-    protected QUdpListener listener = null;
+    protected List<QUdpListener> listener = new ArrayList<>();
     /** 监听端口 */
     protected int port;
     /** 暂停标志 */
@@ -31,7 +33,9 @@ public class QUdpServer implements Runnable{
      */
     public QUdpServer(int port, QUdpListener listener) {
         this.port = port;
-        this.listener = listener;
+        if(listener != null) {
+            this.listener.add(listener);
+        }
     }
 
     /**
@@ -116,7 +120,7 @@ public class QUdpServer implements Runnable{
                     return;
                 }
                 if(listener != null){
-                    listener.OnUdpReceive(packet);
+                    noti(packet);
                 }else{
                     String receStr = new String(packet.getData(), 0 , packet.getLength());
                     System.out.println("接收数据包" + receStr);
@@ -173,7 +177,26 @@ public class QUdpServer implements Runnable{
      * @param listener
      */
     public void setListener(QUdpListener listener) {
+        this.listener.clear();
+        this.listener.add(listener);
+    }
+
+    public void addListener(QUdpListener listener) {
+        this.listener.add(listener);
+    }
+
+    public void setListener(List<QUdpListener> listener) {
         this.listener = listener;
+    }
+
+    /**
+     * 广播
+     * @param packet
+     */
+    private void noti(DatagramPacket packet){
+        for (QUdpListener listener : this.listener) {
+            listener.OnUdpReceive(packet);
+        }
     }
 
     /**

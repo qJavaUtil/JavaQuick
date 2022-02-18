@@ -497,6 +497,33 @@ public class Converter {
     }
 
     /**
+     * 从字符串子节点转换成List集合
+     * @param str      json
+     * @return
+     */
+    public static Map toJsonMap(String str)  {
+        return JSON.parseObject(str);
+    }
+
+    /**
+     * 从字符串子节点转换成List集合
+     * @param str      json
+     * @param classes  集合 泛型
+     * @return
+     */
+    public static List toObjectListByChildode(String str, String key, Class classes)  {
+        JSONObject jsonObject = JSON.parseObject(str);
+        Object data = jsonObject.get(key);
+        if(data instanceof JSONArray){
+            JSONArray jsonArray = (JSONArray)data;
+            List<?> list = JSONObject.parseArray(jsonArray.toJSONString(), classes);
+            return list;
+        }
+        return JSONArray.parseArray( data.toString(), classes);
+    }
+
+
+    /**
      * 从字符串转换成数组
      * @param str        json
      * @param classes   数组类型
