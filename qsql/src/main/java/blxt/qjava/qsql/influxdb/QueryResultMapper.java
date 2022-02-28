@@ -9,7 +9,11 @@ import scala.Int;
 import scala.annotation.meta.field;
 
 import java.lang.reflect.Field;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,7 +90,7 @@ public class QueryResultMapper<T> {
                         try {
                             ObjectValue.setObjectValue(bean,fields.get(fid), o, true);
                         } catch (Exception var5) {
-                            log.error("负值异常:{}<-{}", fields.get(fid).getName(), o);
+                            log.error("赋值异常:{}<-{}", fields.get(fid).getName(), o);
                             var5.printStackTrace();
                         }finally {
                             fid++;
@@ -98,4 +102,43 @@ public class QueryResultMapper<T> {
         }
         return beans;
     }
+
+
+    /**
+     * 将infux查询结果转换成map集合
+     * @param rs   查询结果
+     * @return
+     */
+    public static List<Map<String, Object>> toArray(QueryResult rs){
+        if (rs == null) {
+            return null;
+        }
+        // 初始化返回类
+        List<QueryResult.Result> results = rs.getResults();
+        List<Map<String, Object>> outputList = new ArrayList<>(rs.getResults().size());
+        // 遍历 Result
+        for (QueryResult.Result result : results) {
+            List<QueryResult.Series>  series = result.getSeries();
+            if(series == null){
+                log.warn("查询结果空");
+                return null;
+            }
+            // 遍历 Series
+            for (QueryResult.Series series1 : series) {
+                if(series1 == null){ continue;}
+                List<String> columns = series1.getColumns();
+                List<List<Object>> values = series1.getValues();
+                // 获取到元素
+                for (List<Object> value : values) {
+                    Map<String, Object> map = new LinkedHashMap<>(columns.size());
+                    for (int i = 0; i < columns.size(); i++) {
+                        map.put(columns.get(i), value.get(i));
+                    }
+                    outputList.add(map);
+                }
+            }
+        }
+        return outputList;
+    }
+
 }

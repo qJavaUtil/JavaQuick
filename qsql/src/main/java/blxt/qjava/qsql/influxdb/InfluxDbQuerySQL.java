@@ -1,10 +1,7 @@
 package blxt.qjava.qsql.influxdb;
 
-import com.google.common.collect.Maps;
 import lombok.Data;
 
-import java.util.Formatter;
-import java.util.Map;
 
 /**
  * influxdb查询语句
@@ -13,8 +10,8 @@ import java.util.Map;
  */
 @Data
 public class InfluxDbQuerySQL {
-    /**                                     行名      表名            开始时间 结束时间 分组 排序 限制 分页偏移 时区*/
-    public static final String SQL = "SELECT %s FROM \"%s\" WHERE true %s %s %s %s %s %s %s TZ('%s')";
+    /**                               行名      表名 查询条件 分组 排序 限制 分页偏移 时区*/
+    //public static final String SQL = "SELECT %s FROM \"%s\" %s %s %s %s %s TZ('%s')";
     String columns = "*";
     /** * 表名 */
     String table;
@@ -35,9 +32,6 @@ public class InfluxDbQuerySQL {
     /** 默认时区 : 上海 Asia/Shanghai  */
     String timezone = "Asia/Shanghai";
 
-    Map<String, String> linkedHashMap = Maps.newLinkedHashMap();
-
-
     /**
      * 构建sql语句
      * @return
@@ -45,17 +39,6 @@ public class InfluxDbQuerySQL {
     public String build(){
         String columns = this.columns;
         String table = this.table;
-        String timeStart = this.timeStart;
-        String timeEnd = this.timeEnd;
-        String rule = this.rule;
-        String group = this.group;
-        String order = this.order;
-        String limit = this.limit;
-        String offset = this.offset;
-        String timezone = this.timezone;
-
-        Map<String, String> linkedHashMap = this.linkedHashMap;
-
 
         // table不能为空
         if(table == null || table.trim().isEmpty()){
@@ -66,64 +49,95 @@ public class InfluxDbQuerySQL {
             return null;
         }
 
+        return getSelectHead() + getWhere() + getGroup();
+    }
+
+    /**
+     * 获取查询头
+     * @return
+     */
+    private String getSelectHead(){
+        StringBuilder select = new StringBuilder();
+        select.append("SELECT ");
+        select.append(this.columns);
+        select.append(" FROM ");
+        select.append("\"");
+        select.append(this.table);
+        select.append("\" ");
+        return select.toString();
+    }
+
+    /**
+     * 拼接查询条件
+     * @return
+     */
+    private String getWhere(){
+        StringBuilder where = new StringBuilder();
+
         // 开始时间
         if(timeStart != null && !timeStart.trim().isEmpty()){
-            timeStart = "and time >= " + timeStart;
-        }
-        else{
-            timeStart = "";
+            where.append(" time >= ");
+            where.append(timeStart);
         }
         // 结束时间
         if(timeEnd != null && !timeEnd.trim().isEmpty()){
-            timeEnd = "and time <= " + timeEnd;
+            if(where.length() > 0){
+                where.append(" and ");
+            }
+            where.append("time <= ");
+            where.append(timeEnd);
         }
-        else{
-            timeEnd = "";
-        }
+
         // 其他筛选条件
         if(rule != null && !rule.trim().isEmpty()){
-            rule = "and " + rule;
+            if(where.length() > 0){
+                where.append(" and ");
+            }
+            where.append(rule);
         }
-        else{
-            rule = "";
+        if(where.length() > 0){
+           return " WHERE " + where.toString();
         }
-        // 分组
-        if(group != null && !group.trim().isEmpty()){
-            group = "GROUP BY " + group;
-        }
-        else{
-            group = "";
-        }
-        // 排序,目前只支持时间排序
-        if(order != null && !order.trim().isEmpty()){
-            order = "ORDER BY time " + order;
-        }
-        else{
-            order = "";
-        }
-        // 分页限制
-        if(limit != null && !limit.trim().isEmpty()){
-            limit = "LIMIT " + limit;
-        }
-        else{
-            limit = "";
-        }
-        // 分页偏移
-        if(offset != null && !offset.trim().isEmpty()){
-            offset = "OFFSET " + offset;
-        }
-        else{
-            offset = "";
-        }
-        return String.format(SQL, columns, table, timeStart, timeEnd, rule, group, order, limit, offset, timezone);
+
+        return "";
     }
 
-    private String format(String format, Object arg) {
 
-        String format1 = null, format2 = null;
-        int index;
+    /**
+     * 获取其他分组
+     * @return
+     */
+    private String getGroup(){
+        StringBuilder stringBuilder = new StringBuilder();
+        // 分组
+        if(group != null && !group.trim().isEmpty()){
+            stringBuilder.append( " GROUP BY ");
+            stringBuilder.append(group);
+        }
 
-        return new Formatter().format(format1, arg).toString() + format2;
+        // 排序,目前只支持时间排序
+        if(order != null && !order.trim().isEmpty()){
+            stringBuilder.append(" ORDER BY time ");
+            stringBuilder.append(order);
+        }
+
+        // 分页限制
+        if(limit != null && !limit.trim().isEmpty()){
+            stringBuilder.append(" LIMIT ");
+            stringBuilder.append(limit);
+        }
+
+        // 分页偏移
+        if(offset != null && !offset.trim().isEmpty()){
+            stringBuilder.append(" OFFSET ");
+            stringBuilder.append(offset);
+        }
+
+        // 时间
+        if(timezone != null && !timezone.trim().isEmpty()){
+            stringBuilder.append(String.format(" TZ('%s')", timezone));
+        }
+        return stringBuilder.toString();
     }
 
 }

@@ -4,8 +4,7 @@ import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import blxt.qjava.autovalue.inter.SqlBean;
 import blxt.qjava.autovalue.inter.SqlColumn;
@@ -58,4 +57,40 @@ public class ResultSetMapper<T> {
         }
         return outputList;
     }
+
+
+    /**
+     * 将infux查询结果转换成map集合
+     * @param rs   查询结果
+     * @param leng 查询长度
+     * @return
+     */
+    public static List<Map<String, Object>> toArray(ResultSet rs, int leng){
+        List<Map<String, Object>> outputList = new ArrayList<>(leng);
+        if (rs == null) {
+            return null;
+        }
+        try {
+            while (rs.next()) {
+                // 获取原始字段
+                ResultSetMetaData rsmd = rs.getMetaData();
+                Map<String, Object> map = new LinkedHashMap<>(rsmd.getColumnCount());
+                // 获取值
+                for (int _iterator = 0; _iterator < rsmd.getColumnCount(); _iterator++) {
+                    String columnName = rsmd.getColumnName(_iterator + 1);
+                    Object columnValue = rs.getObject(_iterator + 1);
+                    if(columnValue == null){
+                        continue;
+                    }
+                    map.put(columnName, columnValue);
+                }
+                outputList.add(map);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return outputList;
+    }
+
+
 }
