@@ -32,6 +32,9 @@ public class InfluxDbQuerySQL {
     /** 默认时区 : 上海 Asia/Shanghai  */
     String timezone = "Asia/Shanghai";
 
+    /** 统计时的主键 , 默认 * */
+    String countKey = "*";
+
     /**
      * 构建sql语句
      * @return
