@@ -4,7 +4,6 @@ import blxt.qjava.qsql.kafka.KafkaConnection;
 import blxt.qjava.qsql.kafka.SubscribeListener;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +13,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SubscribeListenerImpTest implements SubscribeListener {
 
-    private static final @NotNull
+    private static final
     Logger log = LoggerFactory.getLogger(KafkaConnection.class);
 
     @Override

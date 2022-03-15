@@ -27,6 +27,8 @@
         <module>qliveness</module>
         <module>qxml</module>
         <module>qsql</module>
+        <module>qinflux</module>
+<!--        <module>qinflux2v</module>-->
         <module>qtelnet</module>
         <module>qExecute</module>
         <module>qimage</module>
