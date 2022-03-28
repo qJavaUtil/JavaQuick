@@ -9,10 +9,11 @@ import java.util.List;
 
 /**
  * cmd 命令执行工具
- * 需要先初始化
+ * 建议使用: @Link{ExecuterFactory}
  * @author ZhangJieLei
  */
 @Data
+@Deprecated
 public class Executer {
     String tag = "defult";
     Process process = null;
@@ -49,7 +50,6 @@ public class Executer {
         }
         writer = new PrintWriter(process.getOutputStream());
         return true;
-
     }
     /**
      * 初始化工作目录
@@ -101,6 +101,15 @@ public class Executer {
     }
 
 
+    /**
+     * 执行
+     * @return
+     */
+    public boolean exec(){
+        writer.flush();
+        return true;
+    }
+
 
     /**
      * 执行命令
@@ -117,6 +126,17 @@ public class Executer {
         return true;
     }
 
+//    /**
+//     * 等待结果
+//     * @return
+//     */
+//    public int wait(){
+//        try {
+//            return process.waitFor();
+//        } catch (InterruptedException e) {
+//            return -1;
+//        }
+//    }
 
     public boolean exec(byte[] cmd){
         if(process == null) {

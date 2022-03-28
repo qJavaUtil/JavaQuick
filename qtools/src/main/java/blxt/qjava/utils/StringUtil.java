@@ -65,4 +65,20 @@ public class StringUtil {
         }
         return new ArrayList<>(set);
     }
+
+    /**
+     * 清理符号
+     * @return
+     */
+    public static String clearSymbol(String text){
+        String str = "[`\\\\~!@#$%^&*()+=|{}':;',\\[\\].<>＜＞/?~！@#￥%…&*（）——+|{}【】‘；：”“’。，、？]";
+        return text.replaceAll(str,"").trim();
+    }
+
+    public static void main(String[] args) {
+        String text = "mopojmni  mo播＜sjfosdf13345234545^&*%$%^年后23";
+        System.out.println(clearSymbol(text));
+        System.out.println(text.replaceAll(" ", "_"));
+    }
+
 }
