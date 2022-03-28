@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * java调用cmd指令工具工厂
@@ -27,10 +29,14 @@ public class ExecuterFactory {
      */
     private static final String DEFAULT_LANGUAGE = "GBK";
 
+    /** Process 构建方式 */
+    ProcessEumu processEumu = ProcessEumu.ProcessBuilder;
     /** 执行线程 */
     Process process = null;
     /** 指令输入对象 */
     PrintWriter writer = null;
+    /** 启用输出流监听 */
+    Boolean isInputStream = true;
 
     /** 输出 编码 */
     String code = getsystemLanguage();
@@ -44,6 +50,8 @@ public class ExecuterFactory {
     Boolean onWait = true;
     /** 回调监听 */
     InputStreamThread.CallBack callBack = null;
+    /** 输出文件保存 和 isInputStream 互斥*/
+    File redirectOutput = null;
 
     /**
      * 设置默认工作路径.
@@ -63,6 +71,26 @@ public class ExecuterFactory {
     public ExecuterFactory workPath(String workPath) {
         return workPath(new File(workPath));
     }
+
+    /***
+     * 设置输出记录
+     * @param redirectOutput
+     * @return
+     */
+    public ExecuterFactory redirectOutput(String redirectOutput){
+        return redirectOutput(new File(redirectOutput));
+    }
+
+    /**
+     * 设置输出记录
+     * @param redirectOutput
+     * @return
+     */
+    public ExecuterFactory redirectOutput(File redirectOutput){
+        this.redirectOutput = redirectOutput;
+        return this;
+    }
+
 
     /**
      * 设置回显监听
@@ -142,22 +170,71 @@ public class ExecuterFactory {
                     cmdBin += "start /wait ";
                 }
             }
-
-            process = Runtime.getRuntime().exec(cmdBin + cmd, null,  workPath);
+            // process = Runtime.getRuntime().exec(cmdBin + cmd, null,  workPath);
+//            ProcessBuilder builder = new ProcessBuilder()
+//                .command("cmd");
+//            process = builder.start();
+            process = buildProcess(isOneRun, cmd);
 
             writer = new PrintWriter(process.getOutputStream());
             // 初始化编码
             writer.println("chcp " + languageCode);
             writer.flush();
             // 打开输入和异常流
-            ProcessInputStreamThread inputThread = new ProcessInputStreamThread(process.getInputStream());
-            ProcessInputStreamThread errorThread = new ProcessInputStreamThread(process.getErrorStream());
-            inputThread.setName("InputStreamThread");
-            inputThread.start();
-            errorThread.setName("ErrorStreamThread");
-            errorThread.start();
+            if(isInputStream){
+                ProcessInputStreamThread inputThread = new ProcessInputStreamThread(process.getInputStream());
+                ProcessInputStreamThread errorThread = new ProcessInputStreamThread(process.getErrorStream());
+                inputThread.setName("InputStreamThread");
+                inputThread.start();
+                errorThread.setName("ErrorStreamThread");
+                errorThread.start();
+            }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 构建 Process
+     * @param isOneRun  是否执行一次后关闭
+     * @param cmd       初始指令
+     * @return
+     */
+    public Process buildProcess(boolean isOneRun, String cmd){
+        String cmdBin = "cmd";
+        List<String> cmdBins = new ArrayList<>();
+        cmdBins.add("cmd");
+        if (isOneRun) {
+            // 执行完后立即关闭
+            cmdBin = "cmd /c ";
+            cmdBins.add("/c");
+            // 等待关闭
+            if(onWait){
+                cmdBin += "start /wait ";
+                cmdBins.add("start");
+                cmdBins.add("/wait");
+            }
+        }
+        try {
+            if(cmd != null && !cmd.isEmpty()) {
+                cmdBins.add(cmd);
+            }
+            if(processEumu.equals(ProcessEumu.ProcessBuilder)){
+                ProcessBuilder builder = new ProcessBuilder();
+                builder = builder.command(cmdBins);
+                // 使用输出持久化到本地
+                if(redirectOutput != null){
+                    builder.redirectError(redirectOutput);
+                    builder.redirectOutput(redirectOutput);
+                }
+                return builder.start();
+            }
+            else{
+                return Runtime.getRuntime().exec(cmdBin + cmd, null,  workPath);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -280,6 +357,15 @@ public class ExecuterFactory {
     public static String getsystemLanguage() {
         return null == System.getProperty("sun.jnu.encoding") ? DEFAULT_LANGUAGE
             : System.getProperty("sun.jnu.encoding");
+    }
+
+
+    /** Process 构建方式 */
+    public enum ProcessEumu{
+        /** ProcessBuilder 方式构建 */
+        ProcessBuilder,
+        /** Runtime 方式构建 */
+        Runtime
     }
 
 }

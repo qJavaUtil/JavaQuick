@@ -71,7 +71,7 @@ public class StringUtil {
      * @return
      */
     public static String clearSymbol(String text){
-        String str = "[`\\\\~!@#$%^&*()+=|{}':;',\\[\\].<>＜＞/?~！@#￥%…&*（）——+|{}【】‘；：”“’。，、？]";
+        String str = "[`\\\\~!@#$%^&*()+=|{}':;',\\[\\].<>＜＞《》/?~！@#￥%…&*（）——+|{}【】‘；：”“’。，、？]";
         return text.replaceAll(str,"").trim();
     }
 
