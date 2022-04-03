@@ -1,5 +1,3 @@
-package test;
-
 import blxt.qjava.autovalue.inter.*;
 import blxt.qjava.qsql.influxdb.InfluxConnection;
 import blxt.qjava.qsql.influxdb.InfluxConnectionPool;

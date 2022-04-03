@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * java调用cmd指令工具工厂
@@ -161,19 +162,6 @@ public class ExecuterFactory {
      */
     public void build(String languageCode, boolean isOneRun, String cmd) {
         try {
-            String cmdBin = "cmd";
-            if (isOneRun) {
-                // 执行完后立即关闭
-                cmdBin = "cmd /c ";
-                // 等待关闭
-                if(onWait){
-                    cmdBin += "start /wait ";
-                }
-            }
-            // process = Runtime.getRuntime().exec(cmdBin + cmd, null,  workPath);
-//            ProcessBuilder builder = new ProcessBuilder()
-//                .command("cmd");
-//            process = builder.start();
             process = buildProcess(isOneRun, cmd);
 
             writer = new PrintWriter(process.getOutputStream());
@@ -277,12 +265,28 @@ public class ExecuterFactory {
     /**
      * 等待执行完成
      */
-    public void waitFor(){
+    public int waitFor(){
         try {
-            process.waitFor();
+           return process.waitFor();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        return -1;
+    }
+
+    /**
+     * 等待执行完成
+     * @param time        等待时间
+     * @param timeUnit    时间单位
+     * @return
+     */
+    public boolean waitFor(long time, TimeUnit timeUnit){
+        try {
+            return process.waitFor(time, timeUnit);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     /**

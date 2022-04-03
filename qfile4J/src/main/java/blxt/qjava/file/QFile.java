@@ -699,7 +699,7 @@ public class QFile {
             } else {
                 try {
                     InputStream instream = new FileInputStream(file);
-                    InputStreamReader inputreader = new InputStreamReader(instream);
+                    InputStreamReader inputreader = new InputStreamReader(instream, CODE_DEFAULT);
                     BufferedReader buffreader = new BufferedReader(inputreader);
 
                     String line;

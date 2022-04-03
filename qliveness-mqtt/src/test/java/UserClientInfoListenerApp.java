@@ -1,5 +1,3 @@
-package test;
-
 import blxt.qjava.autovalue.QJavaApplication;
 import blxt.qjava.autovalue.inter.ComponentScan;
 import blxt.qjava.autovalue.inter.ConfigurationScan;

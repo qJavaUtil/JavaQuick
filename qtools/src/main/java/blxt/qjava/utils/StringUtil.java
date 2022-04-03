@@ -71,14 +71,22 @@ public class StringUtil {
      * @return
      */
     public static String clearSymbol(String text){
-        String str = "[`\\\\~!@#$%^&*()+=|{}':;',\\[\\].<>＜＞《》/?~！@#￥%…&*（）——+|{}【】‘；：”“’。，、？]";
+        String str = "[`\\\\~!@#$%^&*()+=|{}':;,\\[\\].<>＜＞《》/?！￥…（）—【】‘；：”“’。，、？]";
+        return text.replaceAll(str,"").trim();
+    }
+
+    /**
+     * 清理名称, 除去不能存在文件路径中的特殊符号
+     * @return
+     */
+    public static String clearFileName(String text){
+        String str = "[`\\\\^*|':,\\[\\].<>＜＞/?~！…（）—+{}‘；：’。，、？]";
         return text.replaceAll(str,"").trim();
     }
 
     public static void main(String[] args) {
-        String text = "mopojmni  mo播＜sjfosdf13345234545^&*%$%^年后23";
+        String text = "mopojmni  mo播＜sjfosdf133??45234?545^&*%$%^年后23";
         System.out.println(clearSymbol(text));
-        System.out.println(text.replaceAll(" ", "_"));
     }
 
 }
