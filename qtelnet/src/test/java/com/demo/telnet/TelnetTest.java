@@ -1,12 +1,6 @@
 package com.demo.telnet;
 
-import blxt.qjava.autovalue.autoload.AutoTelnet;
 import blxt.qjava.qtelnet.QTelnetClient;
-import com.jcraft.jsch.*;
-import org.apache.commons.io.IOUtils;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 public class TelnetTest {
 

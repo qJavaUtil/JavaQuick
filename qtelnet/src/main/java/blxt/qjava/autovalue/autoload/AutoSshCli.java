@@ -45,12 +45,12 @@ public class AutoSshCli extends AutoLoadBase {
 
         bean.setHost(host);
         bean.setPort(port);
-        bean.setUser(uname);
+        bean.setUserName(uname);
         bean.setPassword(pwd);
         bean.setEncoding(CODEC);
 
-        if(PackageUtil.isInterfaces(object, QSSH.OnTelnetClientListener.class)){
-            bean.setOnTelnetClientListener((QSSH.OnTelnetClientListener)bean);
+        if(PackageUtil.isInterfaces(object, QTelnetClient.OnTelnetClientListener.class)){
+            bean.setOnTelnetClientListener((QTelnetClient.OnTelnetClientListener)bean);
         }
 
         new Thread(new Runnable() {
