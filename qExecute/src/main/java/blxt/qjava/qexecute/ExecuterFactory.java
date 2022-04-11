@@ -328,11 +328,15 @@ public class ExecuterFactory {
      * 独立的执行一个指令.
      * @param cmd      cmd
      * @param basePath 工作路径
+     * @param withReturn 是否需要返回结果
      * @return 回显
      */
-    public String execStandalone(String cmd, String basePath){
+    public String execStandalone(String cmd, String basePath, Boolean ... withReturn){
         try {
             Process proc = Runtime.getRuntime().exec(cmd, null, basePath == null ? null : new File(basePath));
+            if(withReturn == null || withReturn.length == 0 || !withReturn[0]){
+                return "success";
+            }
             InputStream stderr =  proc.getInputStream();
             InputStreamReader isr = new InputStreamReader(stderr, code);
             BufferedReader br = new BufferedReader(isr);
@@ -340,6 +344,9 @@ public class ExecuterFactory {
             StringBuilder sb = new StringBuilder();
             while ((line = br.readLine()) != null) {
                 sb.append(line);
+                if(callBack!= null){
+                    callBack.onReceiver(tag, line);
+                }
             }
             return sb.toString();
         } catch (IOException e) {

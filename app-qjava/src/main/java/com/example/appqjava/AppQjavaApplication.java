@@ -45,29 +45,36 @@ public class AppQjavaApplication {
             }
         };
 
-        // 连续执行
-        ExecuterFactory executeUtil =
-            new ExecuterFactory()
-                .executerType(ExecuterType.Linux)
-                .workPath(new File("/"))
-                .callBack(callBack)
-                // redirectOutput 和 callBack 互斥
-                //.redirectOutput("redirectOutput.txt")
-                .build();
-        executeUtil.execute("ls \n");
-        executeUtil.execute("cd /etc \n");
-        executeUtil.execute("ls \n");
+        String path = "E:\\ZhangJieLei\\Documents\\workspace\\workProject\\MyProject\\webdav-aliyundriver\\target\\";
 
-        // 使用控制台输入
-//        blxt.qjava.qexecute.CommandThread commandThread = new blxt.qjava.qexecute.CommandThread(executeUtil);
-//        commandThread.setName("ExecuteCmdThread");
-//        commandThread.start();
-        //     executeUtil.close();
-        Thread.sleep(5000);
-        // 一般不用这个
-        executeUtil.waitFor();
-        System.out.println("2结束" + new ExecuterFactory().code("utf-8").execStandalone("ls", "/etc"));
-        System.out.println("2结束" + new ExecuterFactory().code("gbk").execStandalone("ls", "/"));
+
+        System.out.println("执行1:" + new ExecuterFactory().code("utf-8").execStandalone("cmd.exe /c run.bat", path));
+
+//        // 连续执行
+//        ExecuterFactory executeUtil =
+//            new ExecuterFactory()
+//                .executerType(ExecuterType.Linux)
+//                .workPath(new File("/"))
+//                .callBack(callBack)
+//                // redirectOutput 和 callBack 互斥
+//                //.redirectOutput("redirectOutput.txt")
+//                .build();
+////        executeUtil.execute("ls \n");
+////        executeUtil.execute("cd /etc \n");
+////        executeUtil.execute("ls \n");
+//
+//
+//        // 使用控制台输入
+////        blxt.qjava.qexecute.CommandThread commandThread = new blxt.qjava.qexecute.CommandThread(executeUtil);
+////        commandThread.setName("ExecuteCmdThread");
+////        commandThread.start();
+//        //     executeUtil.close();
+//        Thread.sleep(5000);
+//        // 一般不用这个
+//        executeUtil.waitFor();
+//
+//        System.out.println("2结束" + new ExecuterFactory().code("utf-8").execStandalone("ls", "/etc"));
+//        System.out.println("2结束" + new ExecuterFactory().code("gbk").execStandalone("ls", "/"));
 
 
     }
