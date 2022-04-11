@@ -54,6 +54,19 @@ public class ExecuterFactory {
     /** 输出文件保存 和 isInputStream 互斥*/
     File redirectOutput = null;
 
+    /** 系统类型. */
+    ExecuterType executerType = ExecuterType.Windows;
+
+    /**
+     * 设置系统类型.
+     * @param executerType ExecuterType
+     * @return ExecuterFactory
+     */
+    public ExecuterFactory executerType(ExecuterType executerType) {
+        this.executerType = executerType;
+        return this;
+    }
+
     /**
      * 设置默认工作路径.
      * @param workPath  工作路径
@@ -138,7 +151,7 @@ public class ExecuterFactory {
      * @param cmd 执行指令
      */
     public ExecuterFactory build(String cmd) {
-        build(languageCode, true, cmd);
+        build(languageCode, false, cmd);
         return this;
     }
 
@@ -154,7 +167,7 @@ public class ExecuterFactory {
      * cmd交互处理窗口
      *
      * @param languageCode 系统语言编码
-     * @param isOneRun 只执行cmd指令
+     * @param isOneRun 只执行cmd指令, 执行后立即关闭
      * @param cmd 执行的指令
      * @see .在中文windows系统中，根据编码需要设置编码 chcp 65001 就是换成UTF-8代码页<br>
      *      chcp 936 可以换回默认的GBK<br>
@@ -165,9 +178,13 @@ public class ExecuterFactory {
             process = buildProcess(isOneRun, cmd);
 
             writer = new PrintWriter(process.getOutputStream());
+
             // 初始化编码
-            writer.println("chcp " + languageCode);
-            writer.flush();
+            if(executerType.equals(ExecuterType.Windows)){
+                writer.println("chcp " + languageCode);
+                writer.flush();
+            }
+
             // 打开输入和异常流
             if(isInputStream){
                 ProcessInputStreamThread inputThread = new ProcessInputStreamThread(process.getInputStream());
@@ -189,20 +206,29 @@ public class ExecuterFactory {
      * @return
      */
     public Process buildProcess(boolean isOneRun, String cmd){
-        String cmdBin = "cmd";
         List<String> cmdBins = new ArrayList<>();
-        cmdBins.add("cmd");
-        if (isOneRun) {
-            // 执行完后立即关闭
-            cmdBin = "cmd /c ";
-            cmdBins.add("/c");
-            // 等待关闭
-            if(onWait){
-                cmdBin += "start /wait ";
-                cmdBins.add("start");
-                cmdBins.add("/wait");
+        String cmdBin = "";
+        // Windows下Cmd执行指令初始化
+        if(executerType.equals(ExecuterType.Windows)){
+            cmdBin = "cmd";
+            cmdBins.add("cmd");
+            if (isOneRun) {
+                // 执行完后立即关闭
+                cmdBin = "cmd /c ";
+                cmdBins.add("/c");
+                // 等待关闭
+                if(onWait){
+                    cmdBin += "start /wait ";
+                    cmdBins.add("start");
+                    cmdBins.add("/wait");
+                }
             }
         }
+        else{
+            cmdBins.add("pwd");
+        }
+
+
         try {
             if(cmd != null && !cmd.isEmpty()) {
                 cmdBins.add(cmd);
@@ -298,6 +324,29 @@ public class ExecuterFactory {
         }
     }
 
+    /**
+     * 独立的执行一个指令.
+     * @param cmd      cmd
+     * @param basePath 工作路径
+     * @return 回显
+     */
+    public String execStandalone(String cmd, String basePath){
+        try {
+            Process proc = Runtime.getRuntime().exec(cmd, null, basePath == null ? null : new File(basePath));
+            InputStream stderr =  proc.getInputStream();
+            InputStreamReader isr = new InputStreamReader(stderr, code);
+            BufferedReader br = new BufferedReader(isr);
+            String line="";
+            StringBuilder sb = new StringBuilder();
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+            return sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     /**
      * 输入线程

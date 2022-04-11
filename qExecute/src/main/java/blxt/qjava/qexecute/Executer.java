@@ -2,9 +2,7 @@ package blxt.qjava.qexecute;
 
 import lombok.Data;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -210,10 +208,9 @@ public class Executer {
 
     /**
      * 关闭
-     * @return
+     * @return boolean
      */
     public boolean close(){
-
         if(process != null){
             process.destroyForcibly();
             process.destroy();
@@ -221,14 +218,15 @@ public class Executer {
         return true;
     }
 
-    public static boolean exec(String cmd, String basePath){
-        try {
-            Runtime.getRuntime().exec(cmd, null, new File(basePath));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+    /**
+     * 独立的执行一个指令
+     * @param cmd      cmd
+     * @param basePath 工作路径
+     * @return msg
+     */
+    @Deprecated
+    public String execStandalone(String cmd, String basePath){
+        return new ExecuterFactory().execStandalone(cmd, basePath);
     }
 
 }
