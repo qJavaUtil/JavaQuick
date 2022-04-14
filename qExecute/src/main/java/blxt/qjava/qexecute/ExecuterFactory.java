@@ -344,6 +344,7 @@ public class ExecuterFactory {
             StringBuilder sb = new StringBuilder();
             while ((line = br.readLine()) != null) {
                 sb.append(line);
+                sb.append("\r\n");
                 if(callBack!= null){
                     callBack.onReceiver(tag, line);
                 }
