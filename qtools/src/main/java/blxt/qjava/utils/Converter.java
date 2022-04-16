@@ -11,6 +11,8 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /***
@@ -283,6 +285,23 @@ public class Converter {
         int deci = (b1|(b2<<8));
         return (float)(deci*0.1);
     }
+
+    /**
+     * 提取数字.
+     * @param text 员数字
+     * @return 获取数字
+     */
+    public static String getNumberStr(final String text){
+        final String regEx="([1-9]\\d*\\.?\\d*)|(0\\.\\d*[1-9])";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(text);
+        StringBuilder stringBuilder = new StringBuilder();
+        while (m.find()) {
+            stringBuilder.append((m.group()));
+        }
+        return stringBuilder.toString();
+    }
+
 
 
     /**
