@@ -55,7 +55,11 @@ public class ExecuterFactory {
     File redirectOutput = null;
 
     /** 系统类型. */
-    ExecuterType executerType = ExecuterType.Windows;
+    ExecuterType executerType;
+
+    public ExecuterFactory(){
+        executerType = ExecuterType.getExecuterType();
+    }
 
     /**
      * 设置系统类型.
@@ -337,12 +341,22 @@ public class ExecuterFactory {
             if(withReturn == null || withReturn.length == 0 || !withReturn[0]){
                 return "success";
             }
-            InputStream stderr =  proc.getInputStream();
-            InputStreamReader isr = new InputStreamReader(stderr, code);
-            BufferedReader br = new BufferedReader(isr);
+            InputStream stdIn =  proc.getInputStream();
+            InputStream stdOrr =  proc.getErrorStream();
+            InputStreamReader isi = new InputStreamReader(stdIn, code);
+            InputStreamReader isr = new InputStreamReader(stdOrr, code);
+            BufferedReader br = new BufferedReader(isi);
+            BufferedReader be = new BufferedReader(isr);
             String line="";
             StringBuilder sb = new StringBuilder();
             while ((line = br.readLine()) != null) {
+                sb.append(line);
+                sb.append("\r\n");
+                if(callBack!= null){
+                    callBack.onReceiver(tag, line);
+                }
+            }
+            while ((line = be.readLine()) != null) {
                 sb.append(line);
                 sb.append("\r\n");
                 if(callBack!= null){

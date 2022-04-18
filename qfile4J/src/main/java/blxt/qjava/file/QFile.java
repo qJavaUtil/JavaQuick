@@ -936,6 +936,34 @@ public class QFile {
             return var5;
         }
 
+        /**
+         * 将InputStream写入本地文件
+         * @param destination 写入本地目录
+         * @param input 输入流
+         * @throws IOException IOException
+         */
+        public static boolean save(InputStream input, String destination) {
+            if(input == null){
+                return false;
+            }
+            int index;
+            byte[] bytes = new byte[1024];
+            FileOutputStream downloadFile = null;
+            try {
+                downloadFile = new FileOutputStream(destination);
+                while ((index = input.read(bytes)) != -1) {
+                    downloadFile.write(bytes, 0, index);
+                    downloadFile.flush();
+                }
+                input.close();
+                downloadFile.close();
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
         public static boolean add(File fileName, String content) {
             FileOutputStream fos = null;
             OutputStreamWriter osw = null;
@@ -970,6 +998,17 @@ public class QFile {
 
             return var5;
         }
+    }
+
+    /**
+     * 复制资源文件.
+     * @param cz     资源包类
+     * @param src    目标资源文件路径
+     * @param dest   目的文件路径
+     */
+    public static void copyResource(Class cz, String src, String dest) {
+        InputStream inputStream = cz.getClassLoader().getResourceAsStream(src);
+        Write.save(inputStream, dest);
     }
 
     /**
