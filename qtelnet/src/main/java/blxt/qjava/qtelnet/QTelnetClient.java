@@ -195,12 +195,21 @@ public class QTelnetClient extends TelnetClient {
     }
 
     /**
+     * 读取结果.
+     * @param pattern pattern
+     * @return
+     */
+    private String readUntil(String pattern) {
+        return readUntil(pattern, onTelnetClientListener);
+    }
+
+    /**
      * 读取分析结果
      *
      * @param pattern 匹配到该字符串时返回结果
      * @return
      */
-    private String readUntil(String pattern) {
+    private String readUntil(String pattern, OnTelnetClientListener onTelnetClientListener) {
         StringBuilder sb = new StringBuilder();
         try {
             char lastChar = (char) -1;
@@ -236,7 +245,7 @@ public class QTelnetClient extends TelnetClient {
             }
         }
         // 回复数据
-        revertDate(sb);
+        revertDate(sb, onTelnetClientListener);
         return sb.toString();
     }
 
@@ -244,7 +253,7 @@ public class QTelnetClient extends TelnetClient {
      * 回复数据
      * @param stringBuilder
      */
-    private void revertDate(StringBuilder stringBuilder){
+    private void revertDate(StringBuilder stringBuilder, OnTelnetClientListener onTelnetClientListener){
         if(stringBuilder.length() == 0){
             return;
         }
