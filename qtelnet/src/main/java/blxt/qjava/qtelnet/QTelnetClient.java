@@ -20,7 +20,7 @@ public class QTelnetClient extends TelnetClient {
     public static String PasswdMark = "password:";
     public static String LoginFailedMark = "Login Failed";
 
-    Object lock = new Object();
+    final Object lock = new Object();
     String tag = "default";
     String hostIp = "127.0.0.1";
     int port = 22;
@@ -258,26 +258,57 @@ public class QTelnetClient extends TelnetClient {
             return;
         }
         if (onTelnetClientListener != null) {
-            if (isChangeCode) {
-                try {
-                    onTelnetClientListener.onReceiver(tag, new String(stringBuilder.toString()
-                            .getBytes(ORIG_CODEC), TRANSLATE_CODEC));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if (isChangeCode) {
+                        try {
+                            onTelnetClientListener.onReceiver(tag, new String(stringBuilder.toString()
+                                    .getBytes(ORIG_CODEC), TRANSLATE_CODEC));
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        onTelnetClientListener.onReceiver(tag, stringBuilder.toString());
+                    }
                 }
-            } else {
-                onTelnetClientListener.onReceiver(tag, stringBuilder.toString());
-            }
+            }).start();
         }
         else{
             log.debug("{} \n {}", tag, stringBuilder.toString());
         }
     }
 
+    /**
+     * 回复数据
+     * @param stringBuilder
+     */
     private void revertDate(String stringBuilder){
-        if (onTelnetClientListener != null) {
-            onTelnetClientListener.onReceiver(tag, stringBuilder);
-        }
+        // 放在线程里面去通知
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (onTelnetClientListener != null) {
+                    onTelnetClientListener.onReceiver(tag, stringBuilder);
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 回复数据
+     * @param c
+     */
+    private void revertDate(char c){
+        // 放在线程里面去通知
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (onTelnetClientListener != null) {
+                    onTelnetClientListener.onGetDate(tag, new byte[]{(byte)c});
+                }
+            }
+        }).start();
     }
 
     /**
@@ -313,7 +344,6 @@ public class QTelnetClient extends TelnetClient {
         void onGetDate(final String tag, final byte[] data);
 
         void onReceiver(final String tag, final String msg);
-
     }
 
     class ReadThread2 extends Thread {
@@ -324,7 +354,7 @@ public class QTelnetClient extends TelnetClient {
                 sub.start();
                 int last = sub.count;
                 while (readThreadRun && isConnected()) {
-                    sub.sleep(100);
+                    sub.sleep(50);
                     if (last == sub.count) {
                         // 回复数据
                         String data = sub.getDate();
@@ -348,39 +378,45 @@ public class QTelnetClient extends TelnetClient {
     class SubReadThread extends Thread {
         int count = 0;
         StringBuilder sb = new StringBuilder();
-
+        /** 缓存锁 */
         boolean lock = false;
+        /** 强制输出标记 */
+        boolean out = false;
 
         public void read() {
-            try {
-                char c;
-                int code = -1;
-                while ((code = (in.read())) != -1) {
-                    // 锁
-                    lock();
-                    lock = true;
+            char c;
+            int code = -1;
+            // 强制传输的时候,不进行读取
+            while (!out && (code = (inRead())) != -1) {
+                // 锁
+                lock();
+                lock = true;
+                count++;
+                c = (char) code;
+                // 颜色
+                if (hideColor && c == '\033') {
+                    int code2 = inRead();
+                    char cc = (char) code2;
                     count++;
-                    c = (char) code;
-                    // 颜色
-                    if (hideColor && c == '\033') {
-                        int code2 = in.read();
-                        char cc = (char) code2;
-                        count++;
-                        if (cc == '[' || cc == '(') {
-                        }
+                    if (cc == '[' || cc == '(') {
                     }
-                    // 控制码
-                    else if(code < 0x20){
-                    }
-                    else{
-                        // 字符回显
-                        sb.append(c);
-                    }
-                    // 解锁
-                    lock = false;
                 }
-            } catch (Exception e) {
+                // 控制码
+                else if(code < 0x20){
+                }
+                else{
+                    // 字符回显
+                    sb.append(c);
+                    revertDate(c);
+                }
+                // 解锁
+                lock = false;
+                // 遇到换行, 强制传输
+                if(c == '\n'){
+                    out = true;
+                }
             }
+
         }
 
         @Override
@@ -388,6 +424,7 @@ public class QTelnetClient extends TelnetClient {
             while(readThreadRun){
                 read();
             }
+            log.warn("停止读取");
         }
 
         /** 读取缓存, 要做锁 */
@@ -404,20 +441,31 @@ public class QTelnetClient extends TelnetClient {
             sb.delete(0, sb.length());
             count = 0;
             lock = false;
+            out = false;
             return date;
         }
 
         // 锁
         public void lock(){
             while(lock){
-                sleep(100);
+                sleep(10);
             }
+        }
+
+        private int inRead(){
+            try {
+                return in.read();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return -1;
         }
 
         public void sleep(int time){
             try {
                 Thread.sleep(time);
             } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
 
