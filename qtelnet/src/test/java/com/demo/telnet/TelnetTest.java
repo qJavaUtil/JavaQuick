@@ -45,10 +45,12 @@ public class TelnetTest {
             telnetOperator.onReadThread();
 
             telnetOperator.write("pwd");
+            telnetOperator.write(new byte[]{13});
+            telnetOperator.write("ls /apps/app/test2");
+            telnetOperator.write(new byte[]{13});
             Thread.sleep(1000);
-            telnetOperator.write("ls");
-            Thread.sleep(500);
-            telnetOperator.write("/apps/app/test4/1653529652109_testddr3");
+          //  telnetOperator.write("/apps/app/test4/1653529652109_testddr3")
+            telnetOperator.write("/apps/app/test2/1653374889008_iozone -i 0 –i 1 -i 2 -i 3 -i 4 -i 5 -i 6 -i 7 -r 1024K -s 3072K -f  /apps/app/file  -R");
 //            String res = telnetOperator.sendCommand("mkdir test");
 //            System.out.println("结果:" + res);
 //            res = telnetOperator.sendCommand("ls");
@@ -60,7 +62,7 @@ public class TelnetTest {
 
         @Override
         public void onReceiver(String tag, String msg) {
-            System.out.println("收到数据: " + msg );
+            System.out.println(">: " + msg );
         }
 
         @Override
@@ -80,7 +82,7 @@ public class TelnetTest {
 
         @Override
         public void onGetDate(String tag, byte[] data) {
-        //    System.out.print((char)data[0]);
+         //   System.out.print((char)data[0]);
         }
     }
 

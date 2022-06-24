@@ -1,5 +1,7 @@
 package blxt.qjava.qthread;
 
+import blxt.qjava.qthread.utils.GeneralScheduledThreadPoolExecutor;
+
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -20,7 +22,7 @@ public class QThreadpool {
     /**
      * 定时线程池
      */
-    ScheduledExecutorService timePool = null;
+    GeneralScheduledThreadPoolExecutor timePool = null;
 
     /** 默认线程工厂 */
     public static ThreadFactory defaultThreadFactory;
@@ -101,7 +103,7 @@ public class QThreadpool {
         }
 
         if(timePool == null) {
-            timePool = Executors.newScheduledThreadPool(corePoolSize, threadFactory);
+            timePool = new GeneralScheduledThreadPoolExecutor(corePoolSize, threadFactory);
         }
 
     }
