@@ -10,7 +10,7 @@ import java.util.zip.ZipOutputStream;
 
 
 /**
- * 文件zip工具
+ * 文件zip工具.
  */
 public class QZip {
     public static int BUFFER_MAX = 1024;
@@ -18,23 +18,22 @@ public class QZip {
     /**
      * 压缩文件
      *
-     * @param baseFile
-     * @param fileDest
+     * @param src      压缩目标
+     * @param target   保存路径
      * @throws Exception
      */
-    public static void zipFile(File baseFile, File fileDest) throws Exception {
+    public static void makeZip(File src, File target) throws Exception {
         List<File> fileList = new ArrayList<File>();
         String baseDir = "";
-        if (baseFile.isDirectory()) {
-            baseDir = baseFile.getPath();
-            fileList.addAll(getSubFiles(baseFile));
+        if (src.isDirectory()) {
+            baseDir = src.getPath();
+            fileList.addAll(getSubFiles(src));
         } else {
-
-            baseDir = baseFile.getParent();
-            fileList.add(baseFile);
+            baseDir = src.getParent();
+            fileList.add(src);
         }
 
-        ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(fileDest));
+        ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(target));
         ZipEntry ze = null;
         byte[] buf = new byte[BUFFER_MAX];
         int readLen = 0;
@@ -54,35 +53,29 @@ public class QZip {
     }
 
     /**
-     * 解压文件
+     * 解压文件.
      *
-     * @param zipName
-     * @param unZipPath
+     * @param zipSrc      压缩文件路径
+     * @param target      解压路径
      * @throws Exception
      */
-    public static void unZipFile(File zipName, String unZipPath) throws Exception {
-        ZipFile zfile = new ZipFile(zipName);
+    public static void unZipFile(File zipSrc, String target) throws Exception {
+        ZipFile zfile = new ZipFile(zipSrc);
         Enumeration<? extends ZipEntry> zList = zfile.entries();
         ZipEntry ze = null;
-        String dirZip = unZipPath;
-
+        String dirZip = target;
 
         if (!dirZip.endsWith("/")) {
             dirZip = dirZip + "/";
         }
 
-
         File desPath = new File(dirZip);
         if (!desPath.exists()) {
             desPath.mkdirs();
         }
-
         byte[] buf = new byte[BUFFER_MAX];
-
-
         while (zList.hasMoreElements()) {
             ze = zList.nextElement();
-
             if (ze.isDirectory()) {
                 File desFile = new File(dirZip + ze.getName());
                 desFile.mkdir();
@@ -91,17 +84,13 @@ public class QZip {
             File desFile = new File(dirZip + ze.getName());
             OutputStream os = new BufferedOutputStream(new FileOutputStream(desFile));
             InputStream is = new BufferedInputStream(zfile.getInputStream(ze));
-
             int readLen;
             while ((readLen = is.read(buf, 0, 1024)) != -1) {
                 os.write(buf, 0, readLen);
             }
-
             is.close();
             os.close();
         }
-
-
         zfile.close();
     }
 

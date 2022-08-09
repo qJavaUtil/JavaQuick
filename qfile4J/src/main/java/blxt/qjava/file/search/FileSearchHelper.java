@@ -1,5 +1,6 @@
 package blxt.qjava.file.search;
 
+import blxt.qjava.file.callback.FileScanCallback;
 import lombok.Data;
 
 import java.io.*;
@@ -18,50 +19,11 @@ public class FileSearchHelper {
     public static String lineSeparator = System.getProperty("line.separator");
     Charset code = StandardCharsets.UTF_8;
 
-
-    public static void main(String[] args) {
-        File file = new File("E:\\ZhangJieLei\\Documents\\workspace\\workProject\\HWIIoTStudio\\src\\base");
-        FileSearchHelper fileSearchHelper = new FileSearchHelper();
-        fileSearchHelper.setCode(Charset.forName("gbk"));
-        fileSearchHelper.ignoreMap.put(".", 1);
-
-        //   fileSearchHelper.ignoreMap.put("Debug", 3);
-
-        Map<String, String> replaceMap = new LinkedHashMap<>();
-        replaceMap.put("   中国软件开源组织",
-            "中国航天科工集团三院三部");
-        replaceMap.put("       嵌入式实时操作系统",
-            "海鹰工坊-海鹰工业物联网操作系统");
-        replaceMap.put("SylixOS(TM)  LW : long wing", "");
-//        replaceMap.put("Copyright All Rights Reserved", "");
-        replaceMap.put("RealEvo-IDE", "HWIIoT");
-        replaceMap.put("SYLIXOS_BASE_PATH", "HWOS_BASE_PATH");
-        replaceMap.put("SylixOSBaseProject", "HwOSBaseProject");
-//        replaceMap.put("海鹰高性能操作系统通用处理器版", "海鹰高可靠操作系统");
-
-
-        for (Map.Entry<String, String> entry : replaceMap.entrySet()) {
-            System.out.println(entry.getKey() + ":" + entry.getValue());
-        }
-
-        // List<SearchRes> res = fileSearchHelper.search(file, null, "海鹰翼辉", false, false);
-
-        //List<SearchRes> res = fileSearchHelper.replace(file, null, replaceMap, false, false);
-        List<SearchRes> res = fileSearchHelper.searchFileName(file, ".c");
-
-        for (SearchRes searchRes : res){
-            System.out.println("匹配:"+ searchRes.getAbsolutePath(file.getParent()));
-          //  File file1 = new File(searchRes.getAbsolutePath(file.getParent()));
-          //  file1.delete();
-        }
-        System.out.println("替换完成:" +  res != null ? res.size() : 0);
-    }
-
-
     private List<String> pathlist = new ArrayList<>(200);
     /** 忽略列表 */
     public Map<String, Integer> ignoreMap = new HashMap<>();
 
+    FileScanCallback callback = null;
 
     public FileSearchHelper() {
 
@@ -72,15 +34,15 @@ public class FileSearchHelper {
     }
 
 
-    public List<SearchRes> search(File dir, String suffix, String searchStr, boolean ingronCase, boolean regular) {
-        List<String> pathlist = getFileList(dir, suffix);
+    public List<SearchRes> search(File dir, String suffix, String ingronSuffix, String[] searchStr, boolean ingronCase, boolean regular) {
+        List<String> pathlist = getFileList(dir, suffix, ingronSuffix);
         if(pathlist == null){
             return new ArrayList<>(0);
         }
-        int lengpath = dir.getParent().length() + 1;
         List<SearchRes> result = new ArrayList<>(100);
         for (int k = 0; k < pathlist.size(); k++) {
             File file = new File(pathlist.get(k));
+            String path = file.getAbsolutePath().substring(dir.getAbsolutePath().length());
             if (file.exists()) {
                 /* 读取数据 */
                 try {
@@ -92,23 +54,25 @@ public class FileSearchHelper {
                     int second_count = 0;
                     while ((lineTxt = br.readLine()) != null) {
                         second_count++;
-                        if (lineTxt.length() < searchStr.length()) {
-                            // 跳过空行
-                            continue;
-                        }
-                        // 判断是否存在, 大小写处理
-                        boolean  isFind = ingronCase ?
-                            lineTxt.toLowerCase().contains((searchStr))
-                            : lineTxt.contains(searchStr);
-                        if (isFind) {
-                            SearchRes searchRes = new SearchRes();
-                            searchRes.setIndex(FileSearchHelper.getIndexOf(lineTxt, searchStr) + 1);
-                            searchRes.setFileName(file.getName());
-                            searchRes.setLine(second_count);
-                            searchRes.setKey(searchStr);
-                            searchRes.setPath(file.getParent().substring(lengpath));
-                            searchRes.setContent(lineTxt);
-                            result.add(searchRes);
+                        for (String s : searchStr) {
+                            if (lineTxt.length() < s.length()) {
+                                // 跳过空行
+                                continue;
+                            }
+                            // 判断是否存在, 大小写处理
+                            boolean  isFind = ingronCase ?
+                                    lineTxt.toLowerCase().contains((s))
+                                    : lineTxt.contains(s);
+                            if (isFind) {
+                                SearchRes searchRes = new SearchRes();
+                                searchRes.setIndex(FileSearchHelper.getIndexOf(lineTxt, s) + 1);
+                                searchRes.setFileName(file.getName());
+                                searchRes.setLine(second_count);
+                                searchRes.setKey(s);
+                                searchRes.setPath(path);
+                                searchRes.setContent(lineTxt);
+                                result.add(searchRes);
+                            }
                         }
                     }
                     br.close();
@@ -127,7 +91,7 @@ public class FileSearchHelper {
      * @return
      */
     public List<SearchRes> searchFileName(File dir, String searchStr) {
-        List<String> pathlist = getFileList(dir, null);
+        List<String> pathlist = getFileList(dir, null, null);
         if(pathlist == null){
             return new ArrayList<>(0);
         }
@@ -156,7 +120,7 @@ public class FileSearchHelper {
      */
     public List<SearchRes> replace(File dir, String suffix, Map<String, String> replaceMap,
                                    boolean ingronCase,  boolean regular) {
-        List<String> pathlist = getFileList(dir, suffix);
+        List<String> pathlist = getFileList(dir, suffix, null);
         if (pathlist == null) {
             return null;
         }
@@ -167,16 +131,16 @@ public class FileSearchHelper {
                 continue;
             }
             // 自动识别编码
-            try {
-                code = Charset.forName(code(file));
-            } catch (Exception e) {
-                code = Charset.forName("gbk");
-                e.printStackTrace();
-            }
+//            try {
+//                code = Charset.forName(code(file));
+//            } catch (Exception e) {
+//                code = Charset.forName("gbk");
+//                e.printStackTrace();
+//            }
             // 文件备份
             StringBuilder strBuffer = new StringBuilder();
-            String path = String.format("%s%s%s%s", File.separator, dir.getParentFile().getName(), File.separator,
-                file.getAbsolutePath().substring(dir.getAbsolutePath().length() + 1));
+
+            String path = file.getAbsolutePath().substring(dir.getAbsolutePath().length());
             /* 读取数据 */
             try {
                 BufferedReader br = new BufferedReader(
@@ -240,7 +204,7 @@ public class FileSearchHelper {
      * @param suffix
      * @return
      */
-    public List<String> getFileList(File dirFile, String suffix) {
+    public List<String> getFileList(File dirFile, String suffix, String suffixIngron) {
         // 获取子文件
         File[] files = dirFile.listFiles();
 
@@ -253,19 +217,34 @@ public class FileSearchHelper {
             if(isIgnore(files[i])){
                 continue;
             }
+            if(suffixIngron != null && files[i].getName().endsWith(suffixIngron)){
+                continue;
+            }
             // 判断是文件还是文件夹
             if (files[i].isDirectory()) {
                 // 获取文件绝对路径
-                getFileList(files[i], suffix);
+                getFileList(files[i], suffix, suffixIngron);
+                if(callback != null){
+                    callback.onDir(files[i]);
+                }
             } else if (suffix == null) {
-                String strFileName = files[i].getAbsolutePath();
-                pathlist.add(strFileName);
+                if(callback != null){
+                    callback.onFile(files[i]);
+                }
+                else{
+                    String strFileName = files[i].getAbsolutePath();
+                    pathlist.add(strFileName);
+                }
             } else if (fileName.endsWith(suffix)) {
-                // 判断文件名是否以指定结尾
-                String strFileName = files[i].getAbsolutePath();
-                pathlist.add(strFileName);
+                if(callback != null){
+                    callback.onFile(files[i]);
+                }
+                else{
+                    // 判断文件名是否以指定结尾
+                    String strFileName = files[i].getAbsolutePath();
+                    pathlist.add(strFileName);
+                }
             }
-
         }
         return pathlist;
     }
@@ -288,6 +267,12 @@ public class FileSearchHelper {
                 return true;
             } // 全匹配
             if(entry.getValue() == 3 && fileName.equals(entry.getKey())){
+                return true;
+            }
+            if(entry.getValue() == 4 && fileName.indexOf(entry.getKey()) > -1){
+                return true;
+            }
+            if(file.isFile() && entry.getValue() == 5 && !fileName.endsWith(entry.getKey())){
                 return true;
             }
         }
@@ -356,6 +341,7 @@ public class FileSearchHelper {
 
         boolean var5;
         try {
+            file.delete();
             if (!file.exists()) {
                 file.createNewFile();
             }

@@ -30,10 +30,24 @@ public class SearchRes{
     public String getAbsolutePath(String parentFile) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(parentFile);
-        stringBuilder.append(File.separator);
+        if(!path.startsWith(File.separator)){
+            stringBuilder.append(File.separator);
+        }
         stringBuilder.append(path);
-        stringBuilder.append(File.separator);
-        stringBuilder.append(fileName);
+
         return stringBuilder.toString();
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if(o==null) {
+            return false;
+        }
+        SearchRes obj = (SearchRes)o;
+        if(path.equals(obj.path)) {
+            return true;
+        }
+        return false;
     }
 }

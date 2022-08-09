@@ -4,6 +4,10 @@ import org.wltea.analyzer.core.IKSegmenter;
 import org.wltea.analyzer.core.Lexeme;
 
 import java.io.StringReader;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -80,8 +84,21 @@ public class StringUtil {
      * @return
      */
     public static String clearFileName(String text){
-        String str = "[`\\\\^*|':,\\[\\].<>＜＞/?~！…（）—+{}‘；：’。，、？]";
+        String str = "[`^*|':,\\[\\].＜＞?~！…（）—+{}‘；：’。，、？]";
         return text.replaceAll(str,"").trim();
+    }
+
+    public static String MD5(String pwd){
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+        md.update(pwd.getBytes(StandardCharsets.UTF_8));
+        byte[] result = md.digest();
+        return new BigInteger(1, result).toString(16);
     }
 
     public static void main(String[] args) {

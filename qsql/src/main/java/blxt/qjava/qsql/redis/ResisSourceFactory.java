@@ -3,7 +3,6 @@ package blxt.qjava.qsql.redis;
 import blxt.qjava.qsql.utils.RedisConfiguration;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisShardInfo;
 
 import java.io.File;
 import java.util.List;
@@ -84,10 +83,10 @@ public class ResisSourceFactory {
 //        list.add(jedisShardInfo1);
 //        pool = new ShardedJedisPool(config, list);
 
-        return createDataSource(config, null);
+        return createDataSource(config);
     }
 
-    public static RedisPool createDataSource(JedisPoolConfig config, List<JedisShardInfo> list){
+    public static RedisPool createDataSource(JedisPoolConfig config){
         redisPool = new RedisPool(config,
                 resisBean.redisIp, resisBean.redisPort, resisBean.redisTimeout, resisBean.pwd, resisBean.block);
         return redisPool;

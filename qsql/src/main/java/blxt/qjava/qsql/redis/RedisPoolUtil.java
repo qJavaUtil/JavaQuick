@@ -131,25 +131,25 @@ public class RedisPoolUtil {
         return result;
     }
 
-    /**
-     * 设置bit
-     * @return
-     */
-    public static boolean setBit(String key, long offset, String value){
-        Jedis jedis = null;
-        try {
-            jedis = ResisSourceFactory.getJedis();
-            if (jedis == null) {
-                return false;
-            }
-            return jedis.setbit(key, offset, value);
-        }catch (Exception e){
-            e.printStackTrace();
-            ResisSourceFactory.returnBrokenResource(jedis);
-        }
-
-        return false;
-    }
+//    /**
+//     * 设置bit
+//     * @return
+//     */
+//    public static boolean setBit(String key, long offset, String value){
+//        Jedis jedis = null;
+//        try {
+//            jedis = ResisSourceFactory.getJedis();
+//            if (jedis == null) {
+//                return false;
+//            }
+//            return jedis.setbit(key, offset, value);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            ResisSourceFactory.returnBrokenResource(jedis);
+//        }
+//
+//        return false;
+//    }
 
 
     /**

@@ -639,6 +639,7 @@ public class QFile {
                     int len;
                     while (-1 != (len = in.read(buffer, 0, buf_size))) {
                         bos.write(buffer, 0, len);
+                        buffer = new byte[buf_size];
                     }
 
                     byte[] var7 = bos.toByteArray();
@@ -669,6 +670,7 @@ public class QFile {
 
                 for (; br.read(buff) != -1; ) {
                     sb.append(buff);
+                    buff = new char[BUFFER_MAX];
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -855,22 +857,23 @@ public class QFile {
                     var9.printStackTrace();
                     var4 = false;
                     return var4;
-                } catch (Exception var10) {
-                    var4 = false;
                 } finally {
                     QFile.CloseableClose(out);
                 }
-
-                return var4;
             }
         }
 
         public static boolean save(File file, String filecontent) {
-            try {
-                if (!file.exists()) {
+            if (!file.exists()) {
+                try {
                     file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
                 }
-                return save(new FileOutputStream(file), filecontent);
+            }
+            try(FileOutputStream fos = new FileOutputStream(file)) {
+                return save(fos, filecontent);
             } catch (Exception var15) {
                 return false;
             }
@@ -914,26 +917,15 @@ public class QFile {
 
 
         public static boolean save(FileOutputStream fos, String filecontent) {
-            OutputStreamWriter osw = null;
             boolean var5;
-            try {
-                osw = new OutputStreamWriter(fos, CODE_DEFAULT);
+            try(OutputStreamWriter osw = new OutputStreamWriter(fos, CODE_DEFAULT)) {
                 osw.write(filecontent);
                 osw.close();
                 return true;
             } catch (Exception var15) {
-                var5 = false;
-            } finally {
-                if (fos != null) {
-                    try {
-                        fos.close();
-                        osw.close();
-                    } catch (IOException var14) {
-                        var14.printStackTrace();
-                    }
-                }
+                var15.printStackTrace();
+                return false;
             }
-            return var5;
         }
 
         /**
@@ -1078,6 +1070,22 @@ public class QFile {
         return file.getAbsolutePath();
     }
 
+    public static String cleanName(String path){
+        File file = new File(path);
+        path = file.getAbsolutePath();
+
+        int index = path.indexOf(File.separator + "..");
+        while(index >= 0){
+            int indexI = path.lastIndexOf(File.separator + "..", index);
+            indexI = path.lastIndexOf(File.separator, indexI - 4);
+            path = path.substring(0, indexI + 1) +
+                    path.substring(index + 3);
+            index = path.indexOf(File.separator + "..");
+        }
+        file = new File(path.replace(File.separator + ".", ""));
+        return file.getAbsolutePath();
+    }
+
     /**
      * 获取真实路径
      * @param docWorkSpace
@@ -1097,6 +1105,34 @@ public class QFile {
             fileHome.mkdirs();
         }
         return fileHome.getAbsolutePath();
+    }
+
+    /**
+     * 编码转换
+     * @param inStr
+     * @return
+     */
+    public static String utf8ToUnicode(String inStr) {
+        char[] myBuffer = inStr.toCharArray();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < inStr.length(); i++) {
+            Character.UnicodeBlock ub = Character.UnicodeBlock.of(myBuffer[i]);
+            if (ub == Character.UnicodeBlock.BASIC_LATIN) {
+                //英文及数字等
+                sb.append(myBuffer[i]);
+            } else if (ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS) {
+                //全角半角字符
+                int j = (int) myBuffer[i] - 65248;
+                sb.append((char) j);
+            } else {
+                //汉字
+                short s = (short) myBuffer[i];
+                String hexS = Integer.toHexString(s).replace("ffff", "");
+                String unicode = "\\u" + hexS;
+                sb.append(unicode.toLowerCase());
+            }
+        }
+        return sb.toString();
     }
 
 }

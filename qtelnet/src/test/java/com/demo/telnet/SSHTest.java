@@ -13,9 +13,13 @@ import java.nio.charset.StandardCharsets;
 public class SSHTest {
 
     public static void main(String[] args) throws IOException {
-        String ip = "192.168.10.198";//change your ip
+        String ip = "192.168.7.2";//change your ip
         String username = "root";//user
-        String password = "nm,.qwer";//your server password
+        String password = "root";//your server password
+//        String ip = "192.168.3.60";//change your ip
+//        String username = "root";//user
+//        String password = "hn!3@60123";//your server password
+
 
         QSSH javaSsh = new QSSH()
             .setTag("测试")
@@ -44,7 +48,7 @@ public class SSHTest {
             @Override
             public void onGetDate(String tag, byte[] data) {
                 String msg =  new String(data, StandardCharsets.UTF_8);
-                System.out.println(msg);
+                System.out.println("onGetDate:" + msg);
             }
 
             @Override
@@ -58,13 +62,16 @@ public class SSHTest {
         }
 
         // 连续输入
+        javaSsh.sendPush("mkdir -p /home/app/client2");
         javaSsh.sendPush("ls");
         javaSsh.sendPush("cd /");
+        javaSsh.sendPush("cd /home/app");
         javaSsh.sendPush("ls");
         // 独立执行
         System.out.println( "<<" + javaSsh.sendStandalone("pwd\n"));
         javaSsh.sendPush("pwd");
 
+        System.out.println(javaSsh.sendStandalone("mkdir -p /home/app/client"));
         // 如果太早关闭, 回显会来不及接收
         // javaSsh.close();
     }

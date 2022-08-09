@@ -339,6 +339,8 @@ public class ExecuterFactory {
         try {
             Process proc = Runtime.getRuntime().exec(cmd, null, basePath == null ? null : new File(basePath));
             if(withReturn == null || withReturn.length == 0 || !withReturn[0]){
+                // 等待执行完成
+                proc.waitFor();
                 return "success";
             }
             InputStream stdIn =  proc.getInputStream();
@@ -364,7 +366,7 @@ public class ExecuterFactory {
                 }
             }
             return sb.toString();
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             return null;
         }

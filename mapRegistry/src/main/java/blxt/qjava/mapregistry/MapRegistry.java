@@ -3,6 +3,7 @@ package blxt.qjava.mapregistry;
 import blxt.qjava.utils.SnowflakeIdUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,6 +40,15 @@ public class MapRegistry<K, T> {
     public T getValue(K key){
         return registryMaps.get(key);
     }
+
+    /**
+     * 获取 注册表值 列表
+     * @return
+     */
+    public List<T> getRegistryKeys(){
+        return new ArrayList<T>((Collection<? extends T>) registryMaps.keySet());
+    }
+
 
     /**
      * 获取 注册表值 列表
