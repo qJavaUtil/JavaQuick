@@ -1,6 +1,8 @@
 package blxt.qjava.qexecute;
 
 
+import blxt.qjava.utils.system.SystemosEnum;
+
 import java.io.IOException;
 
 
@@ -55,10 +57,10 @@ public class ExecuterFactory {
     File redirectOutput = null;
 
     /** 系统类型. */
-    ExecuterType executerType;
+    SystemosEnum executerType;
 
     public ExecuterFactory(){
-        executerType = ExecuterType.getExecuterType();
+        executerType = SystemosEnum.getOs();
     }
 
     /**
@@ -66,7 +68,7 @@ public class ExecuterFactory {
      * @param executerType ExecuterType
      * @return ExecuterFactory
      */
-    public ExecuterFactory executerType(ExecuterType executerType) {
+    public ExecuterFactory executerType(SystemosEnum executerType) {
         this.executerType = executerType;
         return this;
     }
@@ -184,7 +186,7 @@ public class ExecuterFactory {
             writer = new PrintWriter(process.getOutputStream());
 
             // 初始化编码
-            if(executerType.equals(ExecuterType.Windows)){
+            if(executerType.equals(SystemosEnum.Windows)){
                 writer.println("chcp " + languageCode);
                 writer.flush();
             }
@@ -213,7 +215,7 @@ public class ExecuterFactory {
         List<String> cmdBins = new ArrayList<>();
         String cmdBin = "";
         // Windows下Cmd执行指令初始化
-        if(executerType.equals(ExecuterType.Windows)){
+        if(executerType.equals(SystemosEnum.Windows)){
             cmdBin = "cmd";
             cmdBins.add("cmd");
             if (isOneRun) {

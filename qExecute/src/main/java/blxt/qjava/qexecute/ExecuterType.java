@@ -4,9 +4,11 @@ import java.util.Locale;
 
 /**
  *  Executer 类型.
+ *  过期, 使用: blxt.qjava.utils.system.SystemosEnum
  * @author OpenJialei
  * @date 2022年04月11日 15:37
  */
+@Deprecated()
 public enum ExecuterType {
     /** Windows. */
     Windows,
