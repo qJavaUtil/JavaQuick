@@ -249,6 +249,7 @@ public class QTelnetClient extends TelnetClient {
             while (isConnected() && (code = in.read()) != -1) {
                 ch = (char) code;
                 sb.append(ch);
+                revertDate(ch);
                 //匹配到结束标识时返回结果
                 if (flag) {
                     if (ch == lastChar && sb.toString().endsWith(pattern)) {

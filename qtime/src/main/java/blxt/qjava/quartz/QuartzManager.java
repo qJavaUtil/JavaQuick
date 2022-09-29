@@ -7,10 +7,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class QuartzManager {
+    static String JOB_GROUP_NAME = "默认";
+    static String TRIGGER_NAME = "默认";
+    static String TRIGGER_GROUP_NAME = "默认";
 
     static Map<String, String> jobMaps = new HashMap<>();
 
     private static SchedulerFactory schedulerFactory = new StdSchedulerFactory();
+
+    /**
+     * @param jobName          任务名
+     * @param jobClass         任务
+     * @param cron             时间设置，参考quartz说明文档
+     * @Description: 添加一个定时任务
+     */
+    public static void addJob(String jobName, Class jobClass, String cron) {
+        addJob(jobName, JOB_GROUP_NAME, TRIGGER_NAME, TRIGGER_GROUP_NAME, jobClass, cron);
+    }
 
     /**
      * @param jobName          任务名
@@ -83,6 +96,7 @@ public class QuartzManager {
 
     /**
      * 添加并启动调度
+     *
      * @param jobDetail
      * @param trigger
      */
@@ -171,10 +185,11 @@ public class QuartzManager {
 
     /**
      * 判断任务是否存在
+     *
      * @param jobName
      * @return
      */
-    public static boolean isExist(String jobName){
+    public static boolean isExist(String jobName) {
         return jobMaps.get(jobName) != null;
     }
 
