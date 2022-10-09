@@ -1,5 +1,6 @@
 package blxt.qjava.qtelnet;
 
+import com.sun.org.apache.bcel.internal.classfile.ConstantClass;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.telnet.TelnetClient;
@@ -17,6 +18,9 @@ import java.io.UnsupportedEncodingException;
 @Slf4j
 @Data
 public class QTelnetClient extends TelnetClient {
+    public static final String DEFAULTENCODING = new java.io.InputStreamReader(
+        new java.io.ByteArrayInputStream(new byte[0])).getEncoding();
+
     public static String LoginMark = "login:";
     public static String PasswdMark = "password:";
     public static String LoginFailedMark = "Login Failed";
@@ -204,6 +208,7 @@ public class QTelnetClient extends TelnetClient {
         return true;
     }
 
+
     /**
      * 发送命令, 没有读数据
      *
@@ -218,6 +223,65 @@ public class QTelnetClient extends TelnetClient {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 键盘按键输入.
+     * @param keyCode 键盘码
+     */
+    public void keyTraversed(int keyCode) {
+
+        // 特殊案件处理
+        switch (keyCode) {
+            case 0x1000001: // Up arrow
+                writeOpt("\u001b[A");
+                return;
+            case 0x1000002: // Down arrow.
+                writeOpt("\u001b[B");
+                return;
+            case 0x1000003: // Left arrow.
+                writeOpt("\u001b[D");
+                return;
+            case 0x1000004: // Right arrow.
+                writeOpt("\u001b[C");
+                return;
+            case 0x1000005: // PgUp
+                writeOpt("\u001b[5~");
+                return;
+            case 0x1000006: // PgDn
+                writeOpt("\u001b[6~");
+                return;
+            case 0x1000007: // Home
+                write(new byte[]{27, 91, 49});
+                return;
+            case 0x1000008: // End
+                write(new byte[]{27, 91, 52});
+                return;
+            case 0x1000009: // Insert.
+                writeOpt("\u001b[2~");
+                return;
+            case 0x000007f: // delete
+                writeOpt("\u001b[3~");
+                return;
+            default:
+                write(new byte[]{(byte) keyCode});
+                break;
+        }
+    }
+
+
+    /**
+     * 发送特殊的键盘码: 如： "\u001b[6~".
+     * @param value 键盘码值
+     * @return
+     */
+    public boolean writeOpt(String value) {
+        try {
+            return write(value.getBytes(DEFAULTENCODING));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -321,28 +385,6 @@ public class QTelnetClient extends TelnetClient {
             }
         }).start();
 
-    }
-
-    /**
-     * 回复数据
-     *
-     * @param stringBuilder
-     */
-    private void revertDate(String stringBuilder) {
-        if (onTelnetClientListener == null) {
-            return;
-        }
-        if (!threadReturn) {
-            onTelnetClientListener.onReceiver(tag, stringBuilder);
-            return;
-        }
-        // 放在线程里面去通知
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                onTelnetClientListener.onReceiver(tag, stringBuilder);
-            }
-        }).start();
     }
 
     /**
