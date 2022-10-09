@@ -24,10 +24,17 @@ public class QTelnetClient extends TelnetClient {
     final Object lock = new Object();
     String tag = "default";
     String hostIp = "127.0.0.1";
-    int port = 22;
+    int port = 23;
     String username;
     String password;
     boolean isLogin = false;
+
+    /** 过滤控制码 */
+    boolean isFilterAnsi = false;
+    /**
+     * 过滤控制颜色
+     */
+    boolean isFilterColor = false;
 
     /**
      * 结束标识字符串,Windows中是>,Linux中是#
@@ -49,17 +56,11 @@ public class QTelnetClient extends TelnetClient {
      * 协议类型 .VT100、VT52、VT220、VTNT、ANSI
      */
     String termtype = "VT100";
-    /**
-     * 隐藏控制台颜色
-     */
-    boolean hideColor = false;
+
     /**
      * 使用线程返回
      */
     boolean threadReturn = false;
-
-    /** 读取超时时间:s.**/
-    int readOutTime = 3000;
 
     /**
      * 编码转换
@@ -71,7 +72,7 @@ public class QTelnetClient extends TelnetClient {
     /**
      * 异步读取线程
      */
-    ReadThread2 readThread2 = null;
+    ReadThread readThread = null;
     boolean readThreadRun = true;
     OnTelnetClientListener onTelnetClientListener = null;
 
@@ -111,16 +112,15 @@ public class QTelnetClient extends TelnetClient {
         if (isConnected()) {
             write("exit");
         }
-        if (readThread2 != null) {
+        if (readThread != null) {
             readThreadRun = false;
-            readThread2.stop();
-            readThread2 = null;
+            readThread.stop();
+            readThread = null;
         }
         try {
             if (isConnected()) {
                 in.close();
                 out.close();
-                // disconnect();
                 isLogin = false;
             }
         } catch (IOException e) {
@@ -350,15 +350,15 @@ public class QTelnetClient extends TelnetClient {
      *
      * @param c
      */
-    private void revertDate(char c) {
+    private boolean revertDate(char c) {
         if (onTelnetClientListener == null) {
           //  System.out.print(c);
             log.debug("{} \n {}", tag, c);
-            return;
+            return false;
         }
         if (!threadReturn) {
             onTelnetClientListener.onGetDate(tag, new byte[]{(byte) c});
-            return;
+            return false;
         }
         // 放在线程里面去通知
         new Thread(new Runnable() {
@@ -367,6 +367,7 @@ public class QTelnetClient extends TelnetClient {
                 onTelnetClientListener.onGetDate(tag, new byte[]{(byte) c});
             }
         }).start();
+        return true;
     }
 
     /**
@@ -382,10 +383,10 @@ public class QTelnetClient extends TelnetClient {
      * 启动读取线程
      */
     public void onReadThread() {
-        if (readThread2 == null) {
+        if (readThread == null) {
             readThreadRun = true;
-            readThread2 = new ReadThread2();
-            Thread thread = new Thread(readThread2);
+            readThread = new ReadThread(in);
+            Thread thread = new Thread(readThread);
             thread.start();
         }
     }
@@ -405,118 +406,69 @@ public class QTelnetClient extends TelnetClient {
         void onReceiver(final String tag, final String msg);
     }
 
-    class ReadThread2 extends Thread {
+    /**
+     * 读取线程.
+     */
+    class ReadThread extends Thread {
+        /**
+         * 输入流,接收返回信息
+         */
+        private InputStream in;
+
+        public ReadThread(InputStream in){
+            this.in = in;
+        }
+
         @Override
         public void run() {
             synchronized (lock) {//只能一个读取
-                SubReadThread sub = new SubReadThread();
-                sub.start();
-                int last = sub.count;
-                while (readThreadRun && isConnected()) {
-                    // 每隔3s, 检查一次输出
-                    sub.sleep(readOutTime);
-                    if (last == sub.count) {
-                        // 回复数据
-                        String data = sub.getDate();
-                        if (data != null) {
-                            revertDate(data);
-                        }
-                    } else {
-                        last = sub.count;
-                    }
+                while (readThreadRun) {
+                    read();
                 }
+                log.warn("停止读取");
             }
         }
 
-    }
 
-    /**
-     * 读取子线程，完成实际读取
-     *
-     * @author chruan
-     */
-    class SubReadThread extends Thread {
-        int count = 0;
-        StringBuilder sb = new StringBuilder();
         /**
-         * 缓存锁
+         * 读取字符.
          */
-        boolean lock = false;
-
         public void read() {
             char c;
             int code = -1;
             // 强制传输的时候,不进行读取
             while ((code = (inRead())) != -1) {
                 // 锁
-                lock();
-                lock = true;
-                count++;
                 c = (char) code;
-                // 颜色
-                if (hideColor && c == '\033') {
-                    int code2 = inRead();
-                    char cc = (char) code2;
-                    count++;
-                    if (cc == '[' || cc == '(') {
-                    }
-                }
-                // 控制码
-                else if (code < 0x20) {
-                } else {
-                    // 字符回显
-                    sb.append(c);
+                if(!isFilterAnsi){
+                    // 及时透传
+                    //sb.append(c);
                     revertDate(c);
                 }
-                // 解锁
-                lock = false;
-                // 遇到换行, 强制传输
-                if (c == '\n') {
-                    // 监测到换行, 自动输出
-                    String data = getDate();
-                    if (data != null) {
-                        revertDate(data);
+                else{ // 对回显进行过滤
+                    // 颜色
+                    if (isFilterColor && c == '\033') {
+                        int code2 = inRead();
+                        char cc = (char) code2;
+                        if (cc == '[' || cc == '(') {
+                        }
+                    }
+                    // 控制码
+                    else if (code < 0x20) {
+                        // 字符回显
+                    } else {
+                        // 字符回显
+                        revertDate(c);
                     }
                 }
             }
 
-        }
-
-        @Override
-        public void run() {
-            while (readThreadRun) {
-                read();
-            }
-            log.warn("停止读取");
         }
 
         /**
-         * 读取缓存, 要做锁
+         * 输入流读取.
+         * @return 读取字符
          */
-        public String getDate() {
-            if (sb.length() == 0) {
-                count = 0;
-                return null;
-            }
-            // 锁
-            lock();
-            lock = true;
-            // 读取
-            String date = sb.toString();
-            // 清除
-            sb.delete(0, sb.length());
-            count = 0;
-            lock = false;
-            return date;
-        }
-
-        // 锁
-        public synchronized void lock() {
-            while (lock) {
-                sleep(10);
-            }
-        }
-
         private int inRead() {
             try {
                 return in.read();
@@ -524,14 +476,6 @@ public class QTelnetClient extends TelnetClient {
                 e.printStackTrace();
             }
             return -1;
-        }
-
-        public void sleep(int time) {
-            try {
-                Thread.sleep(time);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
 
     }
