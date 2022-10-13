@@ -17,6 +17,8 @@ import java.util.List;
 @Data
 public class FileTreeBean {
     /** 包名截取 */
+    @JsonIgnore
+    @JSONField(serialize=false)
     public static int PACKAGE_INDEX = 0;
 
     /** 目录标记 */
@@ -34,11 +36,16 @@ public class FileTreeBean {
     String hashId;
 
     @JsonIgnore
+    @JSONField(serialize=false)
     int packageIndex;
 
     /** 文件逆序 */
+    @JsonIgnore
+    @JSONField(serialize=false)
     boolean reversed = false;
 
+    @JsonIgnore
+    @JSONField(serialize=false)
     FileScanCallback callback = null;
 
     /** 子文件 */
