@@ -365,6 +365,21 @@ public class QTelnetClient extends TelnetClient {
             int code = -1;
             while (isConnected() && (code = in.read()) != -1) {
                 ch = (char) code;
+                if(isFilterAnsi){ // 对回显进行过滤
+                    // 颜色
+                    if (isFilterColor && ch == '\033') {
+                        int code2 ;
+                        while((code2 = in.read()) != 'm'){
+                        }
+                        continue;
+                    }
+                    // 控制码
+                    else if (code < 0x20) {
+                        if(!(ch == '\r' || ch != '\n' || code != 8 || ch != '\t')){
+                            continue;
+                        }
+                    }
+                }
                 sb.append(ch);
                 revertDate(ch);
                 //匹配到结束标识时返回结果
@@ -528,20 +543,21 @@ public class QTelnetClient extends TelnetClient {
                 c = (char) code;
                 if(!isFilterAnsi){
                     // 及时透传
-                    //sb.append(c);
                     revertDate(c);
                 }
                 else{ // 对回显进行过滤
                     // 颜色
                     if (isFilterColor && c == '\033') {
-                        int code2 = inRead();
-                        char cc = (char) code2;
-                        if (cc == '[' || cc == '(') {
+                        int code2 = 0;
+                        while((code2 = inRead()) != 'm') {
+                            ;
                         }
                     }
                     // 控制码
                     else if (code < 0x20) {
-                        // 字符回显
+                        if(!(c == '\r' || c != '\n' || code != 8 || c != '\t')){
+                            continue;
+                        }
                     } else {
                         // 字符回显
                         revertDate(c);

@@ -24,7 +24,6 @@ public class TelnetTest {
             telnetOperator.setPassword(password);
             telnetOperator.setPrompt("#");
             telnetOperator.connect();
-
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -43,10 +42,12 @@ public class TelnetTest {
 //            telnetOperator.setOnTelnetClientListener(this);
 //            telnetOperator.onReadThread();
 
+            telnetOperator.setFilterColor(true);
+            telnetOperator.setFilterAnsi(true);
             Thread.sleep(1000);
-
-            System.out.println(    telnetOperator.sendCommandWithReply("cd /apps"));
-            System.out.println(    telnetOperator.sendCommandWithReply("pwd"));
+            String res =   telnetOperator.sendCommandWithReply("top");
+            System.out.println(res);
+          //  System.out.println(    telnetOperator.sendCommandWithReply("pwd"));
 //            telnetOperator.write("pwd");
 //            telnetOperator.write(new byte[]{13});
 //            telnetOperator.write("ls /apps/app/test2");
