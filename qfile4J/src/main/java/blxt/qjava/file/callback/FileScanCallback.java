@@ -13,12 +13,12 @@ public interface FileScanCallback {
      * @param file
      * @return
      */
-    boolean onFile(File file);
+    boolean onFile(int dirDeep, File file);
 
     /**
      * 文件夹回调
      * @param file
      * @return
      */
-    boolean onDir(File file);
+    boolean onDir(int dirDeep, File file);
 }

@@ -225,11 +225,11 @@ public class FileSearchHelper {
                 // 获取文件绝对路径
                 getFileList(files[i], suffix, suffixIngron);
                 if(callback != null){
-                    callback.onDir(files[i]);
+                    callback.onDir(0, files[i]);
                 }
             } else if (suffix == null) {
                 if(callback != null){
-                    callback.onFile(files[i]);
+                    callback.onFile(0, files[i]);
                 }
                 else{
                     String strFileName = files[i].getAbsolutePath();
@@ -237,7 +237,7 @@ public class FileSearchHelper {
                 }
             } else if (fileName.endsWith(suffix)) {
                 if(callback != null){
-                    callback.onFile(files[i]);
+                    callback.onFile(0, files[i]);
                 }
                 else{
                     // 判断文件名是否以指定结尾

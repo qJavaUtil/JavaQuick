@@ -2,6 +2,7 @@ package blxt.qjava.qexecute;
 
 
 import blxt.qjava.utils.system.SystemosEnum;
+import lombok.Data;
 
 import java.io.IOException;
 
@@ -59,6 +60,9 @@ public class ExecuterFactory {
     /** 系统类型. */
     SystemosEnum executerType;
 
+    /** 是否连接成功 */
+    boolean connect = false;
+
     public ExecuterFactory(){
         executerType = SystemosEnum.getOs();
     }
@@ -90,6 +94,11 @@ public class ExecuterFactory {
      */
     public ExecuterFactory workPath(String workPath) {
         return workPath(new File(workPath));
+    }
+
+
+    public String getWorkpath(){
+        return workPath.getAbsolutePath();
     }
 
     /***
@@ -153,6 +162,14 @@ public class ExecuterFactory {
     }
 
     /**
+     * 判断链接.
+     * @return
+     */
+    public boolean isConnect(){
+        return connect;
+    }
+
+    /**
      * 执行cmd指令
      * @param cmd 执行指令
      */
@@ -200,8 +217,10 @@ public class ExecuterFactory {
                 errorThread.setName("ErrorStreamThread");
                 errorThread.start();
             }
+            connect = true;
         } catch (Exception e) {
             e.printStackTrace();
+            connect = false;
         }
     }
 

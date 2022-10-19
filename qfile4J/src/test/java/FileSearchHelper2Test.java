@@ -135,7 +135,7 @@ public class FileSearchHelper2Test {
         }
 
         @Override
-        public boolean onFile(File file) {
+        public boolean onFile(int dirDeep, File file) {
             if (falDelete) {
                 file.delete();
                 return false;
@@ -163,7 +163,7 @@ public class FileSearchHelper2Test {
         }
 
         @Override
-        public boolean onDir(File file) {
+        public boolean onDir(int dirDeep, File file) {
             if (file.listFiles() == null || file.listFiles().length == 0) {
                 file.delete();
             }

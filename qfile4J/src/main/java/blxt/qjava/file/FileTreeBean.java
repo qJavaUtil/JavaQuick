@@ -35,6 +35,10 @@ public class FileTreeBean {
     /** 文件路径hash */
     String hashId;
 
+    /** 文件夹深度层级. */
+    int dirDeep = 0;
+
+    /** 路径裁剪 */
     @JsonIgnore
     @JSONField(serialize=false)
     int packageIndex;
@@ -52,54 +56,71 @@ public class FileTreeBean {
     List<FileTreeBean> files = new ArrayList<>();
 
     public FileTreeBean(File file) {
-        this.file = file;
-        packageIndex = PACKAGE_INDEX;
-        init(PACKAGE_INDEX);
+        this(file, PACKAGE_INDEX, 0);
     }
 
     public FileTreeBean(File file, int packageIndex) {
+        this(file, packageIndex, 0);
+    }
+
+    public FileTreeBean(File file, int packageIndex, int dirDeep) {
         this.file = file;
         this.packageIndex = packageIndex;
-        init(packageIndex);
+        init(packageIndex, dirDeep);
     }
 
     private void init(int packageIndex){
+        init(packageIndex, 0);
+    }
+
+    private void init(int packageIndex, int dirDeep){
+        this.dirDeep = dirDeep;
         name = file.getName();
         packageName = file.getAbsolutePath().substring(packageIndex);
         hashId = ((packageName + File.separator + name).hashCode() & Integer.MAX_VALUE) + System.currentTimeMillis() + "";
     }
+
 
     /**
      * 构建文件树
      * @return
      */
     public FileTreeBean buile(){
-        if (file.isDirectory()){
-            dir = true;
-            File[] files = file.listFiles();
-            if (files != null){
-                // 按文件名排序
-                List<File>  fileList = QFile.MFile.orderByName(files, reversed);
-                for (File file1 : fileList) {
-                    // 接口回调
-                    if(callback != null){
-                        boolean isAdd = false;
-                        if(file1.isDirectory()){
-                            isAdd = callback.onDir(file1);
-                        }
-                        else {
-                            isAdd = callback.onFile(file1);
-                        }
-                        // 如果不添加, 就忽略
-                        if(!isAdd){
-                            continue;
-                        }
+        if (!file.isDirectory()){
+           return this;
+        }
+        dir = true;
+        File[] files = file.listFiles();
+        if (files != null){
+            // 按文件名排序
+            List<File>  fileList = QFile.MFile.orderByName(files, reversed);
+            for (File file1 : fileList) {
+                // 接口回调
+                if(callback != null){
+                    boolean isAdd = false;
+                    if(file1.isDirectory()){
+                        isAdd = callback.onDir(dirDeep, file1);
                     }
-                    // 添加解析
-                    this.files.add(new FileTreeBean(file1, packageIndex).buile());
+                    else {
+                        isAdd = callback.onFile(dirDeep, file1);
+                    }
+                    // 如果不添加, 就忽略
+                    if(!isAdd){
+                        continue;
+                    }
                 }
+                // 添加解析
+                this.files
+                    .add(new FileTreeBean(file1, packageIndex, dirDeep + 1)
+                        .setCallback(callback)
+                        .buile());
             }
         }
+        return this;
+    }
+
+    public FileTreeBean setCallback(FileScanCallback callback) {
+        this.callback = callback;
         return this;
     }
 
@@ -108,10 +129,21 @@ public class FileTreeBean {
         return json;
     }
 
-
     public static void main(String[] args) {
         File file = new File("E:\\ShiTou\\Desktop\\演示地址\\测试");
         FileTreeBean fileTreeBean = new FileTreeBean(file, file.getAbsolutePath().length());
+
+        fileTreeBean.setCallback(new FileScanCallback() {
+            @Override
+            public boolean onFile(int dirDeep, File file) {
+                return true;
+            }
+
+            @Override
+            public boolean onDir(int dirDeep, File file) {
+                return true;
+            }
+        });
         fileTreeBean.buile();
 
         System.out.println(JSON.toJSONString(fileTreeBean));

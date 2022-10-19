@@ -163,7 +163,7 @@ public class FileSearchHelperTest {
         }
 
         @Override
-        public boolean onFile(File file) {
+        public boolean onFile(int dirDeep,File file) {
             if (falDelete) {
                 System.err.println("删除:" + file.delete() + "--" + file.getAbsolutePath());
                 return false;
@@ -191,7 +191,7 @@ public class FileSearchHelperTest {
         }
 
         @Override
-        public boolean onDir(File file) {
+        public boolean onDir(int dirDeep,File file) {
             if (file.listFiles() == null || file.listFiles().length == 0) {
                 file.delete();
             }
