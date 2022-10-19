@@ -4,7 +4,7 @@ import blxt.qjava.qtelnet.QTelnetClient;
 
 public class TelnetTest {
 
-    static String hostIp = "192.168.2.56";
+    static String hostIp = "192.168.1.29";
     static int port = 23;
     static String username = "root";
     static String password = "root";
@@ -12,7 +12,6 @@ public class TelnetTest {
     public static void main(String[] args) throws Exception {
         QTelnetClientTest telnetClientTest = new QTelnetClientTest();
         telnetClientTest.test();
-
     }
 
     public static class QTelnetClientTest implements QTelnetClient.OnTelnetClientListener {
@@ -41,16 +40,20 @@ public class TelnetTest {
             }
 
             // 登陆成功后, 再添加回调监听
-            telnetOperator.setOnTelnetClientListener(this);
-            telnetOperator.onReadThread();
+//            telnetOperator.setOnTelnetClientListener(this);
+//            telnetOperator.onReadThread();
 
-            telnetOperator.write("pwd");
-            telnetOperator.write(new byte[]{13});
-            telnetOperator.write("ls /apps/app/test2");
-            telnetOperator.write(new byte[]{13});
             Thread.sleep(1000);
+
+            System.out.println(    telnetOperator.sendCommandWithReply("cd /apps"));
+            System.out.println(    telnetOperator.sendCommandWithReply("pwd"));
+//            telnetOperator.write("pwd");
+//            telnetOperator.write(new byte[]{13});
+//            telnetOperator.write("ls /apps/app/test2");
+//            telnetOperator.write(new byte[]{13});
+//            Thread.sleep(1000);
           //  telnetOperator.write("/apps/app/test4/1653529652109_testddr3")
-            telnetOperator.write("/apps/app/test2/1653374889008_iozone -i 0 –i 1 -i 2 -i 3 -i 4 -i 5 -i 6 -i 7 -r 1024K -s 3072K -f  /apps/app/file  -R");
+ //           telnetOperator.write("/apps/app/test2/1653374889008_iozone -i 0 –i 1 -i 2 -i 3 -i 4 -i 5 -i 6 -i 7 -r 1024K -s 3072K -f  /apps/app/file  -R");
 //            String res = telnetOperator.sendCommand("mkdir test");
 //            System.out.println("结果:" + res);
 //            res = telnetOperator.sendCommand("ls");
@@ -58,7 +61,18 @@ public class TelnetTest {
 
             //telnetOperator.write("debug :1235 /apps/test5/application");
   //          telnetOperator.write("vi /root/startup.sh");
+
+
+            while(true) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
+
 
         @Override
         public void onReceiver(String tag, String msg) {
@@ -84,6 +98,7 @@ public class TelnetTest {
         public void onGetDate(String tag, byte[] data) {
          //   System.out.print((char)data[0]);
         }
+
     }
 
 

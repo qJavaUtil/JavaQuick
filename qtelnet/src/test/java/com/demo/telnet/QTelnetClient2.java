@@ -1,4 +1,4 @@
-package blxt.qjava.qtelnet;
+package com.demo.telnet;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +17,7 @@ import java.util.Locale;
  */
 @Slf4j
 @Data
-public class QTelnetClient extends TelnetClient {
-    public static final String DEFAULTENCODING = new java.io.InputStreamReader(
-        new java.io.ByteArrayInputStream(new byte[0])).getEncoding();
-
+public class QTelnetClient2 extends TelnetClient {
     public static String LoginMark = "login:";
     public static String PasswdMark = "password:";
     public static String LOGINFAILEDMARK = "Login Failed";
@@ -39,17 +36,18 @@ public class QTelnetClient extends TelnetClient {
      * 过滤控制颜色
      */
     boolean isFilterColor = false;
+    /** 登录输入间隔(极少部分设备需要sleep).*/
+    private String loginFailedMark = LOGINFAILEDMARK;
+    private int loginSleep = 100;
 
     /**
      * 结束标识字符串,Windows中是>,Linux中是#
      */
     private String prompt = "]$";
+    /**
+     * 结束标识字符
+     */
     private char promptChar = '$';
-    /** 登录失败标记. */
-    private String loginFailedMark = LOGINFAILEDMARK;
-    /** 登录输入间隔(极少部分设备需要sleep).*/
-    private int loginSleep = 100;
-
     /**
      * 输入流,接收返回信息
      */
@@ -82,11 +80,11 @@ public class QTelnetClient extends TelnetClient {
     boolean readThreadRun = true;
     OnTelnetClientListener onTelnetClientListener = null;
 
-    public QTelnetClient() {
+    public QTelnetClient2() {
         super();
     }
 
-    public QTelnetClient(final String termtype) {
+    public QTelnetClient2(final String termtype) {
         super(termtype);
     }
 
@@ -108,6 +106,7 @@ public class QTelnetClient extends TelnetClient {
         }
         return true;
     }
+
 
     /**
      * 关闭连接
@@ -147,15 +146,6 @@ public class QTelnetClient extends TelnetClient {
         this.promptChar = prompt.charAt(prompt.length() - 1);
     }
 
-    /**
-     * 设置loginSleep
-     * @param loginSleep
-     * @return
-     */
-    public QTelnetClient setLoginSleep(int loginSleep) {
-        this.loginSleep = loginSleep;
-        return this;
-    }
 
     /**
      * 登录到目标主机
@@ -206,33 +196,6 @@ public class QTelnetClient extends TelnetClient {
 
 
     /**
-     * 发送命令,返回执行结果
-     *
-     * @param command
-     * @return
-     */
-    public String sendCommandWithTime(final String command, final int time) {
-        try {
-            write(command);
-            return readUntil(prompt);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
-    /**
-     * 设置登录失败标记.
-     * @param loginMark
-     * @return
-     */
-    public QTelnetClient setLoginFailedMark(String loginMark) {
-        loginFailedMark = loginMark;
-        return this;
-    }
-
-    /**
      * 发送命令, 没有读数据
      *
      * @param value
@@ -247,7 +210,6 @@ public class QTelnetClient extends TelnetClient {
         }
         return true;
     }
-
 
     /**
      * 发送命令, 没有读数据
@@ -266,76 +228,6 @@ public class QTelnetClient extends TelnetClient {
     }
 
     /**
-     * 键盘按键输入.
-     * @param keyCodes 键盘码
-     */
-    public void keyTraversed(final String keyCodes) {
-        char[] lastChar = keyCodes.toCharArray();
-        for (char c : lastChar) {
-            keyTraversed(c);
-        }
-    }
-
-    /**
-     * 键盘按键输入.
-     * @param keyCode 键盘码
-     */
-    public void keyTraversed(final int keyCode) {
-
-        // 特殊案件处理
-        switch (keyCode) {
-            case 0x1000001: // Up arrow
-                writeOpt("\u001b[A");
-                return;
-            case 0x1000002: // Down arrow.
-                writeOpt("\u001b[B");
-                return;
-            case 0x1000003: // Left arrow.
-                writeOpt("\u001b[D");
-                return;
-            case 0x1000004: // Right arrow.
-                writeOpt("\u001b[C");
-                return;
-            case 0x1000005: // PgUp
-                writeOpt("\u001b[5~");
-                return;
-            case 0x1000006: // PgDn
-                writeOpt("\u001b[6~");
-                return;
-            case 0x1000007: // Home
-                write(new byte[]{27, 91, 49});
-                return;
-            case 0x1000008: // End
-                write(new byte[]{27, 91, 52});
-                return;
-            case 0x1000009: // Insert.
-                writeOpt("\u001b[2~");
-                return;
-            case 0x000007f: // delete
-                writeOpt("\u001b[3~");
-                return;
-            default:
-                write(new byte[]{(byte) keyCode});
-                break;
-        }
-    }
-
-
-    /**
-     * 发送特殊的键盘码: 如： "\u001b[6~".
-     * @param value 键盘码值
-     * @return
-     */
-    public boolean writeOpt(final String value) {
-        try {
-            return write(value.getBytes(DEFAULTENCODING));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
      * 读取结果.
      *
      * @param pattern pattern
@@ -351,16 +243,14 @@ public class QTelnetClient extends TelnetClient {
      * @param pattern 匹配到该字符串时返回结果
      * @return
      */
-    private String readUntil(final String pattern, final OnTelnetClientListener listener) {
+    private String readUntil(final String pattern,final  OnTelnetClientListener onTelnetClientListener) {
         StringBuilder sb = new StringBuilder();
         try {
-            // 如果没指定结束标识,匹配到默认结束标识字符时返回结果
-            String prompt = this.prompt;
-            if(pattern != null &&  pattern.length() > 0){
-                prompt = pattern;
+            char lastChar = (char) -1;
+            boolean flag = pattern != null && pattern.length() > 0;
+            if (flag) {
+                lastChar = pattern.charAt(pattern.length() - 1);
             }
-            char lastChar = prompt.charAt(prompt.length() - 1);
-
             char ch;
             int code = -1;
             while (isConnected() && (code = in.read()) != -1) {
@@ -368,8 +258,15 @@ public class QTelnetClient extends TelnetClient {
                 sb.append(ch);
                 revertDate(ch);
                 //匹配到结束标识时返回结果
-                if (ch == lastChar && sb.toString().endsWith(prompt)) {
-                    break;
+                if (flag) {
+                    if (ch == lastChar && sb.toString().endsWith(pattern)) {
+                        break;
+                    }
+                } else {
+                    //如果没指定结束标识,匹配到默认结束标识字符时返回结果
+                    if (ch == promptChar) {
+                        break;
+                    }
                 }
                 //登录失败时返回结果
                 if (!isLogin && sb.toString().contains(loginFailedMark)) {
@@ -383,7 +280,7 @@ public class QTelnetClient extends TelnetClient {
             }
         }
         // 回复数据
-        revertDate(sb, listener);
+        revertDate(sb, onTelnetClientListener);
         return sb.toString();
     }
 
@@ -392,26 +289,67 @@ public class QTelnetClient extends TelnetClient {
      *
      * @param stringBuilder
      */
-    private void revertDate(final StringBuilder stringBuilder, final OnTelnetClientListener onTelnetClientListener) {
+    private void revertDate(final StringBuilder stringBuilder,final  OnTelnetClientListener onTelnetClientListener) {
         if (stringBuilder.length() == 0) {
             return;
         }
         if (onTelnetClientListener == null) {
-            log.debug("{}", stringBuilder.toString());
+            // System.out.print(stringBuilder.toString());
+            log.debug("{} \n {}", tag, stringBuilder.toString());
             return;
         }
         if (!threadReturn) {
-            toRevertDate(stringBuilder, onTelnetClientListener);
+            if (isChangeCode) {
+                try {
+                    onTelnetClientListener.onReceiver(tag, new String(stringBuilder.toString()
+                        .getBytes(ORIG_CODEC), TRANSLATE_CODEC));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                onTelnetClientListener.onReceiver(tag, stringBuilder.toString());
+            }
             return;
         }
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                toRevertDate(stringBuilder, onTelnetClientListener);
+                if (isChangeCode) {
+                    try {
+                        onTelnetClientListener.onReceiver(tag, new String(stringBuilder.toString()
+                            .getBytes(ORIG_CODEC), TRANSLATE_CODEC));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    onTelnetClientListener.onReceiver(tag, stringBuilder.toString());
+                }
             }
         }).start();
 
+    }
+
+    /**
+     * 回复数据
+     *
+     * @param stringBuilder
+     */
+    private void revertDate(final String stringBuilder) {
+        if (onTelnetClientListener == null) {
+            return;
+        }
+        if (!threadReturn) {
+            onTelnetClientListener.onReceiver(tag, stringBuilder);
+            return;
+        }
+        // 放在线程里面去通知
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                onTelnetClientListener.onReceiver(tag, stringBuilder);
+            }
+        }).start();
     }
 
     /**
@@ -421,12 +359,13 @@ public class QTelnetClient extends TelnetClient {
      */
     private boolean revertDate(final char c) {
         if (onTelnetClientListener == null) {
-            log.debug("{}", c);
+            //  System.out.print(c);
+            log.debug("{} \n {}", tag, c);
             return false;
         }
         if (!threadReturn) {
             onTelnetClientListener.onGetDate(tag, new byte[]{(byte) c});
-            return true;
+            return false;
         }
         // 放在线程里面去通知
         new Thread(new Runnable() {
@@ -436,24 +375,6 @@ public class QTelnetClient extends TelnetClient {
             }
         }).start();
         return true;
-    }
-
-    /**
-     * 回复数据.
-     *
-     * @param stringBuilder
-     */
-    private void toRevertDate(final StringBuilder stringBuilder, final OnTelnetClientListener onTelnetClientListener){
-        if (isChangeCode) {
-            try {
-                onTelnetClientListener.onReceiver(tag, new String(stringBuilder.toString()
-                    .getBytes(ORIG_CODEC), TRANSLATE_CODEC));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-        } else {
-            onTelnetClientListener.onReceiver(tag, stringBuilder.toString());
-        }
     }
 
     /**
@@ -501,7 +422,7 @@ public class QTelnetClient extends TelnetClient {
          */
         private InputStream in;
 
-        public ReadThread(final InputStream in){
+        public ReadThread(InputStream in){
             this.in = in;
         }
 
@@ -572,4 +493,5 @@ public class QTelnetClient extends TelnetClient {
         } catch (InterruptedException ignored) {
         }
     }
+
 }
