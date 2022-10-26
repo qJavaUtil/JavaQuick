@@ -37,6 +37,8 @@ public class FileTreeBean {
 
     /** 文件夹深度层级. */
     int dirDeep = 0;
+    /** 目标文件夹深度层级. */
+    int dirDeepTarget = -1;
 
     /** 路径裁剪 */
     @JsonIgnore
@@ -89,7 +91,12 @@ public class FileTreeBean {
         if (!file.isDirectory()){
            return this;
         }
+        // 进行子文件迭代
         dir = true;
+        // 跳过文件夹层级
+        if(dirDeepTarget > 0 && dirDeepTarget <= dirDeep){
+            return this;
+        }
         File[] files = file.listFiles();
         if (files != null){
             // 按文件名排序
@@ -113,6 +120,7 @@ public class FileTreeBean {
                 this.files
                     .add(new FileTreeBean(file1, packageIndex, dirDeep + 1)
                         .setCallback(callback)
+                        .setDirDeepTarget(dirDeepTarget)
                         .buile());
             }
         }
@@ -128,6 +136,12 @@ public class FileTreeBean {
         String json = JSON.toJSONString(this);
         return json;
     }
+
+    public FileTreeBean setDirDeepTarget(int dirDeepTarget){
+        this.dirDeepTarget = dirDeepTarget;
+        return this;
+    }
+
 
     public static void main(String[] args) {
         File file = new File("E:\\ShiTou\\Desktop\\演示地址\\测试");

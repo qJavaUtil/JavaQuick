@@ -1,0 +1,24 @@
+
+未经处理的异常:  System.IO.IOException: 句柄无效。
+
+   在 System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   在 System.Console.GetBufferInfo(Boolean throwOnNoConsole, Boolean& succeeded)
+   在 System.Console.get_WindowWidth()
+   在 N_m3u8DL_CLI.LOGGER.PrintLine(String text, Int32 printLevel)
+   在 N_m3u8DL_CLI.NetCore.Program.Main(String[] args)
+res 的目录
+
+2021/10/31  18:22    <DIR>          .
+2020/12/25  17:01    <DIR>          ..
+2021/08/30  15:07    <DIR>          Camera Roll
+2021/01/11  22:36    <DIR>          ControlCenter4
+2021/12/27  11:16    <DIR>          Saved Pictures
+               0 个文件              0 字节
+               5 个目录 154,581,352,448 可用字节
+
+E:\ZhangJieLei\Pictures>E:\ShiTou\Downloads\N_m3u8DL-CLI_v2.9.9.exe
+N_m3u8DL-CLI version 2.9.9 2018-2021
+  built date: 20211123
+
+N_m3u8DL-CLI > 
+E:\ZhangJieLei\Pictures>

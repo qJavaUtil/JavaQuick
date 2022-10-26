@@ -1,5 +1,6 @@
 package blxt.qjava.utils.network;
 
+import blxt.qjava.utils.check.CheckUtils;
 import blxt.qjava.utils.network.bean.NetworkBasic;
 import blxt.qjava.utils.network.bean.NetworkBean;
 
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class WindowsNetworkAnalysis {
 
-    private static String IPCONFIG_ALL = "cmd /c ipconfig /all";
+    private static String IPCONFIG_ALL = "cmd /c ipconfig /allcompartments /all";
     private static String CLN = ":";
 
     private NetworkBasic netBasic = null;
@@ -25,12 +26,11 @@ public class WindowsNetworkAnalysis {
     public NetworkBasic build() {
         boolean mainConfig = false;
         String value = null, label = null;
-        NetworkBean bean = null;
         List<String> list = this.execReturnRet(IPCONFIG_ALL);
-        //List<String> list = Arrays.asList(ss);
+        String beanName = null;
         for(String el : list) {
             el = el.trim();
-            if("".equals(el)) {
+            if(CheckUtils.isEmpty(el)) {
                 continue;
             }
             if("Windows IP 配置".equals(el) || "Windows IP Configuration".equals(el)) {
@@ -42,9 +42,10 @@ public class WindowsNetworkAnalysis {
                 || el.startsWith("无线局域网适配器") || el.startsWith("WLAN adapter")
                 || el.startsWith("隧道适配器") || el.startsWith("Tunnel adapter")) && el.endsWith(CLN)) {
                 mainConfig = false;
-                bean = new NetworkBean();
-                bean.setName(el.replace(CLN, ""));
-                netBasic.addNetworkBeah(bean.getName(), bean);
+                beanName = el.replace(CLN, "");
+                NetworkBean bean = new NetworkBean();
+                bean.setName(beanName);
+                netBasic.addNetworkBeah(beanName, bean);
                 continue;
             }
             if(el.indexOf(CLN) > 0 && el.indexOf(".") > 0) {
@@ -73,60 +74,45 @@ public class WindowsNetworkAnalysis {
 
             if(!mainConfig) {
                 if(el.startsWith("连接特定的 DNS 后缀") || el.startsWith("Connection-specific DNS Suffix")) {
-                    bean.setSpecialDnsSuffix(value);
+                    netBasic.getNetworkBeah(beanName).setSpecialDnsSuffix(value);
                 } else if(el.startsWith("描述") || el.startsWith("Description")) {
-                    bean.setDescription(value);
+                    netBasic.getNetworkBeah(beanName).setDescription(value);
                 } else if(el.startsWith("物理地址") || el.startsWith("Physical Address")) {
-                    bean.setMac(value);
-                } else if(el.startsWith("DHCP 已启用") || el.startsWith("Dhcp Enabled")) {
-                    bean.setDhcpInvoc(value);
+                    netBasic.getNetworkBeah(beanName).setMac(value);
+                } else if(el.startsWith("DHCP 已启用") || el.startsWith("DHCP Enabled")) {
+                    netBasic.getNetworkBeah(beanName).setDhcpInvoc(value);
                 } else if(el.startsWith("自动配置已启用") || el.startsWith("Autoconfiguration Enabled")) {
-                    bean.setAutoConfigInvoc(value);
+                    netBasic.getNetworkBeah(beanName).setAutoConfigInvoc(value);
                 } else if(el.startsWith("IPv6 地址")) {
-                    bean.setIpv6Addr(value);
+                    netBasic.getNetworkBeah(beanName).setIpv6Addr(value);
                 } else if(el.startsWith("临时 IPv6 地址")) {
-                    bean.setIpv6AddrTmp(value);
-                } else if(el.startsWith("本地链接 IPv6 地址")) {
-                    bean.setIpv6AddrLocal(value);
-                } else if(el.startsWith("IPv4 地址") || el.startsWith("IP Address")) {
-                    bean.setIpv4Addr(value);
+                    netBasic.getNetworkBeah(beanName).setIpv6AddrTmp(value);
+                } else if(el.startsWith("本地链接 IPv6 地址") || el.startsWith("Link-local IPv6 Address")) {
+                    netBasic.getNetworkBeah(beanName).setIpv6AddrLocal(value);
+                } else if(el.startsWith("IPv4 地址") || el.startsWith("IPv4 Address")) {
+                    netBasic.getNetworkBeah(beanName).setIpv4Addr(value);
                 } else if(el.startsWith("子网掩码") || el.startsWith("Subnet Mask")) {
-                    bean.setSubnetMask(value);
+                    netBasic.getNetworkBeah(beanName).setSubnetMask(value);
                 } else if(el.startsWith("获得租约的时间") || el.startsWith("Lease Obtained")) {
-                    bean.setLeaseGetTime(value);
+                    netBasic.getNetworkBeah(beanName).setLeaseGetTime(value);
                 } else if(el.startsWith("租约过期的时间") || el.startsWith("Lease Expires")) {
-                    bean.setLeaseTimeout(value);
+                    netBasic.getNetworkBeah(beanName).setLeaseTimeout(value);
                 } else if(el.startsWith("默认网关") || el.startsWith("Default Gateway")) {
-                    List<String> defaultGateway = bean.getDefaultGateway();
-                    if(defaultGateway == null) {
-                        defaultGateway = new ArrayList<String>();
-                        bean.setDefaultGateway(defaultGateway);
-                    }
-                    defaultGateway.add(value);
+                    netBasic.getNetworkBeah(beanName).addDefaultGateway(value);
                 } else if(el.startsWith("DHCP 服务器") || el.startsWith("DHCP Server")) {
-                    List<String> dhcpServer = bean.getDhcpServer();
-                    if(dhcpServer == null) {
-                        dhcpServer = new ArrayList<String>();
-                        bean.setDhcpServer(dhcpServer);
-                    }
-                    dhcpServer.add(value);
+                    netBasic.getNetworkBeah(beanName).addDhcpServer(value);
                 } else if(el.startsWith("DNS 服务器") || el.startsWith("DNS Servers")) {
-                    List<String> dnsServer = bean.getDnsServer();
-                    if(dnsServer == null) {
-                        dnsServer = new ArrayList<String>();
-                        bean.setDnsServer(dnsServer);
-                    }
-                    dnsServer.add(value);
+                    netBasic.getNetworkBeah(beanName).addDnsServer(value);
                 } else if(el.startsWith("TCPIP 上的 NetBIOS")) {
-                    bean.setTcpipNetBIOS(value);
+                    netBasic.getNetworkBeah(beanName).setTcpipNetBIOS(value);
                 } else if(el.startsWith("媒体状态") || el.startsWith("Media State")) {
-                    bean.setMediaStatus(value);
+                    netBasic.getNetworkBeah(beanName).setMediaStatus(value);
                 } else if(el.startsWith("DHCPv6 IAID")) {
-                    bean.setDhcpV6IAID(value);
+                    netBasic.getNetworkBeah(beanName).setDhcpV6IAID(value);
                 } else if(el.startsWith("DHCPv6 客户端 DUID")) {
-                    bean.setDhcpV6ClientDUID(value);
+                    netBasic.getNetworkBeah(beanName).setDhcpV6ClientDUID(value);
                 } else if(el.startsWith("主 WINS 服务器") || el.startsWith("Primary WINS Server")) {
-                    bean.setPrimaryWINSServer(value);
+                    netBasic.getNetworkBeah(beanName).setPrimaryWINSServer(value);
                 }
                 continue;
             }

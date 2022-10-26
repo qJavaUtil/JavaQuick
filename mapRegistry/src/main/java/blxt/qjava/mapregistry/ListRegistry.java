@@ -48,7 +48,9 @@ public class ListRegistry<T> {
      * @param nature  注册值
      */
     public void register(T nature){
-        registryMaps.add(nature);
+        synchronized(this){
+            registryMaps.add(nature);
+        }
     }
 
     /**
@@ -56,7 +58,9 @@ public class ListRegistry<T> {
      * @param key
      */
     public boolean remove(T key){
-        registryMaps.remove(key);
+        synchronized(this){
+            registryMaps.remove(key);
+        }
         return true;
     }
 
@@ -72,7 +76,9 @@ public class ListRegistry<T> {
      * 清理
      */
     public void clear(){
-        registryMaps.clear();
+        synchronized(this) {
+            registryMaps.clear();
+        }
     }
 
     /***

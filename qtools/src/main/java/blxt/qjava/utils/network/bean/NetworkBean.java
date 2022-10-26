@@ -1,5 +1,6 @@
 package blxt.qjava.utils.network.bean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,7 +10,8 @@ import java.util.List;
  */
 public class NetworkBean {
 
-    private static String NEW_LINE = "\r\n";   /**
+    private static String NEW_LINE = "\r\n";
+    /**
      * 网络名称
      */
     private String name;
@@ -119,7 +121,7 @@ public class NetworkBean {
         return ipv4Addr;
     }
     public void setIpv4Addr(String ipv4Addr) {
-        this.ipv4Addr = ipv4Addr;
+        this.ipv4Addr = ipv4Addr.replace("(Preferred)", "");
     }
     public String getIpv6Addr() {
         return ipv6Addr;
@@ -193,6 +195,14 @@ public class NetworkBean {
     public void setDefaultGateway(List<String> defaultGateway) {
         this.defaultGateway = defaultGateway;
     }
+
+    public void addDefaultGateway(String defaultGateway) {
+        if(this.defaultGateway == null){
+            this.defaultGateway = new ArrayList<>();
+        }
+        this.defaultGateway.add(defaultGateway);
+    }
+
     public String getDhcpV6IAID() {
         return dhcpV6IAID;
     }
@@ -211,11 +221,24 @@ public class NetworkBean {
     public void setDnsServer(List<String> dnsServer) {
         this.dnsServer = dnsServer;
     }
+    public void addDnsServer(String dnsServer) {
+        if(this.dnsServer == null){
+            this.dnsServer = new ArrayList<>();
+        }
+        this.dnsServer.add(dnsServer);
+    }
+
     public List<String> getDhcpServer() {
         return dhcpServer;
     }
     public void setDhcpServer(List<String> dhcpServer) {
         this.dhcpServer = dhcpServer;
+    }
+    public void addDhcpServer(String dhcpServer) {
+        if(this.dhcpServer == null){
+            this.dhcpServer = new ArrayList<>();
+        }
+        this.dhcpServer.add(dhcpServer);
     }
     public String getTcpipNetBIOS() {
         return tcpipNetBIOS;

@@ -59,6 +59,10 @@ public class NetworkBasic {
         this.netLinks.put(name, bean);
     }
 
+    public NetworkBean getNetworkBeah(String name) {
+        return this.netLinks.get(name);
+    }
+
     public String getDnsSufSerchList() {
         return dnsSufSerchList;
     }

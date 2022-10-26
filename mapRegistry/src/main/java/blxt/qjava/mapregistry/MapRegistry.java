@@ -71,7 +71,7 @@ public class MapRegistry<K, T> {
      * @param key     注册key
      * @param nature  注册值
      */
-    public void register(K key,T nature){
+    public synchronized void register(K key,T nature){
         registryMaps.put(key, nature);
     }
 
@@ -79,7 +79,7 @@ public class MapRegistry<K, T> {
      * 移除
      * @param key
      */
-    public boolean remove(K key){
+    public synchronized boolean remove(K key){
         registryMaps.remove(key);
         return true;
     }
