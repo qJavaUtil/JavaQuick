@@ -38,6 +38,7 @@ public class FileTreeBean {
     /** 文件夹深度层级. */
     int dirDeep = 0;
     /** 目标文件夹深度层级. */
+    @JsonIgnore
     int dirDeepTarget = -1;
 
     /** 路径裁剪 */
